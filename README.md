@@ -1,1 +1,0 @@
-# GDMC2021Tsukuba

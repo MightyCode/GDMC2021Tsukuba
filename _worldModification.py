@@ -1,0 +1,104 @@
+import interfaceUtils
+import os.path
+from os import path
+
+# Class which serve to save all modification, do undo actions
+class WorldModification: 
+    modif_separator = "$"
+    parts_separator = "°"
+
+    def __init__(self):
+        self.before_modification = []
+        self.after_modificaton = []
+
+    def setBlock(self, x, y, z, block):
+        self.before_modification.append([x, y, z, interfaceUtils.getBlock(x, y, z)])
+        self.after_modificaton.append([x, y, z, block])
+        interfaceUtils.setBlock(x, y, z, block)
+
+    def fillBlocks(self, from_x, from_y, from_z, to_x, to_y, to_z, block):
+        for x in range(from_x, to_x + 1):
+            for y in range(from_y, to_y + 1):
+                for z in range(from_z, to_z + 1):
+                    self.before_modification.append([x, y, z, interfaceUtils.getBlock(x, y, z)])
+                    self.after_modificaton.append([x, y, z, block])
+        
+        interfaceUtils.runCommand("fill " +  
+                                str(from_x) + " " + 
+                                str(from_y) + " " +
+                                str(from_z) + " " + 
+                                str(to_x) + " " + 
+                                str(to_y) + " " + 
+                                str(to_z) + " " +  
+                                block + " replace")
+
+    def undoLastModification(self):
+        index = len(self.before_modification) - 1
+        interfaceUtils.setBlock(
+            self.before_modification[index][0],
+            self.before_modification[index][1],
+            self.before_modification[index][2],
+            self.before_modification[index][3],
+        )
+
+        self.before_modification.pop()
+        self.after_modificaton.pop()
+
+    def undoAllModification(self):
+        for i in range(len(self.before_modification)):
+            self.undoLastModification()
+
+    def saveToFile(self, file_name) :
+        assert(len(self.before_modification) == len(self.after_modificaton))
+
+        if path.exists(file_name) :
+            parts = file_name.split(".")
+            if len(file_name.split("_")) > 1 :
+                self.saveToFile(parts[0].split("_")[0] + "_" + str(
+                    int(file_name.split("_")[1].split(".")[0]) + 1
+                ) + "." + parts[1])
+            else :             
+                self.saveToFile(parts[0] + "_0." + parts[1])
+            return
+
+        f = open(file_name, "w")
+        f.truncate(0)
+        for i in range(len(self.before_modification)) :
+            f.write(
+                str(self.before_modification[i][0]) + WorldModification.modif_separator +
+                str(self.before_modification[i][1]) + WorldModification.modif_separator +
+                str(self.before_modification[i][2]) + WorldModification.modif_separator +
+                str(self.before_modification[i][3]) + WorldModification.parts_separator +
+                str(self.after_modificaton[i][0]) +   WorldModification.modif_separator +
+                str(self.after_modificaton[i][1]) +   WorldModification.modif_separator +
+                str(self.after_modificaton[i][2]) +   WorldModification.modif_separator +
+                str(self.after_modificaton[i][3])
+            )
+
+            if i < len(self.before_modification) - 1 :
+                f.write("\n")
+        f.close()
+
+    def loadFromFile(self, file_name) :
+        with open(file_name) as f:
+            for line in f:
+                parts = line.split(WorldModification.parts_separator)
+
+                before_parts = parts[0].split(WorldModification.modif_separator)
+                after_parts = parts[1].split(WorldModification.modif_separator)
+
+                self.before_modification.append([
+                   int(before_parts[0]),
+                    int(before_parts[1]),
+                    int(before_parts[2]),
+                    before_parts[3]
+                ])
+
+                self.after_modificaton.append([
+                    int(after_parts[0]),
+                    int(after_parts[1]),
+                    int(after_parts[2]),
+                    after_parts[3]
+                ])
+                
+        os.remove(file_name) 
