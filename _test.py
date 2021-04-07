@@ -28,10 +28,10 @@ if len(sys.argv) <= 1 :
     info = ressources.buildings["house2"].info
 
     buildingCondition = Buildings.BUILDINGS_CONDITIONS.copy()
-    buildingCondition["rotation"] = 0
-    buildingCondition["flip"] = 2
-    buildingCondition["position"] = [0, 70, 0]
-    buildingCondition["rotationReference"] = [info["mainEntry"]["position"][0], info["mainEntry"]["position"][2]]
+    buildingCondition["rotation"] = 3
+    buildingCondition["flip"] = 3
+    buildingCondition["position"] = [0, 62, 0]
+    buildingCondition["referencePoint"] = [info["mainEntry"]["position"][0], info["mainEntry"]["position"][2]]
     ressources.buildings["house2"].build(worldModif, buildingCondition)
     worldModif.saveToFile(file)
 else : 

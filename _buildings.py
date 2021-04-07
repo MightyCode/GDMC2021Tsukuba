@@ -11,14 +11,14 @@ class Buildings:
     rotation : No rotation = 0, rotation 90 = 1, rotation 180 = 2, rotation 270 = 3
     replaceAllAir : 0 no air placed, 1 place all air block, 2 place all choosen air block
     position : the center of the contruction
-    rotationReference : point x, z where the building will rotate around
+    referencePoint : point x, z where the building will rotate around, the block at the reference point will be on position point
     """
     BUILDINGS_CONDITIONS =  {
         "rotation" : 0,
         "flip" : 0,
         "replaceAllAir" : 0,
         "position" : [0, 0, 0],
-        "rotationReference" : [0, 0]
+        "referencePoint" : [0, 0]
     }
 
     def __init__(self, nbtfile, info):
@@ -30,31 +30,45 @@ class Buildings:
 
     def build(self, worldModif, buildingCondition):
         self.computeOrientation(buildingCondition["rotation"], buildingCondition["flip"])
-        
-        toRemove = [buildingCondition["rotationReference"][0], 0, buildingCondition["rotationReference"][1]]
+
+        if buildingCondition["flip"] == 1 or buildingCondition["flip"] == 3:
+            buildingCondition["referencePoint"][0] = self.size[0] - buildingCondition["referencePoint"][0] 
+        if buildingCondition["flip"] == 2 or buildingCondition["flip"] == 3:
+            buildingCondition["referencePoint"][1] = self.size[2] - buildingCondition["referencePoint"][1] 
+         
+        toRemove = [buildingCondition["referencePoint"][0], 0, buildingCondition["referencePoint"][1]]
 
         if "mainEntry" in self.info.keys():
             toRemove[1] = self.info["mainEntry"]["position"][1]
 
-        
+        print(_math.rotatePointAround(
+                [buildingCondition["position"][0] + buildingCondition["referencePoint"][0], buildingCondition["position"][2] + buildingCondition["referencePoint"][1]], 
+                [buildingCondition["position"][0] + 3, buildingCondition["position"][2] + 3], 
+                buildingCondition["rotation"] *  math.pi / 2))
 
         for block in self.file["blocks"]:
+            # Position of block in building local space
             # Take flip into account
-            x = self.size[0] - block["pos"][0].value if (buildingCondition["flip"] == 1 or buildingCondition["flip"] == 3) else block["pos"][0].value
-            z =  self.size[2] - block["pos"][2].value if (buildingCondition["flip"] == 2 or buildingCondition["flip"] == 3) else block["pos"][2].value
+            if buildingCondition["flip"] == 1 or buildingCondition["flip"] == 3 :
+                x = self.size[0] - block["pos"][0].value
+                z = self.size[2] - block["pos"][2].value
+            else:
+                x = block["pos"][0].value
+                z = block["pos"][2].value
+
             y = block["pos"][1].value
+
+            y = y - toRemove[1]
 
             # Take rotation into account
             positionX, positionZ = _math.rotatePointAround(
-                buildingCondition["rotationReference"], 
-                [buildingCondition["position"][0] + x - toRemove[0], buildingCondition["position"][2] + z - toRemove[2]], 
+                [buildingCondition["position"][0] + buildingCondition["referencePoint"][0], buildingCondition["position"][2] + buildingCondition["referencePoint"][1]], 
+                [buildingCondition["position"][0] + x, buildingCondition["position"][2] + z], 
                 buildingCondition["rotation"] *  math.pi / 2)
 
-            positionX = int(positionX)
-            positionZ = int(positionZ)
-            positionY = buildingCondition["position"][1] + y - toRemove[1]
-            
-            #print("place at : x=" + str(positionX) + " ,  y=" + str(positionY) + " ,z=" + str(positionZ))
+            positionX = int(positionX) - toRemove[0]
+            positionZ = int(positionZ) - toRemove[2]
+            positionY = buildingCondition["position"][1] + y
 
             
             worldModif.setBlock(
@@ -64,6 +78,7 @@ class Buildings:
                     buildingCondition["rotation"],
                     buildingCondition["flip"])
             )
+            
     
     def convertNbtBlockToStr(self, blockState, rotation, flip):
         block = blockState["Name"].value + "["
@@ -120,8 +135,6 @@ class Buildings:
         if rotation == 1 or rotation == 3:
             self.computedOrientation["x"] = "z"
             self.computedOrientation["z"] = "x"
-
-        print(self.computedOrientation)
 
     def getSize(self):
         return self.size
