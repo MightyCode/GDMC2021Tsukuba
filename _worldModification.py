@@ -11,8 +11,19 @@ class WorldModification:
         self.before_modification = []
         self.after_modificaton = []
 
-    def setBlock(self, x, y, z, block):
-        self.before_modification.append([x, y, z, interfaceUtils.getBlock(x, y, z)])
+    def setBlock(self, x, y, z, block, compareBlockState=False):
+        previousBlock = interfaceUtils.getBlock(x, y, z)
+
+        # We won't replace block by same one, 
+        # option to compare or not the state of both blocks -> [...]
+        if block.split("[")[0] == previousBlock.split("[")[0]:
+            if compareBlockState: 
+                pass
+                # TODO
+            else :
+                return
+
+        self.before_modification.append([x, y, z, previousBlock])
         self.after_modificaton.append([x, y, z, block])
         interfaceUtils.setBlock(x, y, z, block)
 

@@ -7,9 +7,9 @@ import sys
 file = "temp.txt"
 
 ressources = Ressources()
-ressources.loadBuildings("data/house1.nbt", "house1")
-ressources.loadBuildings("data/house1_alt.nbt", "house1_alt")
-ressources.loadBuildings("data/house2.nbt", "house2")
+ressources.loadBuildings("house1.nbt", "house1")
+ressources.loadBuildings("house1_alt.nbt", "house1_alt")
+ressources.loadBuildings("house2.nbt", "house2")
 worldModif = WorldModification()
 
 """
