@@ -2,6 +2,8 @@ import _math
 import math
 
 class Buildings:
+    AIR_BLOCK = "minecraft:air"
+
     ORIENTATIONS = ["west", "north" , "east", "south"]
 
     """
@@ -41,34 +43,35 @@ class Buildings:
         if "mainEntry" in self.info.keys():
             toRemove[1] = self.info["mainEntry"]["position"][1]
 
-        print(_math.rotatePointAround(
-                [buildingCondition["position"][0] + buildingCondition["referencePoint"][0], buildingCondition["position"][2] + buildingCondition["referencePoint"][1]], 
-                [buildingCondition["position"][0] + 3, buildingCondition["position"][2] + 3], 
-                buildingCondition["rotation"] *  math.pi / 2))
+        # TODO replaceAllAir:2 -> specify zone where we can replace air
 
         for block in self.file["blocks"]:
-            # Position of block in building local space
-            # Take flip into account
+            blockName = self.file["palette"][block["state"].value]["Name"].value
+
+            # Check for block air replacement
+            if blockName == Buildings.AIR_BLOCK and buildingCondition["replaceAllAir"] != 1:
+                continue
+
+            # Position in building local space
             if buildingCondition["flip"] == 1 or buildingCondition["flip"] == 3 :
-                x = self.size[0] - block["pos"][0].value
-                z = self.size[2] - block["pos"][2].value
+                x = self.size[0] - 1 - block["pos"][0].value
+                z = self.size[2] - 1 - block["pos"][2].value
             else:
                 x = block["pos"][0].value
                 z = block["pos"][2].value
 
             y = block["pos"][1].value
 
-            y = y - toRemove[1]
-
-            # Take rotation into account
+            # Take rotation into account, apply to building local positions
             positionX, positionZ = _math.rotatePointAround(
                 [buildingCondition["position"][0] + buildingCondition["referencePoint"][0], buildingCondition["position"][2] + buildingCondition["referencePoint"][1]], 
                 [buildingCondition["position"][0] + x, buildingCondition["position"][2] + z], 
                 buildingCondition["rotation"] *  math.pi / 2)
 
+            # Position in real world
             positionX = int(positionX) - toRemove[0]
             positionZ = int(positionZ) - toRemove[2]
-            positionY = buildingCondition["position"][1] + y
+            positionY = buildingCondition["position"][1] + y - toRemove[1]
 
             
             worldModif.setBlock(
