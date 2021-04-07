@@ -87,9 +87,10 @@ def runCommand(command):
 # --------------------------------------------------------- get/set block
 
 
-def getBlock(x, y, z):
+def getBlock(x, y, z, includeState=False):
     """**Returns the namespaced id of a block in the world.**"""
-    url = f'http://localhost:9000/blocks?x={x}&y={y}&z={z}'
+    state = 'true' if includeState else 'false'
+    url = f'http://localhost:9000/blocks?x={x}&y={y}&z={z}&includeState={state}'
     # print(url)
     try:
         response = requests.get(url)

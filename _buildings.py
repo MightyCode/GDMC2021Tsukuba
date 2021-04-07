@@ -10,21 +10,33 @@ class Buildings:
     flip : No flip = 0, Flip x = 1, flip z = 2, Flip xz = 3
     rotation : No rotation = 0, rotation 90 = 1, rotation 180 = 2, rotation 270 = 3
     replaceAllAir : 0 no air placed, 1 place all air block, 2 place all choosen air block
+    position : the center of the contruction
+    rotationReference : point x, z where the building will rotate around
     """
     BUILDINGS_CONDITIONS =  {
         "rotation" : 0,
         "flip" : 0,
-        "replaceAllAir" : 0
+        "replaceAllAir" : 0,
+        "position" : [0, 0, 0],
+        "rotationReference" : [0, 0]
     }
 
-    def __init__(self, nbtfile):
+    def __init__(self, nbtfile, info):
         self.size = [nbtfile["size"][0].value, nbtfile["size"][1].value, nbtfile["size"][2].value]
         self.file = nbtfile
+        self.info = info
 
         self.computedOrientation = {}
 
-    def build(self, position, worldModif, buildingCondition):
+    def build(self, worldModif, buildingCondition):
         self.computeOrientation(buildingCondition["rotation"], buildingCondition["flip"])
+        
+        toRemove = [buildingCondition["rotationReference"][0], 0, buildingCondition["rotationReference"][1]]
+
+        if "mainEntry" in self.info.keys():
+            toRemove[1] = self.info["mainEntry"]["position"][1]
+
+        
 
         for block in self.file["blocks"]:
             # Take flip into account
@@ -33,10 +45,14 @@ class Buildings:
             y = block["pos"][1].value
 
             # Take rotation into account
-            positionX, positionZ = _math.rotatePointAround([position[0], position[2]], [position[0] + x, position[2] + z], buildingCondition["rotation"] * math.pi * 0.5)
+            positionX, positionZ = _math.rotatePointAround(
+                buildingCondition["rotationReference"], 
+                [buildingCondition["position"][0] + x - toRemove[0], buildingCondition["position"][2] + z - toRemove[2]], 
+                buildingCondition["rotation"] *  math.pi / 2)
+
             positionX = int(positionX)
             positionZ = int(positionZ)
-            positionY = position[1] + y
+            positionY = buildingCondition["position"][1] + y - toRemove[1]
             
             #print("place at : x=" + str(positionX) + " ,  y=" + str(positionY) + " ,z=" + str(positionZ))
 
@@ -107,7 +123,7 @@ class Buildings:
 
         print(self.computedOrientation)
 
-    def size(self):
+    def getSize(self):
         return self.size
     
     def size_x(self):

@@ -12,7 +12,7 @@ class WorldModification:
         self.after_modificaton = []
 
     def setBlock(self, x, y, z, block, compareBlockState=False):
-        previousBlock = interfaceUtils.getBlock(x, y, z)
+        previousBlock = interfaceUtils.getBlock(x, y, z, True)
 
         # We won't replace block by same one, 
         # option to compare or not the state of both blocks -> [...]
