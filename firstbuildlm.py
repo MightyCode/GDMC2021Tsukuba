@@ -6,9 +6,11 @@ import time
 import sys
 import random
 import interfaceUtils
+import nbt
+
+
 
 ressources = Ressources()
-ressources.loadBuildings("fireplace.nbt","fireplace.json", "fireplace")
 worldModif = WorldModification()
 file = "temp.txt"
 #we need to setup the area to build first
@@ -16,6 +18,14 @@ area = (0,0,128,128)
 interfaceUtils.runCommand("execute at @p run setbuildarea ~-64 0 ~-64 ~64 255 ~64")
 
 buildArea = interfaceUtils.requestBuildArea()
+if buildArea != -1:
+    x1 = buildArea["xFrom"]
+    z1 = buildArea["zFrom"]
+    x2 = buildArea["xTo"]
+    z2 = buildArea["zTo"]
+    # print(buildArea)
+    area = (x1, z1, x2 - x1, z2 - z1)
+
 
 cx = int(area[0] + area[2]/2)
 cz = int(area[1] + area[3]/2)
@@ -24,8 +34,10 @@ while interfaceUtils.getBlock(cx, cy, cz) == 'minecraft:air' or interfaceUtils.g
     cy -= 1
 
 
-test =interfaceUtils.getBiome(cx,cz,1,1)
-
+biome = interfaceUtils.getBiome(cx,cz,1,1)
+filin = open("data/biome.txt")
+lignes = filin.readlines()
+print("biome : " + lignes[int(biome)])
 
 
 
@@ -36,7 +48,6 @@ print(cz)
 if len(sys.argv) <= 1 :
     size = ressources.buildings["fireplace"].getSize()
     info = ressources.buildings["fireplace"].info
-
     buildingCondition = Buildings.BUILDINGS_CONDITIONS.copy()
     buildingCondition["rotation"] = 3
     buildingCondition["flip"] = 3
