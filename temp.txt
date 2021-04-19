@@ -1,0 +1,5 @@
+220$71$143$minecraft:air°220$71$143$minecraft:stone[]
+220$72$143$minecraft:air°220$72$143$minecraft:stone[]
+220$73$143$minecraft:air°220$73$143$minecraft:stone[]
+220$74$143$minecraft:air°220$74$143$minecraft:stone[]
+219$74$143$minecraft:air°219$74$143$minecraft:stone[]
