@@ -7,9 +7,11 @@ import sys
 file = "temp.txt"
 
 ressources = Ressources()
-ressources.loadBuildings("house1.nbt", "house1")
-ressources.loadBuildings("house1_alt.nbt", "house1_alt")
-ressources.loadBuildings("house2.nbt", "house2")
+ressources.loadBuildings("house1.nbt", "house1.json", "house1")
+ressources.loadBuildings("house1_alt.nbt", "house1_alt.json", "house1_alt")
+ressources.loadBuildings("house2.nbt", "house2.json", "house2")
+
+
 worldModif = WorldModification()
 
 """
@@ -24,10 +26,15 @@ print(str(max) + " from " + str(i))
 """
 
 if len(sys.argv) <= 1 :
+    size = ressources.buildings["house2"].getSize()
+    info = ressources.buildings["house2"].info
+
     buildingCondition = Buildings.BUILDINGS_CONDITIONS.copy()
     buildingCondition["rotation"] = 3
     buildingCondition["flip"] = 3
-    ressources.buildings["house2"].build([0, 83, 0], worldModif, buildingCondition)
+    buildingCondition["position"] = [0, 66, 0]
+    buildingCondition["referencePoint"] = [info["mainEntry"]["position"][0], info["mainEntry"]["position"][2]]
+    ressources.buildings["house2"].build(worldModif, buildingCondition)
     worldModif.saveToFile(file)
 else : 
     if sys.argv[1] == "r" :   

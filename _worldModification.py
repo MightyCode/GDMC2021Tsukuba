@@ -4,15 +4,17 @@ from os import path
 
 # Class which serve to save all modification, do undo actions
 class WorldModification: 
-    modif_separator = "$"
-    parts_separator = "°"
+    DEFAULT_PATH = "logs/"
+    BLOCK_SEPARATOR = "$"
+    PARTS_SEPARATOR = "°"
+
 
     def __init__(self):
         self.before_modification = []
         self.after_modificaton = []
 
     def setBlock(self, x, y, z, block, compareBlockState=False):
-        previousBlock = interfaceUtils.getBlock(x, y, z)
+        previousBlock = interfaceUtils.getBlock(x, y, z, True)
 
         # We won't replace block by same one, 
         # option to compare or not the state of both blocks -> [...]
@@ -62,7 +64,7 @@ class WorldModification:
     def saveToFile(self, file_name) :
         assert(len(self.before_modification) == len(self.after_modificaton))
 
-        if path.exists(file_name) :
+        if path.exists(WorldModification.DEFAULT_PATH + file_name) :
             parts = file_name.split(".")
             if len(file_name.split("_")) > 1 :
                 self.saveToFile(parts[0].split("_")[0] + "_" + str(
@@ -72,17 +74,17 @@ class WorldModification:
                 self.saveToFile(parts[0] + "_0." + parts[1])
             return
 
-        f = open(file_name, "w")
+        f = open(WorldModification.DEFAULT_PATH + file_name, "w")
         f.truncate(0)
         for i in range(len(self.before_modification)) :
             f.write(
-                str(self.before_modification[i][0]) + WorldModification.modif_separator +
-                str(self.before_modification[i][1]) + WorldModification.modif_separator +
-                str(self.before_modification[i][2]) + WorldModification.modif_separator +
-                str(self.before_modification[i][3]) + WorldModification.parts_separator +
-                str(self.after_modificaton[i][0]) +   WorldModification.modif_separator +
-                str(self.after_modificaton[i][1]) +   WorldModification.modif_separator +
-                str(self.after_modificaton[i][2]) +   WorldModification.modif_separator +
+                str(self.before_modification[i][0]) + WorldModification.DEFAULT_PATH +
+                str(self.before_modification[i][1]) + WorldModification.DEFAULT_PATH +
+                str(self.before_modification[i][2]) + WorldModification.DEFAULT_PATH +
+                str(self.before_modification[i][3]) + WorldModification.PARTS_SEPARATOR +
+                str(self.after_modificaton[i][0]) +   WorldModification.DEFAULT_PATH +
+                str(self.after_modificaton[i][1]) +   WorldModification.DEFAULT_PATH +
+                str(self.after_modificaton[i][2]) +   WorldModification.DEFAULT_PATH +
                 str(self.after_modificaton[i][3])
             )
 
@@ -91,12 +93,12 @@ class WorldModification:
         f.close()
 
     def loadFromFile(self, file_name) :
-        with open(file_name) as f:
+        with open(WorldModification.DEFAULT_PATH + file_name) as f:
             for line in f:
-                parts = line.split(WorldModification.parts_separator)
+                parts = line.split(WorldModification.PARTS_SEPARATOR)
 
-                before_parts = parts[0].split(WorldModification.modif_separator)
-                after_parts = parts[1].split(WorldModification.modif_separator)
+                before_parts = parts[0].split(WorldModification.DEFAULT_PATH)
+                after_parts = parts[1].split(WorldModification.DEFAULT_PATH)
 
                 self.before_modification.append([
                    int(before_parts[0]),
@@ -112,4 +114,4 @@ class WorldModification:
                     after_parts[3]
                 ])
                 
-        os.remove(file_name) 
+        os.remove(WorldModification.DEFAULT_PATH + file_name) 
