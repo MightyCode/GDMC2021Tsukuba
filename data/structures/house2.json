@@ -3,8 +3,8 @@
     "facing" : "north",
     "position" : [3, 4, 3]
   },
-  "replacement" : {
-    "oak_log" : "wood"
+  "replacements" : {
+    "minecraft:oak_log" : { "type" : "wood", "state" : 0 }
   },
   "air" : {
     "preferedAirMode" : 2,
