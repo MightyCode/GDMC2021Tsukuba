@@ -8,10 +8,10 @@ class WorldModification:
     BLOCK_SEPARATOR = "$"
     PARTS_SEPARATOR = "°"
 
-
     def __init__(self):
         self.before_modification = []
         self.after_modificaton = []
+
 
     def setBlock(self, x, y, z, block, compareBlockState=False):
         previousBlock = interfaceUtils.getBlock(x, y, z, True)
@@ -29,7 +29,7 @@ class WorldModification:
         self.after_modificaton.append([x, y, z, block])
         interfaceUtils.setBlock(x, y, z, block)
 
-    def fillBlocks(self, from_x, from_y, from_z, to_x, to_y, to_z, block):
+    def fillBlocks(self, from_x, from_y, from_z, to_x, to_y, to_z, block, compareBlockState=False):
         if from_x > to_x : 
             to_x, from_x = from_x, to_x
         if from_y > to_y : 
@@ -40,7 +40,17 @@ class WorldModification:
         for x in range(from_x, to_x + 1):
             for y in range(from_y, to_y + 1):
                 for z in range(from_z, to_z + 1):
-                    self.before_modification.append([x, y, z, interfaceUtils.getBlock(x, y, z)])
+                    # We won't replace block by same one, 
+                    # option to compare or not the state of both blocks -> [...]
+                    previousBlock = interfaceUtils.getBlock(x, y, z, True)
+                    if block.split("[")[0] == previousBlock.split("[")[0]:
+                        if compareBlockState: 
+                            pass
+                            # TODO
+                        else :
+                            continue
+
+                    self.before_modification.append([x, y, z, previousBlock])
                     self.after_modificaton.append([x, y, z, block])
         
         interfaceUtils.runCommand("fill " +  
@@ -98,6 +108,7 @@ class WorldModification:
             if i < len(self.before_modification) - 1 :
                 f.write("\n")
         f.close()
+        
 
     def loadFromFile(self, file_name) :
         with open(WorldModification.DEFAULT_PATH + file_name) as f:
