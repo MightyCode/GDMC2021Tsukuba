@@ -78,13 +78,13 @@ class WorldModification:
         f.truncate(0)
         for i in range(len(self.before_modification)) :
             f.write(
-                str(self.before_modification[i][0]) + WorldModification.DEFAULT_PATH +
-                str(self.before_modification[i][1]) + WorldModification.DEFAULT_PATH +
-                str(self.before_modification[i][2]) + WorldModification.DEFAULT_PATH +
+                str(self.before_modification[i][0]) + WorldModification.BLOCK_SEPARATOR +
+                str(self.before_modification[i][1]) + WorldModification.BLOCK_SEPARATOR +
+                str(self.before_modification[i][2]) + WorldModification.BLOCK_SEPARATOR +
                 str(self.before_modification[i][3]) + WorldModification.PARTS_SEPARATOR +
-                str(self.after_modificaton[i][0]) +   WorldModification.DEFAULT_PATH +
-                str(self.after_modificaton[i][1]) +   WorldModification.DEFAULT_PATH +
-                str(self.after_modificaton[i][2]) +   WorldModification.DEFAULT_PATH +
+                str(self.after_modificaton[i][0]) +   WorldModification.BLOCK_SEPARATOR +
+                str(self.after_modificaton[i][1]) +   WorldModification.BLOCK_SEPARATOR +
+                str(self.after_modificaton[i][2]) +   WorldModification.BLOCK_SEPARATOR +
                 str(self.after_modificaton[i][3])
             )
 
@@ -97,8 +97,8 @@ class WorldModification:
             for line in f:
                 parts = line.split(WorldModification.PARTS_SEPARATOR)
 
-                before_parts = parts[0].split(WorldModification.DEFAULT_PATH)
-                after_parts = parts[1].split(WorldModification.DEFAULT_PATH)
+                before_parts = parts[0].split(WorldModification.BLOCK_SEPARATOR)
+                after_parts = parts[1].split(WorldModification.BLOCK_SEPARATOR)
 
                 self.before_modification.append([
                    int(before_parts[0]),
