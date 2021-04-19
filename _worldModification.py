@@ -30,6 +30,13 @@ class WorldModification:
         interfaceUtils.setBlock(x, y, z, block)
 
     def fillBlocks(self, from_x, from_y, from_z, to_x, to_y, to_z, block):
+        if from_x > to_x : 
+            to_x, from_x = from_x, to_x
+        if from_y > to_y : 
+            to_y, from_y = from_y, to_y
+        if from_z > to_z : 
+            to_z, from_z = from_z, to_z
+        
         for x in range(from_x, to_x + 1):
             for y in range(from_y, to_y + 1):
                 for z in range(from_z, to_z + 1):
@@ -78,13 +85,13 @@ class WorldModification:
         f.truncate(0)
         for i in range(len(self.before_modification)) :
             f.write(
-                str(self.before_modification[i][0]) + WorldModification.DEFAULT_PATH +
-                str(self.before_modification[i][1]) + WorldModification.DEFAULT_PATH +
-                str(self.before_modification[i][2]) + WorldModification.DEFAULT_PATH +
+                str(self.before_modification[i][0]) + WorldModification.BLOCK_SEPARATOR +
+                str(self.before_modification[i][1]) + WorldModification.BLOCK_SEPARATOR +
+                str(self.before_modification[i][2]) + WorldModification.BLOCK_SEPARATOR +
                 str(self.before_modification[i][3]) + WorldModification.PARTS_SEPARATOR +
-                str(self.after_modificaton[i][0]) +   WorldModification.DEFAULT_PATH +
-                str(self.after_modificaton[i][1]) +   WorldModification.DEFAULT_PATH +
-                str(self.after_modificaton[i][2]) +   WorldModification.DEFAULT_PATH +
+                str(self.after_modificaton[i][0])   + WorldModification.BLOCK_SEPARATOR +
+                str(self.after_modificaton[i][1])   + WorldModification.BLOCK_SEPARATOR +
+                str(self.after_modificaton[i][2])   + WorldModification.BLOCK_SEPARATOR +
                 str(self.after_modificaton[i][3])
             )
 
@@ -97,8 +104,8 @@ class WorldModification:
             for line in f:
                 parts = line.split(WorldModification.PARTS_SEPARATOR)
 
-                before_parts = parts[0].split(WorldModification.DEFAULT_PATH)
-                after_parts = parts[1].split(WorldModification.DEFAULT_PATH)
+                before_parts = parts[0].split(WorldModification.BLOCK_SEPARATOR)
+                after_parts = parts[1].split(WorldModification.BLOCK_SEPARATOR)
 
                 self.before_modification.append([
                    int(before_parts[0]),
