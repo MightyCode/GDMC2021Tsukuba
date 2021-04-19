@@ -32,9 +32,11 @@ if len(sys.argv) <= 1 :
     buildingCondition = Buildings.BUILDINGS_CONDITIONS.copy()
     buildingCondition["rotation"] = 3
     buildingCondition["flip"] = 3
-    buildingCondition["position"] = [-10, 63, 10]
+    buildingCondition["position"] = [30, 63, 4]
     buildingCondition["replaceAllAir"] = 3
     buildingCondition["referencePoint"] = [info["mainEntry"]["position"][0], info["mainEntry"]["position"][1], info["mainEntry"]["position"][2]]
+    buildingCondition["replacements"]["wood"] = "minecraft:birch_log"
+
     ressources.buildings["house2"].build(worldModif, buildingCondition)
     worldModif.saveToFile(file)
 else : 

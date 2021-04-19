@@ -3,7 +3,7 @@
     "facing" : "north",
     "position" : [3, 0, 2]
   },
-  "replacement" : {
+  "replacements" : {
     "oak_log" : "wood"
   },
   "air" : {

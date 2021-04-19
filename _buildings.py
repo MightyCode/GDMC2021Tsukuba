@@ -1,7 +1,13 @@
 import _math
 import math
+from nbt import nbt
 
 class Buildings:
+    REPLACEMENTS = "replacements"
+    CHANGE = "Change"
+    CHANGE_TO = "ChangeTo"
+    CHANGE_STATE = "ChangeState"
+
     AIR_BLOCK = "minecraft:air"
 
     ORIENTATIONS = ["west", "north" , "east", "south"]
@@ -14,13 +20,15 @@ class Buildings:
     replaceAllAir : 0 no air placed, 1 place all air block, 2 place all choosen air block, 3 take the prefered replacement air from info file
     position : the center of the contruction
     referencePoint : point x, z where the building will rotate around, the block at the reference point will be on position point
+    replacement : change one type of block to another
     """
     BUILDINGS_CONDITIONS =  {
         "rotation" : 0,
         "flip" : 0,
         "replaceAllAir" : 0,
         "position" : [0, 0, 0],
-        "referencePoint" : [0, 0, 0]
+        "referencePoint" : [0, 0, 0],
+        "replacements" : {},
     }
 
     def __init__(self, nbtfile, info):
@@ -29,9 +37,25 @@ class Buildings:
         self.info = info
 
         self.computedOrientation = {}
+        
+        # Indicate for each block in palette if it should change or not and to change to what
+        for block in self.file["palette"]:
+            if Buildings.REPLACEMENTS in self.info.keys():
+                blockName = block["Name"].value.split("[")[0]
+                if blockName in self.info[Buildings.REPLACEMENTS].keys() :
+                    block.tags.append(nbt.TAG_Int(name=Buildings.CHANGE_STATE, value=self.info[Buildings.REPLACEMENTS][blockName]["state"]))
+
+                    # TODO replace "==" by checking with block state
+                    if block[Buildings.CHANGE_STATE].value == 1 or (block[Buildings.CHANGE_STATE].value == 0 and blockName == block["Name"].value) :
+                        block.tags.append(nbt.TAG_Byte(name=Buildings.CHANGE, value=True))
+                        block.tags.append(nbt.TAG_String(name=Buildings.CHANGE_TO, value=self.info[Buildings.REPLACEMENTS][block["Name"].value]["type"]))
+                        continue
+                
+            block.tags.append(nbt.TAG_Byte(name=Buildings.CHANGE, value=False))
+
 
     def build(self, worldModif, buildingCondition):
-        ## Pre computing
+        ## Pre computing :
         self.computeOrientation(buildingCondition["rotation"], buildingCondition["flip"])
 
         if buildingCondition["flip"] == 1 or buildingCondition["flip"] == 3:
@@ -39,6 +63,12 @@ class Buildings:
         if buildingCondition["flip"] == 2 or buildingCondition["flip"] == 3:
             buildingCondition["referencePoint"][2] = self.size[2] - 1 - buildingCondition["referencePoint"][2] 
 
+        # Replace bloc by these given
+        for blockPalette in self.file["palette"]:
+            if blockPalette[Buildings.CHANGE].value:
+                blockPalette["Name"].value = buildingCondition["replacements"][blockPalette[Buildings.CHANGE_TO].value].split("[")[0]
+
+        # Air zone
         if buildingCondition["replaceAllAir"] == 3:
             buildingCondition["replaceAllAir"] = self.info["air"]["preferedAirMode"]
 
@@ -53,7 +83,8 @@ class Buildings:
                                                      
                 worldModif.fillBlocks(blockFrom[0], blockFrom[1], blockFrom[2], blockTo[0], blockTo[1], blockTo[2], Buildings.AIR_BLOCK)
 
-        ## Modify from blocks
+
+        ## Computing : Modify from blocks
         for block in self.file["blocks"]:
             blockName = self.file["palette"][block["state"].value]["Name"].value
 
@@ -66,7 +97,7 @@ class Buildings:
                 [ block["pos"][0].value, block["pos"][1].value, block["pos"][2].value ],
                 buildingCondition["flip"], buildingCondition["rotation"], 
                 buildingCondition["referencePoint"], buildingCondition["position"] )
-
+            
             worldModif.setBlock(
                 blockPosition[0], blockPosition[1], blockPosition[2],
                 self.convertNbtBlockToStr(
@@ -74,6 +105,7 @@ class Buildings:
                     buildingCondition["rotation"],
                     buildingCondition["flip"])
             )
+
 
     def returnWorldPosition(self, localPoint, flip, rotation, referencePoint, worldStructurePosition) :
         worldPosition = [0, 0, 0]
@@ -101,12 +133,13 @@ class Buildings:
         worldPosition[2] = int(worldPosition[2])                        - referencePoint[2]
         return worldPosition 
     
-    def convertNbtBlockToStr(self, blockState, rotation, flip):
-        block = blockState["Name"].value + "["
 
-        if "Properties" in blockState.keys():
-            for key in blockState["Properties"].keys():
-                block += self.convertProperty(key, blockState["Properties"][key].value, rotation, flip) + ","
+    def convertNbtBlockToStr(self, blockPalette, rotation, flip):
+        block = blockPalette["Name"].value + "["
+
+        if "Properties" in blockPalette.keys():
+            for key in blockPalette["Properties"].keys():
+                block += self.convertProperty(key, blockPalette["Properties"][key].value, rotation, flip) + ","
   
             block = block[:-1] 
         block += "]"
