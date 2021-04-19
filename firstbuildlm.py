@@ -6,11 +6,11 @@ import time
 import sys
 import random
 import interfaceUtils
-import nbt
-
+from nbt.nbt import *
 
 
 ressources = Ressources()
+ressources.loadBuildings("fireplace.nbt", "fireplace.json", "fireplace")
 worldModif = WorldModification()
 file = "temp.txt"
 #we need to setup the area to build first
@@ -37,9 +37,14 @@ while interfaceUtils.getBlock(cx, cy, cz) == 'minecraft:air' or interfaceUtils.g
 biome = interfaceUtils.getBiome(cx,cz,1,1)
 filin = open("data/biome.txt")
 lignes = filin.readlines()
-print("biome : " + lignes[int(biome)])
+biomename = lignes[int(biome)].split(":")[0]
+value = int(lignes[int(biome)].split(":")[1])
 
 
+if value == 3:
+    ressources.buildings["fireplace"].file["palette"][0]["Name"].value = "minecraft:sandstone"
+if value == 4:
+    ressources.buildings["fireplace"].file["palette"][0]["Name"].value = "minecraft:cobblestone"
 
 
 print(cx)
@@ -52,7 +57,7 @@ if len(sys.argv) <= 1 :
     buildingCondition["rotation"] = 3
     buildingCondition["flip"] = 3
     buildingCondition["position"] = [cx, cy, cz]
-    buildingCondition["referencePoint"] = [info["mainEntry"]["position"][0], info["mainEntry"]["position"][2]]
+    buildingCondition["referencePoint"] = [info["mainEntry"]["position"][0], info["mainEntry"]["position"][1],info["mainEntry"]["position"][2]]
     ressources.buildings["fireplace"].build(worldModif, buildingCondition)
     worldModif.saveToFile(file)
 else : 
