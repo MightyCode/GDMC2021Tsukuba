@@ -1,6 +1,15 @@
 {
   "mainEntry": {
     "facing" : "north",
-    "position" :[3, 0, 2]
+    "position" : [3, 0, 2]
+  },
+  "replacement" : {
+    "oak_log" : "wood"
+  },
+  "air" : {
+    "preferedAirMode" : 2,
+    "replacements" : [
+      [1, 0, 10, 12, 9, 12]
+    ]
   }
 }
