@@ -8,6 +8,7 @@ class WorldModification:
     BLOCK_SEPARATOR = "$"
     PARTS_SEPARATOR = "°"
 
+
     def __init__(self):
         self.before_modification = []
         self.after_modificaton = []
