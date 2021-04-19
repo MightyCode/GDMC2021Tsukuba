@@ -77,7 +77,10 @@ cy += 10
 ## Building the platform.
 for dx in range(11):
     for dz in range(11):
-        interfaceUtils.placeBlockBatched(cx+dx-5, cy, cz+dz-5, "minecraft:cobblestone")
+        if interfaceUtils.getBiome(cx, cz, 1, 1) == 2:
+            interfaceUtils.placeBlockBatched(cx+dx-5, cy, cz+dz-5, "minecraft:cobblestone")
+        else:
+            interfaceUtils.placeBlockBatched(cx+dx-5, cy, cz+dz-5, "minecraft:sandstone")
 interfaceUtils.sendBlocks()
 
 # Add signs
@@ -95,4 +98,4 @@ print(book)
 items = [["minecraft:iron_axe", 1], ["minecraft:diamond", 10], [book, 1]]
 addItemChest(cx-3, cy+1, cz, items)
 
-# TODO: Add a book to a lectern
+

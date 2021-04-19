@@ -43,7 +43,12 @@ class Buildings:
         if "mainEntry" in self.info.keys():
             toRemove[1] = self.info["mainEntry"]["position"][1]
 
-        # TODO replaceAllAir:2 -> specify zone where we can replace air
+        if buildingCondition["replaceAllAir"] == 3:
+            buildingCondition["replaceAllAir"] = info["air"]["prefredAirMode"]
+
+        if buildingCondition["replaceAllAir"] == 2:
+            for x in info["air"]["replacements"]
+
 
         for block in self.file["blocks"]:
             blockName = self.file["palette"][block["state"].value]["Name"].value

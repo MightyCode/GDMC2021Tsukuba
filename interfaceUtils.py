@@ -13,6 +13,7 @@ __all__ = ['requestBuildArea', 'runCommand',
 # __version__
 
 import requests
+import math
 
 ## ======== Caranha Functions ========== ##
 
@@ -152,3 +153,23 @@ def clearBlockBuffer():
     """**Clears the block buffer.**"""
     global blockBuffer
     blockBuffer = []
+
+## ======== Bordeaux Team Functions ========== ##
+
+# --------------------------------------------------------- get biomes
+
+def getBiome (x, z, dx, dz):
+    """**Returns the chunk data.**"""
+    x = x / 16
+    z = z / 16
+    parsedX = math.floor(x)
+    parsedZ = math.floor(z)
+    url = f'http://localhost:9000/chunks?x={parsedX}&z={parsedZ}&dx={dx}&dz={dz}'
+    try:
+        response = requests.get(url)
+    except ConnectionError:
+        return "minecraft:plains"
+    biomeInfo = response.text.split(":")
+    biomeId = biomeInfo[6].split(";")
+    biome = biomeId[1].split(",")
+    return biome[1]
