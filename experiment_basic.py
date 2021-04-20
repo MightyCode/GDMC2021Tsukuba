@@ -95,4 +95,4 @@ print(book)
 items = [["minecraft:iron_axe", 1], ["minecraft:diamond", 10], [book, 1]]
 addItemChest(cx-3, cy+1, cz, items)
 
-# TODO: Add a book to a lectern
+interfaceUtils.getBiome(cx,cz, 4, 4)
