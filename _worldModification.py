@@ -4,9 +4,12 @@ from os import path
 
 # Class which serve to save all modification, do undo actions
 class WorldModification: 
+    DEBUG_MODE = False
+    
     DEFAULT_PATH = "logs/"
     BLOCK_SEPARATOR = "$"
     PARTS_SEPARATOR = "°"
+    
 
     def __init__(self):
         self.before_modification = []
@@ -14,44 +17,47 @@ class WorldModification:
 
 
     def setBlock(self, x, y, z, block, compareBlockState=False):
-        previousBlock = interfaceUtils.getBlock(x, y, z, True)
+        if WorldModification.DEBUG_MODE:
+            previousBlock = interfaceUtils.getBlock(x, y, z, True)
 
-        # We won't replace block by same one, 
-        # option to compare or not the state of both blocks -> [...]
-        if block.split("[")[0] == previousBlock.split("[")[0]:
-            if compareBlockState: 
-                pass
-                # TODO
-            else :
-                return
+            # We won't replace block by same one, 
+            # option to compare or not the state of both blocks -> [...]
+            if block.split("[")[0] == previousBlock.split("[")[0]:
+                if compareBlockState: 
+                    pass
+                    # TODO
+                else :
+                    return
 
-        self.before_modification.append([x, y, z, previousBlock])
-        self.after_modificaton.append([x, y, z, block])
+            self.before_modification.append([x, y, z, previousBlock])
+            self.after_modificaton.append([x, y, z, block])
+
         interfaceUtils.setBlock(x, y, z, block)
 
     def fillBlocks(self, from_x, from_y, from_z, to_x, to_y, to_z, block, compareBlockState=False):
-        if from_x > to_x : 
-            to_x, from_x = from_x, to_x
-        if from_y > to_y : 
-            to_y, from_y = from_y, to_y
-        if from_z > to_z : 
-            to_z, from_z = from_z, to_z
-        
-        for x in range(from_x, to_x + 1):
-            for y in range(from_y, to_y + 1):
-                for z in range(from_z, to_z + 1):
-                    # We won't replace block by same one, 
-                    # option to compare or not the state of both blocks -> [...]
-                    previousBlock = interfaceUtils.getBlock(x, y, z, True)
-                    if block.split("[")[0] == previousBlock.split("[")[0]:
-                        if compareBlockState: 
-                            pass
-                            # TODO
-                        else :
-                            continue
+        if WorldModification.DEBUG_MODE :
+            if from_x > to_x : 
+                to_x, from_x = from_x, to_x
+            if from_y > to_y : 
+                to_y, from_y = from_y, to_y
+            if from_z > to_z : 
+                to_z, from_z = from_z, to_z
+            
+            for x in range(from_x, to_x + 1):
+                for y in range(from_y, to_y + 1):
+                    for z in range(from_z, to_z + 1):
+                        # We won't replace block by same one, 
+                        # option to compare or not the state of both blocks -> [...]
+                        previousBlock = interfaceUtils.getBlock(x, y, z, True)
+                        if block.split("[")[0] == previousBlock.split("[")[0]:
+                            if compareBlockState: 
+                                pass
+                                # TODO
+                            else :
+                                continue
 
-                    self.before_modification.append([x, y, z, previousBlock])
-                    self.after_modificaton.append([x, y, z, block])
+                        self.before_modification.append([x, y, z, previousBlock])
+                        self.after_modificaton.append([x, y, z, block])
         
         interfaceUtils.runCommand("fill " +  
                                 str(from_x) + " " + 
@@ -63,6 +69,10 @@ class WorldModification:
                                 block + " replace")
 
     def undoLastModification(self):
+        if not WorldModification.DEBUG_MODE:
+            print("CAN'T UNDO ON NO DEBUG MODE")
+            return 
+
         index = len(self.before_modification) - 1
         interfaceUtils.setBlock(
             self.before_modification[index][0],
@@ -75,10 +85,18 @@ class WorldModification:
         self.after_modificaton.pop()
 
     def undoAllModification(self):
+        if not WorldModification.DEBUG_MODE:
+            print("CAN'T UNDO ON NO DEBUG MODE")
+            return 
+
         for i in range(len(self.before_modification)):
             self.undoLastModification()
 
     def saveToFile(self, file_name) :
+        if not WorldModification.DEBUG_MODE:
+            print("CAN'T SAVE ON NO DEBUG MODE")
+            return 
+
         assert(len(self.before_modification) == len(self.after_modificaton))
 
         if path.exists(WorldModification.DEFAULT_PATH + file_name) :
@@ -110,7 +128,11 @@ class WorldModification:
         f.close()
         
 
-    def loadFromFile(self, file_name) :
+    def loadFromFile(self, file_name):
+        if not WorldModification.DEBUG_MODE:
+            print("CAN'T LOAD ON NO DEBUG MODE")
+            return 
+
         with open(WorldModification.DEFAULT_PATH + file_name) as f:
             for line in f:
                 parts = line.split(WorldModification.PARTS_SEPARATOR)
