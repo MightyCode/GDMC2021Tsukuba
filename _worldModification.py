@@ -139,7 +139,6 @@ class WorldModification:
 
                 before_parts = parts[0].split(WorldModification.BLOCK_SEPARATOR)
                 after_parts = parts[1].split(WorldModification.BLOCK_SEPARATOR)
-
                 self.before_modification.append([
                    int(before_parts[0]),
                     int(before_parts[1]),

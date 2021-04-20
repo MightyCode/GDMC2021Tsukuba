@@ -8,7 +8,7 @@ def strToDictBlock(block) :
         subParts = parts[1].split(",")
         for i in subParts:
             subsubParts = i.split("=")
-                expended["Properties"][subsubParts[0]] = subsubParts[1]
+            expended["Properties"][subsubParts[0]] = subsubParts[1]
 
     return expended
 
