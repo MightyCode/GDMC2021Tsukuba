@@ -1,10 +1,11 @@
 {
   "mainEntry": {
     "facing" : "south",
-    "position" : [7, 1, 2]
+    "position" : [7, 0, 2]
   },
   "replacements" : {
-    "oak" : { "type" : "woodType", "state" : 2 }
+    "oak" : { "type" : "woodType", "state" : 2 },
+    "spruce" : { "type" : "woodType", "state" : 2 }
   },
   "air" : {
     "preferedAirMode" : 2,
