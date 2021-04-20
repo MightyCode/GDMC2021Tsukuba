@@ -7,14 +7,21 @@ This module contains functions to:
 * Get the name of a block at a particular coordinate
 * Place blocks in the world
 """
+
 __all__ = ['requestBuildArea', 'runCommand',
            'setBlock', 'getBlock',
            'placeBlockBatched', 'sendBlocks']
 # __version__
-
+from io import BytesIO
+from bitarray import BitArray
 import requests
+import math
+import worldLoader
+import nbt
+import numpy as np
 
-## ======== Caranha Functions ========== ##
+
+## ======== Based on Caranha Functions ========== ##
 
 def makeBuildArea(width = 128, height = 128):
     runCommand("execute at @p run setbuildarea ~{} 0 ~{} ~{} 255 ~{}".format(int(-1*width/2), int(-1*height/2), int(width/2), int(height/2)))
@@ -86,10 +93,10 @@ def runCommand(command):
 
 ## ----------------------------------------------- get biome information
 
-def getBiome (x, z, dx, dz):
+def getBiome(x, z, dx, dz):
     """**Returns the chunk data.**"""
-    x = int(x / 16)
-    z = int(z / 16)
+    x = math.floor(x / 16)
+    z = math.floor(z / 16)
 
     url = f'http://localhost:9000/chunks?x={x}&z={z}&dx={dx}&dz={dz}'
     try:
@@ -100,6 +107,30 @@ def getBiome (x, z, dx, dz):
     biomeinfo = biomeId[6].split(";")
     biome = biomeinfo[1].split(",")
     return biome[0]
+
+def getAllBiome():
+  
+    bytes = worldLoader.getChunks(-4, -4, 9, 9, 'bytes')
+    file_like = BytesIO(bytes)
+    nbtfile = nbt.nbt.NBTFile(buffer=file_like)
+    dicochunk = {}
+    for y in range(81):
+        for x in range(1024):
+            if f"{nbtfile['Chunks'][y]['Level']['Biomes'].value[x]}" in dicochunk:
+                dicochunk[f"{nbtfile['Chunks'][y]['Level']['Biomes'].value[x]}"] = int(dicochunk[f"{nbtfile['Chunks'][y]['Level']['Biomes'].value[x]}"]) + 1 
+            else:
+                dicochunk[f"{nbtfile['Chunks'][y]['Level']['Biomes'].value[x]}"] = "1"
+    #meanbiome = dicochunk[0]
+    print(dicochunk.items())
+    max = 0
+    savedbiome = 0
+    for x,y in dicochunk.items():
+        if y > max:
+            savedbiome = x
+            max = y
+    print(savedbiome)
+        
+
 
 
 # --------------------------------------------------------- get/set block

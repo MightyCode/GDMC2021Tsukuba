@@ -9,6 +9,7 @@ import interfaceUtils
 from nbt.nbt import *
 
 
+
 ressources = Ressources()
 ressources.loadBuildings("fireplace.nbt", "fireplace.json", "fireplace")
 worldModif = WorldModification()
@@ -34,7 +35,8 @@ while interfaceUtils.getBlock(cx, cy, cz) == 'minecraft:air' or interfaceUtils.g
     cy -= 1
 
 
-biome = interfaceUtils.getBiome(cx,cz,1,1)
+
+biome = interfaceUtils.getBiome(cx, cz, 1, 1)
 filin = open("data/biome.txt")
 lignes = filin.readlines()
 biomename = lignes[int(biome)].split(":")[0]
