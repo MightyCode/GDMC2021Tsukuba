@@ -8,9 +8,10 @@ import sys
 file = "temp.txt"
 
 ressources = Ressources()
+ressources.loadBuildings("basichouse1.nbt", "basichouse1.json", "basichouse1")
 ressources.loadBuildings("mediumhouse1.nbt", "mediumhouse1.json", "mediumhouse1")
 ressources.loadBuildings("mediumhouse2.nbt", "mediumhouse2.json", "mediumhouse2")
-ressources.loadBuildings("avdancedhouse2.nbt", "avdancedhouse2.json", "advancedhouse2")
+ressources.loadBuildings("advancedhouse1.nbt", "advancedhouse1.json", "advancedhouse1")
 
 worldModif = WorldModification()
 
@@ -26,8 +27,8 @@ print(str(max) + " from " + str(i))
 """
 
 if len(sys.argv) <= 1 :
-    size = ressources.buildings["house2"].getSize()
-    info = ressources.buildings["house2"].info
+    size = ressources.buildings["basichouse1"].getSize()
+    info = ressources.buildings["basichouse1"].info
 
     buildingCondition = Buildings.BUILDINGS_CONDITIONS.copy()
     buildingCondition["rotation"] = 3
@@ -36,6 +37,8 @@ if len(sys.argv) <= 1 :
     buildingCondition["replaceAllAir"] = 3
     buildingCondition["referencePoint"] = [info["mainEntry"]["position"][0], info["mainEntry"]["position"][1], info["mainEntry"]["position"][2]]
     biome = interfaceUtils.getBiome(buildingCondition["position"][0], buildingCondition["position"][2], 1, 1)
+
+    """
     if (biome == "21" or biome == "22" or biome == "23" or biome == "149" or biome == "151" or biome == "168" or biome =="169"):
         buildingCondition["replacements"]["wood"] = "minecraft:jungle_log"
     elif (biome == "5" or biome == "19" or biome == "30" or biome == "31" or biome == "32" or biome == "33" or biome == "133" or biome == "158" or biome == "160" or biome == "161"):        
@@ -47,10 +50,11 @@ if len(sys.argv) <= 1 :
     elif (biome == "29" or biome == "157"):
         buildingCondition["replacements"]["wood"] = "minecraft:dark_oak_log"
     else:
-        buildingCondition["replacements"]["wood"] = "minecraft:oak_log"
+        buildingCondition["replacements"]["wood"] = "minecraft:oak_log"""
 
-
-    ressources.buildings["house2"].build(worldModif, buildingCondition)
+    buildingCondition["replacements"]["woodType"] = "spruce"
+    
+    ressources.buildings["basichouse1"].build(worldModif, buildingCondition)
     worldModif.saveToFile(file)
 else : 
     if sys.argv[1] == "r" :   

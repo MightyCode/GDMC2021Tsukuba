@@ -31,10 +31,11 @@ class Buildings:
         "replacements" : {},
     }
 
-    def __init__(self, nbtfile, info):
+    def __init__(self, nbtfile, info, name):
         self.size = [nbtfile["size"][0].value, nbtfile["size"][1].value, nbtfile["size"][2].value]
         self.file = nbtfile
         self.info = info
+        self.name = name
 
         self.computedOrientation = {}
         
@@ -42,16 +43,32 @@ class Buildings:
         for block in self.file["palette"]:
             if Buildings.REPLACEMENTS in self.info.keys():
                 blockName = block["Name"].value.split("[")[0]
-                if blockName in self.info[Buildings.REPLACEMENTS].keys() :
-                    block.tags.append(nbt.TAG_Int(name=Buildings.CHANGE_STATE, value=self.info[Buildings.REPLACEMENTS][blockName]["state"]))
+                for replacementWord in self.info[Buildings.REPLACEMENTS].keys():
+                    # Checking for block replacement
+                    if blockName == replacementWord:
+                        block.tags.append(nbt.TAG_Int(name=Buildings.CHANGE_STATE, value=self.info[Buildings.REPLACEMENTS][blockName]["state"]))
 
-                    # TODO replace "==" by checking with block state
-                    if block[Buildings.CHANGE_STATE].value == 1 or (block[Buildings.CHANGE_STATE].value == 0 and blockName == block["Name"].value) :
-                        block.tags.append(nbt.TAG_Byte(name=Buildings.CHANGE, value=True))
-                        block.tags.append(nbt.TAG_String(name=Buildings.CHANGE_TO, value=self.info[Buildings.REPLACEMENTS][block["Name"].value]["type"]))
-                        continue
-                
-            block.tags.append(nbt.TAG_Byte(name=Buildings.CHANGE, value=False))
+                        if block[Buildings.CHANGE_STATE].value == 1 :
+                            block.tags.append(nbt.TAG_Byte(name=Buildings.CHANGE, value=True))
+                            block.tags.append(nbt.TAG_String(name=Buildings.CHANGE_TO, value=self.info[Buildings.REPLACEMENTS][block["Name"].value]["type"]))   
+                            break
+                        #  """AND states equals"""
+                        elif block[Buildings.CHANGE_STATE].value == 0:
+                            block.tags.append(nbt.TAG_Byte(name=Buildings.CHANGE, value=True))
+                            block.tags.append(nbt.TAG_String(name=Buildings.CHANGE_TO, value=self.info[Buildings.REPLACEMENTS][block["Name"].value]["type"]))
+                            break
+                        
+                    # Checking for substr replacement 
+                    elif replacementWord in blockName:
+                        print(self.name + " " + replacementWord + " " + blockName)
+                        if replacementWord in self.info[Buildings.REPLACEMENTS].keys():
+                            if self.info[Buildings.REPLACEMENTS][replacementWord]["state"] == 2:
+                                block.tags.append(nbt.TAG_Byte(name=Buildings.CHANGE, value=True))
+                                block.tags.append(nbt.TAG_String(name=Buildings.CHANGE_TO, value=self.info[Buildings.REPLACEMENTS][replacementWord]["type"]))  
+                                block.tags.append(nbt.TAG_Int(name=Buildings.CHANGE_STATE, value=self.info[Buildings.REPLACEMENTS][replacementWord]["state"]))
+                                break
+
+                block.tags.append(nbt.TAG_Byte(name=Buildings.CHANGE, value=False))
 
 
     def build(self, worldModif, buildingCondition):
@@ -98,13 +115,13 @@ class Buildings:
                 buildingCondition["flip"], buildingCondition["rotation"], 
                 buildingCondition["referencePoint"], buildingCondition["position"] )
             
-            worldModif.setBlock(
+            """worldModif.setBlock(
                 blockPosition[0], blockPosition[1], blockPosition[2],
                 self.convertNbtBlockToStr(
                     self.file["palette"][block["state"].value],
                     buildingCondition["rotation"],
                     buildingCondition["flip"])
-            )
+            )"""
 
 
     def returnWorldPosition(self, localPoint, flip, rotation, referencePoint, worldStructurePosition) :

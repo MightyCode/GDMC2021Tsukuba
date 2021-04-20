@@ -13,5 +13,5 @@ class Ressources :
            info = json.load(json_file)
 
         assert(not name in self.buildings.keys())
-        self.buildings[name] = Buildings(nbtfile, info)
+        self.buildings[name] = Buildings(nbtfile, info, name)
 

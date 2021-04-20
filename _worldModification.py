@@ -1,12 +1,14 @@
 import interfaceUtils
 import os.path
 from os import path
+import json 
 
 # Class which serve to save all modification, do undo actions
 class WorldModification: 
     DEBUG_MODE = False
     
     DEFAULT_PATH = "logs/"
+    CONFIG_PATH = "config/config.json"
     BLOCK_SEPARATOR = "$"
     PARTS_SEPARATOR = "°"
     
@@ -14,7 +16,11 @@ class WorldModification:
     def __init__(self):
         self.before_modification = []
         self.after_modificaton = []
-
+        
+        with open(WorldModification.CONFIG_PATH) as f:
+            config = json.load(f)
+            if "debugMode" in config.keys():
+                WorldModification.DEBUG_MODE = config["debugMode"]
 
     def setBlock(self, x, y, z, block, compareBlockState=False):
         if WorldModification.DEBUG_MODE:

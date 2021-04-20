@@ -4,7 +4,7 @@
     "position" : [3, 0, 2]
   },
   "replacements" : {
-    "oak_log" : "wood"
+    "oak_log" : { "type" : "wood", "state" : 1 }
   },
   "air" : {
     "preferedAirMode" : 2,
