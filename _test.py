@@ -1,6 +1,7 @@
 from _worldModification import *
 from _ressources import *
 from _buildings import *
+from _utils import *
 import time
 import sys
 
@@ -10,7 +11,6 @@ ressources = Ressources()
 ressources.loadBuildings("house1.nbt", "house1.json", "house1")
 ressources.loadBuildings("house1_alt.nbt", "house1_alt.json", "house1_alt")
 ressources.loadBuildings("house2.nbt", "house2.json", "house2")
-
 
 worldModif = WorldModification()
 
@@ -32,10 +32,23 @@ if len(sys.argv) <= 1 :
     buildingCondition = Buildings.BUILDINGS_CONDITIONS.copy()
     buildingCondition["rotation"] = 3
     buildingCondition["flip"] = 3
-    buildingCondition["position"] = [30, 63, 4]
+    buildingCondition["position"] = [0, 72, 0]
     buildingCondition["replaceAllAir"] = 3
     buildingCondition["referencePoint"] = [info["mainEntry"]["position"][0], info["mainEntry"]["position"][1], info["mainEntry"]["position"][2]]
-    buildingCondition["replacements"]["wood"] = "minecraft:birch_log"
+    biome = interfaceUtils.getBiome(buildingCondition["position"][0], buildingCondition["position"][2], 1, 1)
+    if (biome == "21" or biome == "22" or biome == "23" or biome == "149" or biome == "151" or biome == "168" or biome =="169"):
+        buildingCondition["replacements"]["wood"] = "minecraft:jungle_log"
+    elif (biome == "5" or biome == "19" or biome == "30" or biome == "31" or biome == "32" or biome == "33" or biome == "133" or biome == "158" or biome == "160" or biome == "161"):        
+        buildingCondition["replacements"]["wood"] = "minecraft:spruce_log"
+    elif (biome == "2" or biome == "16" or biome == "17" or biome == "26" or biome =="130"):
+        buildingCondition["replacements"]["wood"] = "minecraft:birch_log"
+    elif (biome == "35" or biome == "36" or biome == "163" or biome == "164"):
+        buildingCondition["replacements"]["wood"] = "minecraft:acacia_log"
+    elif (biome == "29" or biome == "157"):
+        buildingCondition["replacements"]["wood"] = "minecraft:dark_oak_log"
+    else:
+        buildingCondition["replacements"]["wood"] = "minecraft:oak_log"
+
 
     ressources.buildings["house2"].build(worldModif, buildingCondition)
     worldModif.saveToFile(file)

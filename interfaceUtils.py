@@ -154,9 +154,10 @@ def clearBlockBuffer():
     global blockBuffer
     blockBuffer = []
 
-## ======== Bordeaux Team Functions ========== ##
 
-# --------------------------------------------------------- get biomes
+## ======== Yusuf Functions ========== ##
+
+# --------------------------------------------------------- get biome
 
 def getBiome (x, z, dx, dz):
     """**Returns the chunk data.**"""
