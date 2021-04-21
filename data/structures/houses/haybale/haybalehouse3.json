@@ -1,0 +1,17 @@
+{
+  "mainEntry": {
+    "facing" : "north",
+    "position" : [1, 0, 1]
+  },
+  "replacements" : {
+    "oak" : { "type" : "woodType", "state" : 2 },
+    "minecraft:grass_block" : { "type" : "ground", "state" : 1 },
+    "minecraft:dirt" : { "type" : "ground2", "state" : 1 }
+  },
+  "air" : {
+    "preferedAirMode" : 2,
+    "replacements" : [
+      [1, 1, 1, 2, 3, 5]
+    ]
+  }
+}
