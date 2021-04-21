@@ -106,6 +106,7 @@ def getBiome(x, z, dx, dz):
     biomeId = response.text.split(":")
     biomeinfo = biomeId[6].split(";")
     biome = biomeinfo[1].split(",")
+    print(biome[0])
     return biome[0]
 
 def getAllBiome():
