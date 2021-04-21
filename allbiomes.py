@@ -25,4 +25,5 @@ cx = int(area[0] + area[2]/2)
 cz = int(area[1] + area[3]/2)
 cy = 255
 
-interfaceUtils.getAllBiome()
+# interfaceUtils.getAllBiome()
+interfaceUtils.getBiome(cx, cz, 1, 1)
