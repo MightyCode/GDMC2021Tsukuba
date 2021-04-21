@@ -7,6 +7,8 @@ class Buildings:
     CHANGE = "Change"
     CHANGE_TO = "ChangeTo"
     CHANGE_STATE = "ChangeState"
+    CHANGE_ORIGINAL_BLOCK = "OriginalBlock"
+    CHANGE_REPLACEMENT_WORD = "ReplacementWord"
 
     AIR_BLOCK = "minecraft:air"
 
@@ -31,10 +33,11 @@ class Buildings:
         "replacements" : {},
     }
 
-    def __init__(self, nbtfile, info):
+    def __init__(self, nbtfile, info, name):
         self.size = [nbtfile["size"][0].value, nbtfile["size"][1].value, nbtfile["size"][2].value]
         self.file = nbtfile
         self.info = info
+        self.name = name
 
         self.computedOrientation = {}
         
@@ -42,16 +45,31 @@ class Buildings:
         for block in self.file["palette"]:
             if Buildings.REPLACEMENTS in self.info.keys():
                 blockName = block["Name"].value.split("[")[0]
-                if blockName in self.info[Buildings.REPLACEMENTS].keys() :
-                    block.tags.append(nbt.TAG_Int(name=Buildings.CHANGE_STATE, value=self.info[Buildings.REPLACEMENTS][blockName]["state"]))
 
-                    # TODO replace "==" by checking with block state
-                    if block[Buildings.CHANGE_STATE].value == 1 or (block[Buildings.CHANGE_STATE].value == 0 and blockName == block["Name"].value) :
-                        block.tags.append(nbt.TAG_Byte(name=Buildings.CHANGE, value=True))
-                        block.tags.append(nbt.TAG_String(name=Buildings.CHANGE_TO, value=self.info[Buildings.REPLACEMENTS][block["Name"].value]["type"]))
-                        continue
-                
-            block.tags.append(nbt.TAG_Byte(name=Buildings.CHANGE, value=False))
+                for replacementWord in self.info[Buildings.REPLACEMENTS].keys():
+                    # Checking for block replacement
+                    if blockName == replacementWord:
+                        block.tags.append(nbt.TAG_Int(name=Buildings.CHANGE_STATE, value=self.info[Buildings.REPLACEMENTS][blockName]["state"]))
+                                                                        #  """AND states equals"""
+                        if block[Buildings.CHANGE_STATE].value == 1 or (block[Buildings.CHANGE_STATE].value == 0):
+                            block.tags.append(nbt.TAG_Byte(name=Buildings.CHANGE, value=True))
+                            block.tags.append(nbt.TAG_String(name=Buildings.CHANGE_TO, value=self.info[Buildings.REPLACEMENTS][block["Name"].value]["type"]))   
+                            block.tags.append(nbt.TAG_String(name=Buildings.CHANGE_ORIGINAL_BLOCK, value=block["Name"]))
+                            block.tags.append(nbt.TAG_String(name=Buildings.CHANGE_REPLACEMENT_WORD, value=replacementWord))
+                            break
+                        
+                    # Checking for substr replacement 
+                    elif replacementWord in blockName:
+                        if replacementWord in self.info[Buildings.REPLACEMENTS].keys():
+                            if self.info[Buildings.REPLACEMENTS][replacementWord]["state"] == 2:
+                                block.tags.append(nbt.TAG_Byte(name=Buildings.CHANGE, value=True))
+                                block.tags.append(nbt.TAG_String(name=Buildings.CHANGE_TO, value=self.info[Buildings.REPLACEMENTS][replacementWord]["type"]))  
+                                block.tags.append(nbt.TAG_Int(name=Buildings.CHANGE_STATE, value=2))
+                                block.tags.append(nbt.TAG_String(name=Buildings.CHANGE_ORIGINAL_BLOCK, value=block["Name"]))
+                                block.tags.append(nbt.TAG_String(name=Buildings.CHANGE_REPLACEMENT_WORD, value=replacementWord))
+                                break
+
+                block.tags.append(nbt.TAG_Byte(name=Buildings.CHANGE, value=False))
 
 
     def build(self, worldModif, buildingCondition):
@@ -66,8 +84,15 @@ class Buildings:
         # Replace bloc by these given
         for blockPalette in self.file["palette"]:
             if blockPalette[Buildings.CHANGE].value:
-                blockPalette["Name"].value = buildingCondition["replacements"][blockPalette[Buildings.CHANGE_TO].value].split("[")[0]
+                changeState = blockPalette[Buildings.CHANGE_STATE].value
+                if changeState == 0 or changeState == 1:
+                    blockPalette["Name"].value = buildingCondition["replacements"][blockPalette[Buildings.CHANGE_TO].value].split("[")[0]
+                elif changeState == 2:
+                    blockPalette["Name"].value = str(blockPalette[Buildings.CHANGE_ORIGINAL_BLOCK].value).replace(
+                        blockPalette[Buildings.CHANGE_REPLACEMENT_WORD].value, buildingCondition["replacements"][blockPalette[Buildings.CHANGE_TO].value].split("[")[0] 
+                    )
 
+                print(blockPalette["Name"].value)
         # Air zone
         if buildingCondition["replaceAllAir"] == 3:
             buildingCondition["replaceAllAir"] = self.info["air"]["preferedAirMode"]

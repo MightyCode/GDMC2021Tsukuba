@@ -4,7 +4,7 @@
     "position" : [3, 4, 3]
   },
   "replacements" : {
-    "minecraft:oak_log" : { "type" : "wood", "state" : 0 }
+    "oak" : { "type" : "wood", "state" : 1 }
   },
   "air" : {
     "preferedAirMode" : 2,

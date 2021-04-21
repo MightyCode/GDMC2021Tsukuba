@@ -1,0 +1,56 @@
+{
+    "0" : {
+      "woodType" : "oak",
+      "woodType2" : "spruce",
+      "woodType3" : "birch",
+      "woodType4" : "acacia"
+    },
+    "1" : {
+        "woodType" : "birch",
+        "woodType2" : "acacia",
+        "woodType3" : "oak",
+        "woodType4" : "spruce"
+    },
+    "2" : {
+        "woodType" : "spruce",
+        "woodType2" : "dark_oak",
+        "woodType3" : "oak",
+        "woodType4" : "acacia"
+    },
+    "3" : {
+        "woodType" : "oak",
+        "woodType2" : "dark_oak",
+        "woodType3" : "spruce",
+        "woodType4" : "birch"
+    },
+    "4" : {
+        "woodType" : "jungle",
+        "woodType2" : "spruce",
+        "woodType3" : "oak",
+        "woodType4" : "dark_oak"
+    },
+    "5" : {
+        "woodType" : "birch",
+        "woodType2" : "oak",
+        "woodType3" : "spruce",
+        "woodType4" : "dark_oak"
+    },
+    "6" : {
+        "woodType" : "dark_oak",
+        "woodType2" : "oak",
+        "woodType3" : "spruce",
+        "woodType4" : "jungle"
+    },
+    "7" : {
+        "woodType" : "acacia",
+        "woodType2" : "birch",
+        "woodType3" : "oak",
+        "woodType4" : "spruce"
+    },
+    "8" : {
+        "woodType" : "acacia",
+        "woodType2" : "birch",
+        "woodType3" : "oak",
+        "woodType4" : "spruce"
+    }
+  }

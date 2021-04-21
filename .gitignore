@@ -2,3 +2,4 @@ __pycache__
 logs
 logs/*
 temp
+config/config.json
