@@ -120,17 +120,24 @@ def getAllBiome():
                 dicochunk[f"{nbtfile['Chunks'][y]['Level']['Biomes'].value[x]}"] = int(dicochunk[f"{nbtfile['Chunks'][y]['Level']['Biomes'].value[x]}"]) + 1 
             else:
                 dicochunk[f"{nbtfile['Chunks'][y]['Level']['Biomes'].value[x]}"] = "1"
-    #meanbiome = dicochunk[0]
-    print(dicochunk.items())
+
     max = 0
     savedbiome = 0
     for x,y in dicochunk.items():
         if y > max:
             savedbiome = x
             max = y
-    print(savedbiome)
+    value = getNameBiome(savedbiome)
+    return value
         
 
+def getNameBiome(biome):
+    filin = open("data/biome.txt")
+    lignes = filin.readlines()
+    biomename = lignes[int(biome)].split(":")[0]
+    print(biomename)
+    value = int(lignes[int(biome)].split(":")[1])
+    return value
 
 
 # --------------------------------------------------------- get/set block

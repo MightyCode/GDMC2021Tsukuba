@@ -37,11 +37,8 @@ while interfaceUtils.getBlock(cx, cy, cz) == 'minecraft:air' or interfaceUtils.g
 
 
 biome = interfaceUtils.getBiome(cx, cz, 1, 1)
-filin = open("data/biome.txt")
-lignes = filin.readlines()
-biomename = lignes[int(biome)].split(":")[0]
-value = int(lignes[int(biome)].split(":")[1])
-
+print(biome)
+value=interfaceUtils.getNameBiome(biome)
 
 if value == 3:
     ressources.buildings["fireplace"].file["palette"][0]["Name"].value = "minecraft:sandstone"
