@@ -14,6 +14,10 @@ class Buildings:
 
     ORIENTATIONS = ["west", "north" , "east", "south"]
 
+    REPLACEMENTS_EXCLUSIF = {
+        "oak" : "dark_oak"
+    }
+
     """
     Flip is applied before rotation
 
@@ -40,7 +44,6 @@ class Buildings:
         self.name = name
 
         self.computedOrientation = {}
-        
         # Indicate for each block in palette if it should change or not and to change to what
         for block in self.file["palette"]:
             if Buildings.REPLACEMENTS in self.info.keys():
@@ -60,6 +63,12 @@ class Buildings:
                         
                     # Checking for substr replacement 
                     elif replacementWord in blockName:
+                        # The replacementWord can be in unexpected blocks
+                        # "oak" is on every "...dark_oak..." block
+                        if replacementWord in Buildings.REPLACEMENTS_EXCLUSIF:
+                            if Buildings.REPLACEMENTS_EXCLUSIF[replacementWord] in blockName:
+                                continue
+
                         if replacementWord in self.info[Buildings.REPLACEMENTS].keys():
                             if self.info[Buildings.REPLACEMENTS][replacementWord]["state"] == 2:
                                 block.tags.append(nbt.TAG_Byte(name=Buildings.CHANGE, value=True))
@@ -68,12 +77,14 @@ class Buildings:
                                 block.tags.append(nbt.TAG_String(name=Buildings.CHANGE_ORIGINAL_BLOCK, value=block["Name"]))
                                 block.tags.append(nbt.TAG_String(name=Buildings.CHANGE_REPLACEMENT_WORD, value=replacementWord))
                                 break
+                                
 
-                block.tags.append(nbt.TAG_Byte(name=Buildings.CHANGE, value=False))
+            block.tags.append(nbt.TAG_Byte(name=Buildings.CHANGE, value=False))
 
 
     def build(self, worldModif, buildingCondition):
         ## Pre computing :
+        print("Pre building : " + self.name)
         self.computeOrientation(buildingCondition["rotation"], buildingCondition["flip"])
 
         if buildingCondition["flip"] == 1 or buildingCondition["flip"] == 3:
@@ -82,6 +93,7 @@ class Buildings:
             buildingCondition["referencePoint"][2] = self.size[2] - 1 - buildingCondition["referencePoint"][2] 
 
         # Replace bloc by these given
+        print("Prebuilding Palette")
         for blockPalette in self.file["palette"]:
             if blockPalette[Buildings.CHANGE].value:
                 changeState = blockPalette[Buildings.CHANGE_STATE].value
@@ -92,8 +104,8 @@ class Buildings:
                         blockPalette[Buildings.CHANGE_REPLACEMENT_WORD].value, buildingCondition["replacements"][blockPalette[Buildings.CHANGE_TO].value].split("[")[0] 
                     )
 
-                print(blockPalette["Name"].value)
         # Air zone
+        print("Prebuilding air")
         if buildingCondition["replaceAllAir"] == 3:
             buildingCondition["replaceAllAir"] = self.info["air"]["preferedAirMode"]
 
@@ -108,7 +120,7 @@ class Buildings:
                                                      
                 worldModif.fillBlocks(blockFrom[0], blockFrom[1], blockFrom[2], blockTo[0], blockTo[1], blockTo[2], Buildings.AIR_BLOCK)
 
-
+        print("Building : " + self.name)
         ## Computing : Modify from blocks
         for block in self.file["blocks"]:
             blockName = self.file["palette"][block["state"].value]["Name"].value
@@ -123,6 +135,7 @@ class Buildings:
                 buildingCondition["flip"], buildingCondition["rotation"], 
                 buildingCondition["referencePoint"], buildingCondition["position"] )
             
+            
             worldModif.setBlock(
                 blockPosition[0], blockPosition[1], blockPosition[2],
                 self.convertNbtBlockToStr(
@@ -130,6 +143,8 @@ class Buildings:
                     buildingCondition["rotation"],
                     buildingCondition["flip"])
             )
+
+        print("Finish building : " + self.name)
 
 
     def returnWorldPosition(self, localPoint, flip, rotation, referencePoint, worldStructurePosition) :
