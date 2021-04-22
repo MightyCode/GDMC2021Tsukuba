@@ -2,8 +2,9 @@ from nbt import nbt
 from _buildings import *
 import json
 
-class Ressources :
+class Resources :
     STRUCTURE_PATH = "data/structures/"
+    LOOT_TABLE_PATH = "data/lootTables/"
     BIOME = "data/biome.txt"
     BIOME_BLOCK = "data/biomeBlocks.json"
 
@@ -11,6 +12,8 @@ class Ressources :
 
         # Each structures
         self.buildings = {}
+        self.lootTables = {}
+
         # Contains for each biome, its minecraft id
         # biomename -> id minecraft
         self.biomes = {}
@@ -23,10 +26,10 @@ class Ressources :
 
         # Indicates for each block id, what should be blocks for types (ex : wookType)
         self.biomesBlocks = {}
-        with open(Ressources.BIOME_BLOCK) as json_file:
+        with open(Resources.BIOME_BLOCK) as json_file:
             self.biomesBlocks = json.load(json_file)
 
-        filin = open(Ressources.BIOME)
+        filin = open(Resources.BIOME)
 
         lines = filin.readlines()
         i = 0
@@ -40,13 +43,19 @@ class Ressources :
                 self.biomesBlockId[biomename] = value
             i = i + 1
 
+
     def loadBuildings(self, path, infoPath, name):
-        nbtfile = nbt.NBTFile(Ressources.STRUCTURE_PATH + path,'rb')
-        with open(Ressources.STRUCTURE_PATH + infoPath) as json_file:
+        nbtfile = nbt.NBTFile(Resources.STRUCTURE_PATH + path,'rb')
+        with open(Resources.STRUCTURE_PATH + infoPath) as json_file:
            info = json.load(json_file)
 
         assert(not name in self.buildings.keys())
         self.buildings[name] = Buildings(nbtfile, info, name)
+
+
+    def loadLootTable(self, path, name):
+        with open(Resources.LOOT_TABLE_PATH + infoPath) as json_file:
+           self.lootTables[name] = json.load(json_file)
 
 
 

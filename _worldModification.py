@@ -1,7 +1,7 @@
-import interfaceUtils
 import os.path
 from os import path
 import json 
+import interfaceUtils
 
 # Class which serve to save all modification, do undo actions
 class WorldModification: 
@@ -13,7 +13,9 @@ class WorldModification:
     PARTS_SEPARATOR = "°"
     
 
-    def __init__(self):
+    def __init__(self, interface):
+        self.interface = interface
+
         self.before_modification = []
         self.after_modificaton = []
         
@@ -24,7 +26,7 @@ class WorldModification:
 
     def setBlock(self, x, y, z, block, compareBlockState=False):
         if WorldModification.DEBUG_MODE:
-            previousBlock = interfaceUtils.getBlock(x, y, z, True)
+            previousBlock = self.interface.getBlock(x, y, z, True)
 
             # We won't replace block by same one, 
             # option to compare or not the state of both blocks -> [...]
@@ -38,7 +40,7 @@ class WorldModification:
             self.before_modification.append([x, y, z, previousBlock])
             self.after_modificaton.append([x, y, z, block])
 
-        interfaceUtils.setBlock(x, y, z, block)
+        self.interface.setBlock(x, y, z, block)
 
     def fillBlocks(self, from_x, from_y, from_z, to_x, to_y, to_z, block, compareBlockState=False):
         if WorldModification.DEBUG_MODE :
@@ -54,7 +56,7 @@ class WorldModification:
                     for z in range(from_z, to_z + 1):
                         # We won't replace block by same one, 
                         # option to compare or not the state of both blocks -> [...]
-                        previousBlock = interfaceUtils.getBlock(x, y, z, True)
+                        previousBlock = self.interface.getBlock(x, y, z, True)
                         if block.split("[")[0] == previousBlock.split("[")[0]:
                             if compareBlockState: 
                                 pass
@@ -65,14 +67,7 @@ class WorldModification:
                         self.before_modification.append([x, y, z, previousBlock])
                         self.after_modificaton.append([x, y, z, block])
         
-        interfaceUtils.runCommand("fill " +  
-                                str(from_x) + " " + 
-                                str(from_y) + " " +
-                                str(from_z) + " " + 
-                                str(to_x) + " " + 
-                                str(to_y) + " " + 
-                                str(to_z) + " " +  
-                                block + " replace")
+        self.interface.fill(from_x, from_y, from_z, to_x, to_y, to_z, block)
 
     def undoLastModification(self):
         if not WorldModification.DEBUG_MODE:
@@ -80,7 +75,7 @@ class WorldModification:
             return 
 
         index = len(self.before_modification) - 1
-        interfaceUtils.setBlock(
+        self.interface.setBlock(
             self.before_modification[index][0],
             self.before_modification[index][1],
             self.before_modification[index][2],
