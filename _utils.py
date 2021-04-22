@@ -1,3 +1,52 @@
+import random
+import math
+
+
+VILLAGER_NAME_PATH = "data/names/"
+CONSONANTS = [chr(i+97) for i in range(26)] + ["", ""]
+# I put those last two spaces in the consonants list so that the program can generate
+# words with consecutive vowels
+VOWELS = ["a", "e", "i", "o", "u"]
+
+def getNamelist():
+    with open(VILLAGER_NAME_PATH + "villagerNames.txt", "r") as f:
+        # return the split results, which is all the words in the file.
+        return f.read().replace("\n", "").split(";")
+
+def getRandomVillagerNames(villagerNamesList, number):
+    listOfRandomVillagers = []
+    listOfVillagers = villagerNamesList
+    for i in range(number):
+        # get a random name from the list of names
+        randomName = random.choice(listOfVillagers)
+        # add the random name to the list of random villagers
+        listOfRandomVillagers.append(randomName)
+        # delete the random name from the list of all villagers so we don't get the same name twice
+        del listOfVillagers[listOfVillagers.index(randomName)]
+    return listOfRandomVillagers
+
+def randVowel():
+    letter = random.choice(VOWELS)
+    return letter
+
+def randCons():
+    consonant = random.choice(CONSONANTS)
+    return consonant
+
+def getRandomWord():
+    word = []
+    randRange = random.randint(3,4)
+    letter = randVowel()
+    word = letter.upper()
+    for i in range(randRange):
+        letter = randVowel()
+        word += letter
+        letter = randCons()
+        word += letter
+    word = "".join(str(x) for x in word) #to convert the list to a string
+    return word #returns a random word
+
+
 def strToDictBlock(block) :
     expended = {}
     parts = block.split["["]
@@ -40,12 +89,3 @@ def compareTwoDictBlock(a, b):
             return False
 
     return true
-
-
-def isPointInSquare(point, square):
-    if (square[0] <= point[0] and square[3] >= point[0]):
-        if (square[1] <= point[1] and square[4] >= point[1]):
-            if (square[2] <= point[2] and square[5] >= point[2]):
-                return True
-
-    return False

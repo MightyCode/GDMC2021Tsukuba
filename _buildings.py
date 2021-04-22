@@ -157,7 +157,7 @@ class Buildings:
                     for lootTable in self.info["lootTables"] :
                         if len(lootTable) == 1:
                             choosenLootTable = lootTable[0]
-                        elif _utils.isPointInSquare([ block["pos"][0].value, block["pos"][1].value, block["pos"][2].value ], lootTable[1]) :
+                        elif _math.isPointInSquare([ block["pos"][0].value, block["pos"][1].value, block["pos"][2].value ], lootTable[1]) :
                             choosenLootTable = lootTable[0]
                     
                     if choosenLootTable  != "":
