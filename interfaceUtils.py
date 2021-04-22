@@ -23,7 +23,7 @@ import worldLoader
 
 
 
-class Interface():
+class Interface:
     """**Provides tools for interacting with the HTML interface**.
 
     All function parameters and returns are in local coordinates.
@@ -181,8 +181,12 @@ class Interface():
         blockNBT = "{"+l1+","+l2+","+l3+","+l4+"}"
         return(runCommand("data merge block {} {} {} ".format(x, y, z) + blockNBT))
 
-    def addItemChest(x, y, z, items):
-        for id,v in enumerate(items):
+    def addItemChest(x, y, z, items, places=[]):
+        if len(places) == 0:
+            places = list(range(len(items)))
+
+        for id, v in enumerate(items):
+            id = places[id]
             command = "replaceitem block {} {} {} {} {} {}".format(x, y, z,
                                                                    "container."+str(id),
                                                                    v[0],
