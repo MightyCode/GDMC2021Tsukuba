@@ -20,10 +20,10 @@ interfaceUtils.runCommand("execute at @p run setbuildarea ~-64 0 ~-64 ~64 255 ~6
 
 buildArea = interfaceUtils.requestBuildArea()
 if buildArea != -1:
-    x1 = buildArea["xFrom"]
-    z1 = buildArea["zFrom"]
-    x2 = buildArea["xTo"]
-    z2 = buildArea["zTo"]
+    x1 = buildArea[0]
+    z1 = buildArea[2]
+    x2 = buildArea[3]
+    z2 = buildArea[5]
     # print(buildArea)
     area = (x1, z1, x2 - x1, z2 - z1)
 
@@ -31,17 +31,15 @@ if buildArea != -1:
 cx = int(area[0] + area[2]/2)
 cz = int(area[1] + area[3]/2)
 cy = 255
+
 while interfaceUtils.getBlock(cx, cy, cz) == 'minecraft:air' or interfaceUtils.getBlock(cx, cy, cz) == 'minecraft:leaves' or interfaceUtils.getBlock(cx, cy, cz) == 'minecraft:oak_log' or interfaceUtils.getBlock(cx, cy, cz) == 'minecraft:spruce_log' or interfaceUtils.getBlock(cx, cy, cz) == 'minecraft:birch_log' or interfaceUtils.getBlock(cx, cy, cz) == 'minecraft:jungle_log' or interfaceUtils.getBlock(cx, cy, cz) == 'minecraft:acacia_log' or interfaceUtils.getBlock(cx, cy, cz) == 'minecraft:dark_oak_log':
     cy -= 1
 
 
 
 biome = interfaceUtils.getBiome(cx, cz, 1, 1)
-filin = open("data/biome.txt")
-lignes = filin.readlines()
-biomename = lignes[int(biome)].split(":")[0]
-value = int(lignes[int(biome)].split(":")[1])
-
+print(biome)
+value=interfaceUtils.getNameBiome(biome)
 
 if value == 3:
     ressources.buildings["fireplace"].file["palette"][0]["Name"].value = "minecraft:sandstone"
