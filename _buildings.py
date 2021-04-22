@@ -192,6 +192,7 @@ class Buildings:
 
         return propertyName + "=" + propertyValue
 
+
     def computeOrientation(self, rotation, flip) :
         # Construct orientation
         self.computedOrientation = { 

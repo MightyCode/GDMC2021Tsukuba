@@ -40,11 +40,12 @@ class Interface():
         """**Clean up before destruction**."""
         self.sendBlocks()
 
-    def getBlock(self, x, y, z):
+    def getBlock(self, x, y, z, includeState=False):
         """**Return the name of a block in the world**."""
         x, y, z = self.local2global(x, y, z)
 
-        url = 'http://localhost:9000/blocks?x={}&y={}&z={}'.format(x, y, z)
+        state = 'true' if includeState else 'false'
+        url = 'http://localhost:9000/blocks?x={}&y={}&z={}&includeState={}'.format(x, y, z, state)
         try:
             response = requests.get(url)
         except ConnectionError:
