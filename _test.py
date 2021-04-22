@@ -7,49 +7,68 @@ import sys
 
 file = "temp.txt"
 
+print("Loading Ressources ...")
 ressources = Ressources()
-ressources.loadBuildings("basichouse1.nbt", "basichouse1.json", "basichouse1")
-ressources.loadBuildings("mediumhouse1.nbt", "mediumhouse1.json", "mediumhouse1")
-ressources.loadBuildings("mediumhouse2.nbt", "mediumhouse2.json", "mediumhouse2")
-ressources.loadBuildings("advancedhouse1.nbt", "advancedhouse1.json", "advancedhouse1")
 
+ressources.loadBuildings("houses/haybale/haybalehouse1.nbt", "houses/haybale/haybalehouse1.json", "haybalehouse1")
+ressources.loadBuildings("houses/haybale/haybalehouse2.nbt", "houses/haybale/haybalehouse2.json", "haybalehouse2")
+ressources.loadBuildings("houses/haybale/haybalehouse3.nbt", "houses/haybale/haybalehouse3.json", "haybalehouse3")
+ressources.loadBuildings("houses/haybale/haybalehouse4.nbt", "houses/haybale/haybalehouse4.json", "haybalehouse4")
+
+ressources.loadBuildings("houses/basic/basichouse1.nbt", "houses/basic/basichouse1.json", "basichouse1")
+ressources.loadBuildings("houses/medium/mediumhouse1.nbt", "houses/medium/mediumhouse1.json", "mediumhouse1")
+ressources.loadBuildings("houses/medium/mediumhouse2.nbt", "houses/medium/mediumhouse2.json", "mediumhouse2")
+ressources.loadBuildings("houses/advanced/advancedhouse1.nbt", "houses/advanced/advancedhouse1.json", "advancedhouse1")
+ressources.loadBuildings("mediumwindmill.nbt", "mediumwindmill.json", "mediumwindmill")
 worldModif = WorldModification()
+print("Loading Ressources Done !")
 
-"""
-print(len(nbtfile["blocks"]))
-max = 0
-was = 0
-for i in range(len(nbtfile["blocks"])):
-    if nbtfile["blocks"][i]["state"].value > max:
-        was = i
-        max = nbtfile["blocks"][i]["state"].value
-print(str(max) + " from " + str(i))
-"""
 
 if len(sys.argv) <= 1 :
-    size = ressources.buildings["basichouse1"].getSize()
-    info = ressources.buildings["basichouse1"].info
+    centerOfVillage = [0, 63, 0]
+    # Change by the mean biome
+    villageBiomeId = interfaceUtils.getBiome(centerOfVillage[0], centerOfVillage[2], 1, 1)
+    villageBiomeName = ressources.biomeMinecraftId[int(villageBiomeId)]
+    villageBiomeBlockId =  str(ressources.biomesBlockId[villageBiomeName])
+    print("Village biome id : " + villageBiomeBlockId)
 
+    structure = "mediumwindmill"
+    print("Build : " + structure)
+    size = ressources.buildings[structure].getSize()
+    info = ressources.buildings[structure].info
+    
     buildingCondition = Buildings.BUILDINGS_CONDITIONS.copy()
-    buildingCondition["rotation"] = 3
-    buildingCondition["flip"] = 3
-    buildingCondition["position"] = [264, 63, 352]
+    buildingCondition["rotation"] = 0
+    buildingCondition["flip"] = 0
+    buildingCondition["position"] = [0, 63, 0]
     buildingCondition["replaceAllAir"] = 3
     buildingCondition["referencePoint"] = [info["mainEntry"]["position"][0], info["mainEntry"]["position"][1], info["mainEntry"]["position"][2]]
 
-    buildingCondition["replacements"]["woodType"] = "acacia"
-    buildingCondition["replacements"]["woodType2"] = "oak"
+    structureBiomeId = interfaceUtils.getBiome(buildingCondition["position"][0], buildingCondition["position"][2], 1, 1)
+    structureBiomeName = ressources.biomeMinecraftId[int(structureBiomeId)]
+    structureBiomeBlockId = str(ressources.biomesBlockId[structureBiomeName])
+    print("Structure biome id : " + structureBiomeBlockId)
 
-    biomeID = interfaceUtils.getBiome(buildingCondition["position"][0], buildingCondition["position"][2], 1, 1)
-    biomeName = ressources.biomeMinecraftId[int(biomeID)]
-    biomeBlockId = str(ressources.biomesBlockId[biomeName])
+    if structureBiomeBlockId == "-1" :
+        structureBiomeBlockId = villageBiomeBlockId    
+    
+    # Load block for structure biome
+    for aProperty in ressources.biomesBlocks[villageBiomeBlockId]:
+        if aProperty in ressources.biomesBlocks["rules"]["village"]:
+            print("Village property " + ressources.biomesBlocks[villageBiomeBlockId][aProperty])
+            buildingCondition["replacements"][aProperty] = ressources.biomesBlocks[villageBiomeBlockId][aProperty]
 
-    if biomeBlockId != -1 :
-        for aProperty in ressources.biomesBlocks[biomeBlockId]:
-            buildingCondition["replacements"][aProperty] = ressources.biomesBlocks[biomeBlockId][aProperty]
+    # Load block for structure biome
+    print(structureBiomeBlockId)
+    for aProperty in ressources.biomesBlocks[structureBiomeBlockId]:
+        if aProperty in ressources.biomesBlocks["rules"]["structure"]:
+            print("Structure property " + ressources.biomesBlocks[structureBiomeBlockId][aProperty])
+            buildingCondition["replacements"][aProperty] = ressources.biomesBlocks[structureBiomeBlockId][aProperty]
 
-        ressources.buildings["basichouse1"].build(worldModif, buildingCondition)
-        worldModif.saveToFile(file)
+    ressources.buildings[structure].build(worldModif, buildingCondition)
+    print("Build :" + structure + " Done !")
+
+    worldModif.saveToFile(file)
 else : 
     if sys.argv[1] == "r" :   
         worldModif.loadFromFile(file)
