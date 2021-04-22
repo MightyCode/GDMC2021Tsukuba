@@ -54,7 +54,7 @@ class Resources :
 
 
     def loadLootTable(self, path, name):
-        with open(Resources.LOOT_TABLE_PATH + infoPath) as json_file:
+        with open(Resources.LOOT_TABLE_PATH + path) as json_file:
            self.lootTables[name] = json.load(json_file)
 
 

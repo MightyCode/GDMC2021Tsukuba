@@ -12,6 +12,7 @@ def strToDictBlock(block) :
 
     return expended
 
+
 def convertNbtBlockToStr(blockPalette, rotation, flip):
     block = blockPalette["Name"].value + "["
 
@@ -22,6 +23,7 @@ def convertNbtBlockToStr(blockPalette, rotation, flip):
         block = block[:-1] 
     block += "]"
     return block
+
 
 def compareTwoDictBlock(a, b):
     if a["Name"] != b["Name"]:
@@ -38,3 +40,12 @@ def compareTwoDictBlock(a, b):
             return False
 
     return true
+
+
+def isPointInSquare(point, square):
+    if (square[0] <= point[0] and square[3] >= point[0]):
+        if (square[1] <= point[1] and square[4] >= point[1]):
+            if (square[2] <= point[2] and square[5] >= point[2]):
+                return True
+
+    return False

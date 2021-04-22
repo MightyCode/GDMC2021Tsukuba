@@ -4,11 +4,15 @@ from _buildings import *
 from _utils import *
 import time
 import sys
+import interfaceUtils
+from _chestGeneration import *
 
 file = "temp.txt"
 
-print("Loading Ressources ...")
-ressources = Ressources()
+resources = Resources()
+interface = interfaceUtils.Interface()
+worldModif = WorldModification(interface)
+chestGeneration = ChestGeneration(resources, interface)
 
 ressources.loadBuildings("houses/haybale/haybalehouse1.nbt", "houses/haybale/haybalehouse1.json", "haybalehouse1")
 ressources.loadBuildings("houses/haybale/haybalehouse2.nbt", "houses/haybale/haybalehouse2.json", "haybalehouse2")
@@ -20,12 +24,12 @@ ressources.loadBuildings("houses/medium/mediumhouse1.nbt", "houses/medium/medium
 ressources.loadBuildings("houses/medium/mediumhouse2.nbt", "houses/medium/mediumhouse2.json", "mediumhouse2")
 ressources.loadBuildings("houses/advanced/advancedhouse1.nbt", "houses/advanced/advancedhouse1.json", "advancedhouse1")
 ressources.loadBuildings("mediumwindmill.nbt", "mediumwindmill.json", "mediumwindmill")
-worldModif = WorldModification()
+resources.loadLootTable("windmill.json", "windmill")
 print("Loading Ressources Done !")
 
-
 if len(sys.argv) <= 1 :
-    centerOfVillage = [0, 63, 0]
+    centerOfVillage = [-60, 63, 0]
+
     # Change by the mean biome
     villageBiomeId = interfaceUtils.getBiome(centerOfVillage[0], centerOfVillage[2], 1, 1)
     villageBiomeName = ressources.biomeMinecraftId[int(villageBiomeId)]
@@ -40,8 +44,8 @@ if len(sys.argv) <= 1 :
     buildingCondition = Buildings.BUILDINGS_CONDITIONS.copy()
     buildingCondition["rotation"] = 0
     buildingCondition["flip"] = 0
-    buildingCondition["position"] = [0, 63, 0]
-    buildingCondition["replaceAllAir"] = 3
+    buildingCondition["position"] = [-60, 63, 0]
+    buildingCondition["replaceAllAir"] = 0
     buildingCondition["referencePoint"] = [info["mainEntry"]["position"][0], info["mainEntry"]["position"][1], info["mainEntry"]["position"][2]]
 
     structureBiomeId = interfaceUtils.getBiome(buildingCondition["position"][0], buildingCondition["position"][2], 1, 1)
@@ -65,10 +69,11 @@ if len(sys.argv) <= 1 :
             print("Structure property " + ressources.biomesBlocks[structureBiomeBlockId][aProperty])
             buildingCondition["replacements"][aProperty] = ressources.biomesBlocks[structureBiomeBlockId][aProperty]
 
-    ressources.buildings[structure].build(worldModif, buildingCondition)
+    resources.buildings[structure].build(worldModif, buildingCondition, chestGeneration)
     print("Build :" + structure + " Done !")
 
     worldModif.saveToFile(file)
+    
 else : 
     if sys.argv[1] == "r" :   
         worldModif.loadFromFile(file)

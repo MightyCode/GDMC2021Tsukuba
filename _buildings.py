@@ -1,5 +1,6 @@
 import _math
 import math
+import _utils
 from nbt import nbt
 
 class Buildings:
@@ -80,9 +81,14 @@ class Buildings:
                                 
 
             block.tags.append(nbt.TAG_Byte(name=Buildings.CHANGE, value=False))
+        
+        # Looting table
+        self.lootTable = False
+        if "lootTables" in self.info.keys():
+            self.lootTable = len(self.info["lootTables"]) > 0
 
 
-    def build(self, worldModif, buildingCondition):
+    def build(self, worldModif, buildingCondition, chestGeneration):
         ## Pre computing :
         print("Pre building : " + self.name)
         self.computeOrientation(buildingCondition["rotation"], buildingCondition["flip"])
@@ -101,8 +107,7 @@ class Buildings:
                     blockPalette["Name"].value = buildingCondition["replacements"][blockPalette[Buildings.CHANGE_TO].value].split("[")[0]
                 elif changeState == 2:
                     blockPalette["Name"].value = str(blockPalette[Buildings.CHANGE_ORIGINAL_BLOCK].value).replace(
-                        blockPalette[Buildings.CHANGE_REPLACEMENT_WORD].value, buildingCondition["replacements"][blockPalette[Buildings.CHANGE_TO].value].split("[")[0] 
-                    )
+                        blockPalette[Buildings.CHANGE_REPLACEMENT_WORD].value, buildingCondition["replacements"][blockPalette[Buildings.CHANGE_TO].value].split("[")[0] )
 
         # Air zone
         print("Prebuilding air")
@@ -144,8 +149,21 @@ class Buildings:
                     buildingCondition["flip"])
             )
 
-        print("Finish building : " + self.name)
+            # If structure has loot tables and chest encounter
+            if "chest" in blockName:
+                if self.lootTable :
+                    choosenLootTable = ""
+                    print("Generate for {} {} {}".format(block["pos"][0].value, block["pos"][1].value, block["pos"][2].value))
+                    for lootTable in self.info["lootTables"] :
+                        if len(lootTable) == 1:
+                            choosenLootTable = lootTable[0]
+                        elif _utils.isPointInSquare([ block["pos"][0].value, block["pos"][1].value, block["pos"][2].value ], lootTable[1]) :
+                            choosenLootTable = lootTable[0]
+                    
+                    if choosenLootTable  != "":
+                        chestGeneration.generate(blockPosition[0], blockPosition[1], blockPosition[2], choosenLootTable)
 
+        print("Finish building : " + self.name)
 
     def returnWorldPosition(self, localPoint, flip, rotation, referencePoint, worldStructurePosition) :
         worldPosition = [0, 0, 0]
@@ -231,14 +249,18 @@ class Buildings:
             self.computedOrientation["x"] = "z"
             self.computedOrientation["z"] = "x"
 
+
     def getSize(self):
         return self.size
     
+
     def size_x(self):
         return self.size[0]
         
+
     def size_y(self):
         return self.size[1]
         
+
     def size_z(self):
         return self.size[2]

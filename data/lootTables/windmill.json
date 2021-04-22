@@ -23,7 +23,7 @@
           {
             "type": "item",
             "name": "minecraft:wooden_hoe",
-            "weight": 10
+            "weight": 7
           },
           {
             "type": "item",
@@ -47,7 +47,7 @@
           {
             "type": "item",
             "name": "minecraft:wheat",
-            "weight": 10,
+            "weight": 15,
             "functions": [
               {
                 "function": "set_count",
