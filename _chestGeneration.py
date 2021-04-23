@@ -6,8 +6,9 @@ class ChestGeneration:
         self.resources = resources
         self.interface = interface
     
-    def generate(self, x, y, z, lootTableName):
+    def generate(self, x, y, z, lootTableName, changeItemName={}):
         lootTable = self.resources.lootTables[lootTableName]["pools"][0]
+
         numberItem = 0
         if isinstance(lootTable["rolls"], dict):
             numberItem = random.randint(lootTable["rolls"]["min"], lootTable["rolls"]["max"])
@@ -27,17 +28,36 @@ class ChestGeneration:
 
             for item in lootTable["entries"]:  
                 currentWeight -= item["weight"]
+
+                # This item is choosen
                 if currentWeight <= 0:
                     numberOfItem = 1
 
+                    # Compute number of items
                     if "functions" in item.keys() :
                         if item["functions"][0]["function"] == "set_count":
                             numberOfItem = random.randint(item["functions"][0]["count"]["min"], 
                                                             item["functions"][0]["count"]["max"])
-
-                    items.append([ item["name"], numberOfItem ])
+                    
+                    # Compute item's name if balise *, means that one word should change
+                    index = item["name"].find("*")
+                    if index != -1 :
+                        secondIndex = item["name"].find("*", index+1)
+                        word = item["name"][index +1 : secondIndex]
+                        added = False
+                        for key in changeItemName.keys():
+                            if key == word:
+                                added = True
+                                items.append([ item["name"].replace("*" + word + "*", changeItemName[key]), numberOfItem ])
+                                break
+                        
+                         # If the balise can't be replace
+                        if not added:
+                            items.append([ "", 0 ])
+                    else :
+                        items.append([ item["name"], numberOfItem ])
                     break
-
+                                   
         interfaceUtils.Interface.addItemChest(x, y, z, items, itemPlaces)
 
 
