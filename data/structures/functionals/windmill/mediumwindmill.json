@@ -1,0 +1,20 @@
+{
+  "mainEntry": {
+    "facing" : "north",
+    "position" : [5, 0, 1]
+  },
+  "replacements" : {
+    "oak" : { "type" : "woodType", "state" : 2 },
+    "spruce" : { "type" : "woodType2", "state" : 2 }
+  },
+  "air" : {
+    "preferedAirMode" : 2,
+    "replacements" : [
+      [0, 1, 0, 9, 27, 9],
+      [0, 1, 10, 9, 9, 16]
+    ]
+  },
+  "lootTables" : [
+    ["windmill"]
+  ]
+}

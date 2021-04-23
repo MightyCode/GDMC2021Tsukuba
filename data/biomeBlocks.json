@@ -1,0 +1,136 @@
+{
+    "rules" : {
+        "village" : [
+            "woodType", "woodType2", "woodType3", "woodType4"
+        ],
+        "structure" : [
+            "ground", "ground2"
+        ]
+    },
+    "0" : {
+        "Comment" : "Plaine and normal forest biome",
+        "woodType" : "oak",
+        "woodType2" : "spruce",
+        "woodType3" : "birch",
+        "woodType4" : "acacia",
+        "ground" : "minecraft:grass",
+        "ground2" : "minecraft:dirt"
+    },
+    "1" : {
+        "Comment": "Oak biome, but darker",
+        "woodType" : "oak",
+        "woodType2" : "dark_oak",
+        "woodType3" : "spruce",
+        "woodType4" : "jungle",
+        "ground" : "minecraft:grass",
+        "ground2" : "minecraft:dirt"
+    },
+    "2" : {
+        "Comment": "Mushroom special biome",
+        "woodType" : "oak",
+        "woodType2" : "dark_oak",
+        "woodType3" : "spruce",
+        "woodType4" : "jungle",
+        "ground" : "minecraft:mycelium",
+        "ground2" : "minecraft:dirt"
+    },
+    "3" : {
+        "Comment" : "Very Hot biome, normal sand",
+        "woodType" : "acacia",
+        "woodType2" : "jungle",
+        "woodType3" : "birch",
+        "woodType4" : "spruce",
+        "ground" : "minecraft:sand",
+        "ground2" : "minecraft:sand"
+    },
+    "4" : {
+        "Comment" : "Hot biome, vegetation, normal ground",
+        "woodType" : "acacia",
+        "woodType2" : "birch",
+        "woodType3" : "oak",
+        "woodType4" : "spruce",
+        "ground" : "minecraft:grass",
+        "ground2" : "minecraft:dirt"
+    },
+    "5" : {
+        "Comment" : "Hot biome, vegetation, red sand",
+        "woodType" : "acacia",
+        "woodType2" : "birch",
+        "woodType3" : "oak",
+        "woodType4" : "spruce",
+        "ground" : "minecraft:red_sand",
+        "ground2" : "minecraft:red_sand"
+    },
+    "6" : {
+        "Comment": "Cold biome, normal ground",
+        "woodType" : "spruce",
+        "woodType2" : "dark_oak",
+        "woodType3" : "oak",
+        "woodType4" : "acacia",
+        "ground" : "minecraft:grass",
+        "ground2" : "minecraft:dirt"
+    },
+    "7": {
+        "Comment": "Cold biome, sand ground",
+        "woodType" : "spruce",
+        "woodType2" : "dark_oak",
+        "woodType3" : "oak",
+        "woodType4" : "acacia",
+        "ground" : "minecraft:sand",
+        "ground2" : "minecraft:sand"
+    },
+    "8" : {
+        "Comment": "Cold biome, podzol ground",
+        "woodType" : "spruce",
+        "woodType2" : "dark_oak",
+        "woodType3" : "oak",
+        "woodType4" : "acacia",
+        "ground" : "minecraft:podzol",
+        "ground2" : "minecraft:dirt"
+    },
+    "9" : {
+        "Comment": "Cold biome, snow ground",
+        "woodType" : "spruce",
+        "woodType2" : "dark_oak",
+        "woodType3" : "oak",
+        "woodType4" : "acacia",
+        "ground" : "minecraft:snow",
+        "ground2" : "minecraft:dirt"
+    },
+    "10" : {
+        "Comment": "Cold biome, gravel ground",
+        "woodType" : "spruce",
+        "woodType2" : "dark_oak",
+        "woodType3" : "oak",
+        "woodType4" : "acacia",
+        "ground" : "minecraft:gravel",
+        "ground2" : "minecraft:gravel"
+    },
+    "11" : {
+        "Comment" : "Jungle biome and derivated",
+        "woodType" : "jungle",
+        "woodType2" : "spruce",
+        "woodType3" : "oak",
+        "woodType4" : "dark_oak",
+        "ground" : "minecraft:grass",
+        "ground2" : "minecraft:dirt"
+    },
+    "12" : {
+        "Comment" : "Biome which use birch",
+        "woodType" : "birch",
+        "woodType2" : "oak",
+        "woodType3" : "spruce",
+        "woodType4" : "dark_oak",
+        "ground" : "minecraft:grass",
+        "ground2" : "minecraft:dirt"
+    },
+    "13" : {
+        "Comment" : "Dark biome",
+        "woodType" : "dark_oak",
+        "woodType2" : "oak",
+        "woodType3" : "spruce",
+        "woodType4" : "jungle",
+        "ground" : "minecraft:grass",
+        "ground2" : "minecraft:dirt"
+    }
+}

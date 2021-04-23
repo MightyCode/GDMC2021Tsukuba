@@ -26,7 +26,7 @@ def getChunks(x, z, dx, dz, rtype='text'):
     print(f"request url: {url}")
     acceptType = 'application/octet-stream' if rtype == 'bytes' else 'text/raw'
     response = requests.get(url, headers={"Accept": acceptType})
-    print(f"result: {response.status_code}")
+    #print(f"result: {response.status_code}")
     if response.status_code >= 400:
         print(f"error: {response.text}")
 

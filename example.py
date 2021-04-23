@@ -57,41 +57,41 @@ def buildHouse(x1, y1, z1, x2, y2, z2):
     # floor
     for x in range(x1, x2):
         for z in range(z1, z2):
-            setBlock(x, y1, z, "cobblestone")
+            setBlock(x, y1, z, "tnt")
     # walls
     for y in range(y1 + 1, y2):
         for x in range(x1 + 1, x2 - 1):
-            setBlock(x, y, z1, "oak_planks")
-            setBlock(x, y, z2 - 1, "oak_planks")
+            setBlock(x, y, z1, "tnt")
+            setBlock(x, y, z2 - 1, "tnt")
         for z in range(z1 + 1, z2 - 1):
-            setBlock(x1, y, z, "oak_planks")
-            setBlock(x2 - 1, y, z, "oak_planks")
+            setBlock(x1, y, z, "tnt")
+            setBlock(x2 - 1, y, z, "tnt")
     # corners
     for dx in range(2):
         for dz in range(2):
             x = x1 + dx * (x2 - x1 - 1)
             z = z1 + dz * (z2 - z1 - 1)
             for y in range(y1, y2):
-                setBlock(x, y, z, "oak_log")
+                setBlock(x, y, z, "tnt")
     # clear interior
     for y in range(y1 + 1, y2):
         for x in range(x1 + 1, x2 - 1):
             for z in range(z1 + 1, z2 - 1):
-                setBlock(x, y, z, "air")
+                setBlock(x, y, z, "tnt")
     # roof
     if x2 - x1 < z2 - z1:
         for i in range(0, x2 - x1, 2):
             halfI = int(i / 2)
             for x in range(x1 + halfI, x2 - halfI):
                 for z in range(z1, z2):
-                    setBlock(x, y2 + halfI, z, "bricks")
+                    setBlock(x, y2 + halfI, z, "tnt")
     else:
         # same as above but with x and z swapped
         for i in range(0, z2 - z1, 2):
             halfI = int(i / 2)
             for z in range(z1 + halfI, z2 - halfI):
                 for x in range(x1, x2):
-                    setBlock(x, y2 + halfI, z, "bricks")
+                    setBlock(x, y2 + halfI, z, "tnt")
 
 
 def rectanglesOverlap(r1, r2):
@@ -114,35 +114,35 @@ if __name__ == '__main__':
     heightmap = mapUtils.calcGoodHeightmap(worldSlice)
 
     # example alternative heightmaps:
-    # >>> heightmap = worldSlice.heightmaps["MOTION_BLOCKING"]
-    # >>> heightmap = worldSlice.heightmaps["MOTION_BLOCKING_NO_LEAVES"]
-    # >>> heightmap = worldSlice.heightmaps["OCEAN_FLOOR"]
-    # >>> heightmap = worldSlice.heightmaps["WORLD_SURFACE"]
+    heightmap = worldSlice.heightmaps["MOTION_BLOCKING"]
+    heightmap = worldSlice.heightmaps["MOTION_BLOCKING_NO_LEAVES"]
+    heightmap = worldSlice.heightmaps["OCEAN_FLOOR"]
+    heightmap = worldSlice.heightmaps["WORLD_SURFACE"]
 
     # show the heightmap as an image
-    # >>> mapUtils.visualize(heightmap, title="heightmap")
+    mapUtils.visualize(heightmap, title="heightmap")
 
     # build a fence around the perimeter
     for x in range(area[0], area[0] + area[2]):
         z = area[1]
         y = heightAt(x, z)
         setBlock(x, y - 1, z, "tnt")
-        setBlock(x, y,   z, "oak_fence")
+        setBlock(x, y,   z, "tnt")
     for z in range(area[1], area[1] + area[3]):
         x = area[0]
         y = heightAt(x, z)
-        setBlock(x, y - 1, z, "cobblestone")
-        setBlock(x, y, z, "oak_fence")
+        setBlock(x, y - 1, z, "tnt")
+        setBlock(x, y, z, "tnt")
     for x in range(area[0], area[0] + area[2]):
         z = area[1] + area[3] - 1
         y = heightAt(x, z)
-        setBlock(x, y - 1, z, "cobblestone")
-        setBlock(x, y,   z, "oak_fence")
+        setBlock(x, y - 1, z, "tnt")
+        setBlock(x, y,   z, "tnt")
     for z in range(area[1], area[1] + area[3]):
         x = area[0] + area[2] - 1
         y = heightAt(x, z)
-        setBlock(x, y - 1, z, "cobblestone")
-        setBlock(x, y, z, "oak_fence")
+        setBlock(x, y - 1, z, "tnt")
+        setBlock(x, y, z, "tnt")
 
     houses = []
     for i in range(100):
