@@ -208,7 +208,7 @@ for i, el in enumerate(arr_deb):
 
 # Generation of random words
 
-def generate():
+def generateVillageName():
     word = []
 
     # Generation of first letter

@@ -21,8 +21,8 @@ if len(sys.argv) <= 1 :
     settlementData["biomeBlockId"] = str(resources.biomesBlockId[settlementData["biomeName"]])
 
 
-    settlementData["villageName"] = generate()
-    settlementData["villagerNames"] = ""
+    settlementData["villageName"] = generateVillageName()
+    settlementData["villagerNames"] = []
 
     villagerFirstNamesList = getFirstNamelist()
     firstName = getRandomVillagerNames(villagerFirstNamesList, NUMBER)
@@ -34,7 +34,7 @@ if len(sys.argv) <= 1 :
     print("Here's some random villager names : ")
 
     for i in range(NUMBER):
-        settlementData["villagerNames"] += firstName[i] + " " + lastName[i] + "\n"
+        settlementData["villagerNames"].append(firstName[i] + " " + lastName[i])
 
     print(settlementData["villagerNames"])
 
