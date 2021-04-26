@@ -61,7 +61,8 @@ class Buildings:
                             block.tags.append(nbt.TAG_String(name=Buildings.CHANGE_TO, value=self.info[Buildings.REPLACEMENTS][block["Name"].value]["type"]))   
                             block.tags.append(nbt.TAG_String(name=Buildings.CHANGE_ORIGINAL_BLOCK, value=block["Name"].value))
                             block.tags.append(nbt.TAG_String(name=Buildings.CHANGE_REPLACEMENT_WORD, value=replacementWord))
-                            block.tags.append(nbt.TAG_Byte(name=Buildings.CHANGE_EXCLUDED_ZONES, value=("excluded" in self.info[Buildings.REPLACEMENTS][replacementWord].keys())))
+                            block.tags.append(nbt.TAG_Byte(name=Buildings.CHANGE_EXCLUDED_ZONES, 
+                                value=("excluded" in self.info[Buildings.REPLACEMENTS][replacementWord].keys())))
                             break
                         
                     # Checking for substr replacement 
@@ -79,7 +80,10 @@ class Buildings:
                                 block.tags.append(nbt.TAG_Int(name=Buildings.CHANGE_STATE, value=2))
                                 block.tags.append(nbt.TAG_String(name=Buildings.CHANGE_ORIGINAL_BLOCK, value=(block["Name"].value) ))
                                 block.tags.append(nbt.TAG_String(name=Buildings.CHANGE_REPLACEMENT_WORD, value=replacementWord))
-                                block.tags.append(nbt.TAG_Byte(name=Buildings.CHANGE_EXCLUDED_ZONES, value=("excluded" in self.info[Buildings.REPLACEMENTS][replacementWord].keys())))
+
+                                # True or False
+                                block.tags.append(nbt.TAG_Byte(name=Buildings.CHANGE_EXCLUDED_ZONES, 
+                                    value=("excluded" in self.info[Buildings.REPLACEMENTS][replacementWord].keys())))
                                 break
                                 
 
