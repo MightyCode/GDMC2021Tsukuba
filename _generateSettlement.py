@@ -20,14 +20,24 @@ if len(sys.argv) <= 1 :
     settlementData["biomeName"] = resources.biomeMinecraftId[int(settlementData["biomeId"])]
     settlementData["biomeBlockId"] = str(resources.biomesBlockId[settlementData["biomeName"]])
 
-    settlementData["villageName"] = getRandomWord()
-    villagerNamesList = getNamelist()
-    settlementData["villagerNames"] = getRandomVillagerNames(villagerNamesList, 15)
+
+    settlementData["villageName"] = generateVillageName()
+    settlementData["villagerNames"] = []
+
+    villagerFirstNamesList = getFirstNamelist()
+    firstName = getRandomVillagerNames(villagerFirstNamesList, NUMBER)
+    villagerLastNamesList = getLastNamelist()
+    lastName = getRandomVillagerNames(villagerLastNamesList, NUMBER)
 
     print("Here's a random village name: ")
-    print(getRandomWord())
-    print("Here's random villager names : ")
+    print(settlementData["villageName"])
+    print("Here's some random villager names : ")
+
+    for i in range(NUMBER):
+        settlementData["villagerNames"].append(firstName[i] + " " + lastName[i])
+
     print(settlementData["villagerNames"])
+
 else : 
     if sys.argv[1] == "r" :   
         worldModif.loadFromFile(file)
