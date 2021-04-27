@@ -285,6 +285,17 @@ class Interface:
         global blockBuffer
         blockBuffer = []
 
+    def getHeight(self,x,z):
+        y=255
+        while getBlock(x, y, z) == 'minecraft:air' or getBlock(x, y, z) == 'minecraft:leaves' or getBlock(x, y, z) == 'minecraft:oak_log' or getBlock(x, y, z) == 'minecraft:spruce_log' or getBlock(x, y, z) == 'minecraft:birch_log' or getBlock(x, y, z) == 'minecraft:jungle_log' or getBlock(x, y, z) == 'minecraft:acacia_log' or getBlock(x, y, z) == 'minecraft:dark_oak_log':
+            y -= 1
+        return y
+
+
+
+    #def floodfill(self, x, y, z):
+        
+
 
 def runCommand(command):
     """**Run a Minecraft command in the world**."""
@@ -325,6 +336,8 @@ def isBuffering():
     """**Global isBuffering**."""
     return globalinterface.isBuffering()
 
+def getHeight(x,z):
+    return globalinterface.getHeight(x,z)
 
 def setBuffering(val):
     """**Global setBuffering**."""

@@ -1,5 +1,5 @@
 from _worldModification import *
-from _ressources import *
+from _resources import *
 from _buildings import *
 import requests
 import time
@@ -9,8 +9,9 @@ import interfaceUtils
 from nbt.nbt import *
 
 
-ressources = Ressources()
-worldModif = WorldModification()
+ressources = Resources()
+interface = interfaceUtils.Interface()
+worldModif = WorldModification(interface)
 area = (0,0,128,128)
 interfaceUtils.runCommand("execute at @p run setbuildarea ~-64 0 ~-64 ~64 255 ~64")
 buildArea = interfaceUtils.requestBuildArea()
