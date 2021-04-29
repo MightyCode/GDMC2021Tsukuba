@@ -143,4 +143,8 @@ Stokes;
 Thomson;
 Walker;
 Walter;
-Watsonlasna
+Watsonlasna;
+Le Corre;
+Claude;
+Delaveau;
+Andre-Roure;

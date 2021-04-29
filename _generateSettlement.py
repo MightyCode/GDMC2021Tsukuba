@@ -35,7 +35,7 @@ if len(sys.argv) <= 1 :
 
     for i in range(NUMBER):
         settlementData["villagerNames"].append(firstName[i] + " " + lastName[i])
-
+  
     print(settlementData["villagerNames"])
 
 else : 

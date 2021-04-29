@@ -2,6 +2,9 @@ import random as rd
 import math
 import pandas as pd
 import numpy as np
+import warnings
+import interfaceUtils
+
 
 
 VILLAGER_NAME_PATH = "data/names/"
@@ -36,15 +39,12 @@ def getRandomVillagerNames(villagerNamesList, number):
 # -------------------------------------------------------- generate random village name
 def initialize():
     with open (VILLAGER_NAME_PATH + "Lexique-query.tsv") as f:
-        dicto = pd.read_csv (f, sep = "\t")
-
         #Extract data
-        # dicto = pd.read_csv( VILLAGER_NAME_PATH + "Lexique-query.tsv", sep ="\t")
+        dicto = pd.read_csv (f, sep = "\t")
 
         # Creation of the vector which contains all the words (delete missed values and duplicates)
         words = dicto.Word.dropna().unique()
 
-        # Ajout du caractère ' ' à la fin des mots pour marquer la fin
         # Add the char ' ' at the end of words to mark the end
         for i in range(words.shape[0]):
             words[i] = words[i] + ' '
@@ -79,24 +79,26 @@ def initialize():
                 carac.add(letter)
         carac = list(carac)
         last_ind = carac.index(' ')
+        last_ind = np.array(last_ind, dtype=object)
         #print(carac)
         #print(last_ind)
 
 
 
         # Creation of a tensor of dimension 2, the rows and the columns represent the letters in the order of carac
-        # At the intersection [i] [j] is the number of times the letter in j is found after the letter in i
-        arr1 = np.zeros([len(carac), len(carac)])
+        # At the intersection [i][j] is the number of times the letter in j is found after the letter in i
+        arr1 = np.zeros([len(carac), len(carac)], dtype=object)
         for word in clean_words:
             for i in range(len(word) - 1):
                 letter_index = carac.index(word[i])
                 next_index = carac.index(word[i + 1])
                 arr1[letter_index][next_index] += 1
+        
 
 
         # Creation of a tensor of dimension 3, the rows and the columns represent the letters in the order of carac
         # At the intersection [i][j][k] is the number of times the letter in k is found after the letter in i and j
-        arr2 = np.zeros([len(carac), len(carac), len(carac)])
+        arr2 = np.zeros([len(carac), len(carac), len(carac)], dtype=object)
         for word in clean_words:
             if len(word) > 2:
                 for i in range(len(word) - 2):
@@ -104,6 +106,7 @@ def initialize():
                     index_plus1 = carac.index(word[i + 1])
                     index_plus2 = carac.index(word[i + 2])
                     arr2[letter_index][index_plus1][index_plus2] += 1
+        
 
         # Modification of arr1 by dividing each entry by the sum of the line
         # to have a vlaue of sum of 1
@@ -118,7 +121,8 @@ def initialize():
                 arr_last1.append(arr_temp)
             else:
                 arr_last1.append(row)
-        arr_last1 = np.array(arr_last1)
+        arr_last1 = np.array(arr_last1, dtype=object)
+
 
         # Modification of arr2 by dividing each entry by the sum of the line
         # to have a vlaue of sum of 1
@@ -136,7 +140,7 @@ def initialize():
                 else:
                     arr_temp2.append(row)
             arr_last2.append(arr_temp2)
-        arr_last2 = np.array(arr_last2)
+        arr_last2 = np.array(arr_last2, dtype=object)
         #print(arr_last2[0][2])
         #print(arr2[0][2])
 
@@ -154,6 +158,8 @@ def initialize():
                     arr_cum_temp.append(summ)
             arr_ind1.append(arr_ind_temp)
             arr_cum1.append(arr_cum_temp)
+        arr_cum1 = np.array(arr_cum1, dtype=object)
+        arr_ind1 = np.array(arr_ind1, dtype=object)
         #print(arr_ind1)
         #print(arr_cum1)
 
@@ -176,6 +182,8 @@ def initialize():
                 arr_cum_temp2.append(arr_cum_temp1)
             arr_ind2.append(arr_ind_temp2)
             arr_cum2.append(arr_cum_temp2)
+        arr_cum2 = np.array(arr_cum2, dtype=object)
+        arr_ind2 = np.array(arr_ind2, dtype=object)
         #print(arr_ind2)
         #print(arr_cum2)
 
@@ -186,7 +194,7 @@ def initialize():
             arr_temp[index] += 1
         arr_deb = arr_temp/sum(arr_temp)
 
-        arr_ind_pre = []
+        arr_ind_pre = [] 
         arr_cum_pre = []
         summ = 0
         for i, el in enumerate(arr_deb):
@@ -194,16 +202,48 @@ def initialize():
                 summ += el
                 arr_ind_pre.append(i)
                 arr_cum_pre.append(summ)
+        arr_cum_pre = np.array(arr_cum_pre, dtype=object)
+        arr_ind_pre = np.array(arr_ind_pre, dtype=object)
         #print(arr_deb)
         #print(arr_cum_pre)
         #print(arr_ind_pre)
-        f.close()
+
+        # prob_file = open(VILLAGER_NAME_PATH + "probs.txt", 'w') 
+        # np.savetxt(prob_file, [arr_cum_pre], newline=';\n', fmt='%s')
+        # np.savetxt(prob_file, [arr_ind_pre], newline=';\n', fmt='%s')
+        # np.savetxt(prob_file, [carac], newline=';\n', fmt='%s')
+        # np.savetxt(prob_file, arr_cum1, fmt='%s')
+        # np.savetxt(prob_file, arr_ind1, fmt='%s')
+        # np.savetxt(prob_file, arr_cum2, fmt='%s')
+        # np.savetxt(prob_file, arr_ind2, fmt='%s')
+        # np.savetxt(prob_file, last_ind, fmt='%s', delimiter=';')
+        
+        # prob_file.close()
+        f.close()   
+        # return last_ind
         return arr_cum_pre, arr_ind_pre, carac, arr_cum1, arr_ind1, arr_cum2, arr_ind2, last_ind
 
 
 # Generation of random name
 def generateVillageName():
     arr_cum_pre, arr_ind_pre, carac, arr_cum1, arr_ind1, arr_cum2, arr_ind2, last_ind = initialize()
+    # last_ind = initialize()
+    # a_file = open(VILLAGER_NAME_PATH + "probs.txt", 'r')
+    # with warnings.catch_warnings():
+    #     warnings.simplefilter("ignore")
+    #     arr_cum_pre = np.genfromtxt(a_file,delimiter=';', usecols=np.arange(0,1))
+    #     print("arr_cum_pre")
+    #     print(arr_cum_pre)
+    #     arr_ind_pre = np.genfromtxt(a_file, delimiter=';', usecols=np.arange(0,1))
+    #     print("arr_ind_pre")
+    #     print(arr_ind_pre)
+    #     carac = np.genfromtxt(a_file, delimiter='', dtype=str, usecols=np.arange(0,1))
+    #     arr_cum1 = np.genfromtxt(a_file, delimiter='', usecols=np.arange(0,1))
+    #     arr_ind1 = np.genfromtxt(a_file, delimiter='', usecols=np.arange(0,1))
+    #     arr_cum2 = np.genfromtxt(a_file,delimiter='', usecols=np.arange(0,1))
+    #     arr_ind2 = np.genfromtxt(a_file, delimiter= '', usecols=np.arange(0,1))
+        # last_ind = np.genfromtxt(a_file, delimiter= ';',dtype=int, usecols=np.arange(0,1))
+
     word = []
     # Generation of first letter
     random = rd.random()
@@ -246,8 +286,13 @@ def generateVillageName():
     # return name
 
 
+def spawnVillager(x, y, z, entity, name):
+    command = "summon " + entity + " " + str(x) + " " + str(y) + " " + str(z) + " " + "{" + "CustomName:'{" + "\"text\":" + "\"" + str(name) + "\"" +"}'" + "}"
+    interfaceUtils.runCommand(command)
+    print(command)
+    
 
-def strToDictBlock(block) :
+def strToDictBlock(block):
     expended = {}
     parts = block.split["["]
     expended["Name"] = parts[0]
