@@ -289,3 +289,7 @@ class Buildings:
 
     def size_z(self):
         return self.size[2]
+
+
+    def getRotateSize(self):
+        return [self.size[2], self.size[1], self.size[0]]

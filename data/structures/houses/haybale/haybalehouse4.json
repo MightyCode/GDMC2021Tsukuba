@@ -12,5 +12,8 @@
     "preferedAirMode" : 1,
     "replacements" : [
     ]
+  },
+  "villageInfo" : {
+    "villager" : 1
   }
 }

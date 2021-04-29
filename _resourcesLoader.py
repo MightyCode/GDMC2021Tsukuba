@@ -10,9 +10,12 @@ def loadAllResources(resources) :
     resources.loadBuildings("houses/medium/mediumhouse1.nbt", "houses/medium/mediumhouse1.json", "mediumhouse1")
     resources.loadBuildings("houses/medium/mediumhouse2.nbt", "houses/medium/mediumhouse2.json", "mediumhouse2")
     resources.loadBuildings("houses/advanced/advancedhouse1.nbt", "houses/advanced/advancedhouse1.json", "advancedhouse1")
+
     resources.loadBuildings("functionals/windmill/mediumwindmill.nbt", "functionals/windmill/mediumwindmill.json", "mediumwindmill")
     resources.loadBuildings("functionals/lumberjachut/basiclumberjachut.nbt", "functionals/lumberjachut/basiclumberjachut.json", "basiclumberjachut")
+    resources.loadBuildings("functionals/farm/basicfarm.nbt", "functionals/farm/basicfarm.json", "basicfarm")
 
     # Load lootTable
     resources.loadLootTable("functionals/windmill.json", "windmill")
     resources.loadLootTable("functionals/basiclumberjachut.json", "basiclumberjachut")
+    resources.loadLootTable("functionals/basicfarm.json", "basicfarm")
