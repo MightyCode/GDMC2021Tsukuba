@@ -22,9 +22,11 @@ if len(sys.argv) <= 1 :
     settlementData["biomeBlockId"] = str(resources.biomesBlockId[settlementData["biomeName"]])
     
     settlementData["structuresNumberGoal"] = random.randint(5, 20)
-    #structures contains "position", "name", "group" ->
+
+    #structures contains "position", "name", "type", "group" ->, "villagersId"
     settlementData["structures"] = []
     settlementData["villagerNames"] = []
+    settlementData["freeVillager"] = 0
 
     settlementData["villageName"] = generateVillageName()
     print("Here's a random village name: ")
@@ -43,6 +45,8 @@ if len(sys.argv) <= 1 :
         # TODO 
         # settlementData["structures"][i]["position"] = 
     
+    print(settlementData)
+    
     """villagerFirstNamesList = getFirstNamelist()
     firstName = getRandomVillagerNames(villagerFirstNamesList, NUMBER)
     villagerLastNamesList = getLastNamelist()
@@ -55,8 +59,6 @@ if len(sys.argv) <= 1 :
     # Build after every computations
     for i in range(len(settlementData["structures"])) :
         pass
-
-    print(settlementData["villagerNames"])
 
 else : 
     if sys.argv[1] == "r" :   

@@ -10,6 +10,7 @@ MIN_SIZE = 4
 MAX_SIZE = 15
 
 # -------------------------------------------------------- generate random villagers names
+
 def getFirstNamelist():
     with open(VILLAGER_NAME_PATH + "villagerFirstNames.txt", "r") as f:
         # return the split results, which is all the words in the file.
