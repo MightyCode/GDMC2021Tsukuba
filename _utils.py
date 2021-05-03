@@ -13,6 +13,7 @@ MIN_SIZE = 4
 MAX_SIZE = 15
 
 # -------------------------------------------------------- generate random villagers names
+
 def getFirstNamelist():
     with open(VILLAGER_NAME_PATH + "villagerFirstNames.txt", "r") as f:
         # return the split results, which is all the words in the file.
@@ -337,25 +338,11 @@ def strToDictBlock(block):
 
     return expended
 
-
-def convertNbtBlockToStr(blockPalette, rotation, flip):
-    block = blockPalette["Name"].value + "["
-
-    if "Properties" in blockPalette.keys():
-        for key in blockPalette["Properties"].keys():
-            block += self.convertProperty(key, blockPalette["Properties"][key].value, rotation, flip) + ","
-  
-        block = block[:-1] 
-    block += "]"
-    return block
-
-
 def compareTwoDictBlock(a, b):
     if a["Name"] != b["Name"]:
-        return false
-    
+        return False
     if len(a.keys()) != len(b.keys()):
-        return false
+        return False
 
     for key in a.keys() :
         if not b.keys().contains(key):
@@ -364,4 +351,4 @@ def compareTwoDictBlock(a, b):
         if a[key] != b[key]:
             return False
 
-    return true
+    return True

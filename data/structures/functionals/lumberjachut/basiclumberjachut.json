@@ -1,10 +1,11 @@
 {
   "mainEntry": {
     "facing" : "north",
-    "position" : [1, 0, 0]
+    "position" : [2, 1, 1]
   },
   "replacements" : {
-    "oak" : { "type" : "woodType", "state" : 2 },
+    "oak" : { "type" : "woodType", "state" : 2, "excluded": [[1, 1, 5, 1, 1, 5]] },
+    "spruce" : { "type" : "woodType2", "state" : 2, "excluded": [[1, 1, 4, 1, 1, 4]] },
     "minecraft:grass_block" : { "type" : "ground", "state" : 1 },
     "minecraft:dirt" : { "type" : "ground2", "state" : 1 }
   },
@@ -13,7 +14,7 @@
     "replacements" : [
     ]
   },
-  "villageInfo" : {
-    "villager" : 1
-  }
+  "lootTables" : [
+    ["basiclumberjachut"]
+  ]
 }

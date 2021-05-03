@@ -2,16 +2,17 @@ from _worldModification import *
 from _resources import *
 from _buildings import *
 from _utils import *
-import time
+from _structureManager import *
 import sys
 import _resourcesLoader as resLoader
+import random
 
 file = "temp.txt"
 interface = interfaceUtils.Interface()
-resources = Resources()
 worldModif = WorldModification(interface)
 
 if len(sys.argv) <= 1 :
+    resources = Resources()
     resLoader.loadAllResources(resources)
     settlementData = {}
     settlementData["center"] = [0, 63, 0]
@@ -22,12 +23,21 @@ if len(sys.argv) <= 1 :
     settlementData["villageName"] = generateVillageName()
     settlementData["villagerNames"] = []
     settlementData["villagerProfession"] = ["farmer", "fisherman", "shepherd", "fletcher", "librarian", "cartographer", "cleric", "armorer", "weaponsmith", "toolsmith", "butcher", "leatherworker", "mason", "nitwit"]
+    
+    settlementData["structuresNumberGoal"] = random.randint(5, 20)
 
+    #structures contains "position", "name", "type", "group" ->, "villagersId"
+    settlementData["structures"] = []
+    settlementData["freeVillager"] = 0
+
+    # generate random villagers name
     villagerFirstNamesList = getFirstNamelist()
     firstName = getRandomVillagerNames(villagerFirstNamesList, NUMBER)
     villagerLastNamesList = getLastNamelist()
     lastName = getRandomVillagerNames(villagerLastNamesList, NUMBER)
-
+    
+    # generate random village name
+    settlementData["villageName"] = generateVillageName()
     print("Here's a random village name: ")
     print(settlementData["villageName"])
     print("Here's some random villager names : ")
@@ -51,7 +61,27 @@ if len(sys.argv) <= 1 :
     items = [[villageNameBook, 1], [villagersBook, 1], [deadVillagersBook, 1]]
     # Add chest with items
     addItemChest(-12, 63, -180, items)
-    print(settlementData["villagerNames"])
+
+    settlementData["woodResources"] = 0
+    settlementData["dirtResources"] = 0
+    settlementData["stoneResources"] = 0
+
+    structureMananager = StructureManager(settlementData, resources)
+
+    for i in range(settlementData["structuresNumberGoal"]) : 
+        settlementData["structures"].append({})
+        structureMananager.chooseOneStructure()
+        structureMananager.checkDependencies()
+        # TODO 
+        # settlementData["structures"][i]["position"] = 
+    
+    print(settlementData)
+    
+
+    
+    # Build after every computations
+    for i in range(len(settlementData["structures"])) :
+        pass
 
 else : 
     if sys.argv[1] == "r" :   
@@ -59,3 +89,4 @@ else :
     else :
         worldModif.loadFromFile(sys.argv[1])
     worldModif.undoAllModification()
+
