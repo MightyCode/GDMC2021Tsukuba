@@ -148,6 +148,7 @@ class WorldSlice:
 
     def getBlockAt(self, blockPos):
         """**Returns the block's namespaced id at blockPos.**"""
+        #print(blockPos)
         blockCompound = self.getBlockCompoundAt(blockPos)
         if blockCompound == None:
             return "minecraft:air"

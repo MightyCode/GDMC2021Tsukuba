@@ -20,6 +20,9 @@ import math
 import nbt
 import numpy as np
 import worldLoader
+from worldLoader import WorldSlice
+import interfaceUtils
+
 
 
 
@@ -28,13 +31,17 @@ class Interface:
 
     All function parameters and returns are in local coordinates.
     """
-
+    #ignoreblockvalue is the list of block that we want to ignore when we read the field
+    ignoreblock = ['minecraft:air', 'minecraft:oak_leaves',  'minecraft:leaves',  'minecraft:birch_leaves',
+    'minecraft:oak_log',  'minecraft:spruce_log',  'minecraft:birch_log',  'minecraft:jungle_log', 'minecraft:acacia_log',
+     'minecraft:dark_oak_log','minecraft:water','minecraft:grass','minecraft:cave_air']
     def __init__(self, x=0, y=0, z=0, buffering=False, bufferlimit=1024):
         """**Initialise an interface with offset and buffering**."""
         self.offset = x, y, z
         self.__buffering = buffering
         self.bufferlimit = bufferlimit
         self.buffer = []
+        self.lists = [[]]
 
     def __del__(self):
         """**Clean up before destruction**."""
@@ -285,16 +292,96 @@ class Interface:
         global blockBuffer
         blockBuffer = []
 
-    def getHeight(self,x,z):
+    def getHeight(self,x,z,ws): #to get the height of a x,z position
         y=255
-        while getBlock(x, y, z) == 'minecraft:air' or getBlock(x, y, z) == 'minecraft:leaves' or getBlock(x, y, z) == 'minecraft:oak_log' or getBlock(x, y, z) == 'minecraft:spruce_log' or getBlock(x, y, z) == 'minecraft:birch_log' or getBlock(x, y, z) == 'minecraft:jungle_log' or getBlock(x, y, z) == 'minecraft:acacia_log' or getBlock(x, y, z) == 'minecraft:dark_oak_log':
+        while is_air(x,y,z,ws):
+            #print(y)
             y -= 1
+        #y-=1
         return y
 
+    def is_air(self,x,y,z,ws):   #to know if it's a air block (or leaves and stuff)
+        block = ws.getBlockAt((x, y-1, z))
+        if block in self.ignoreblock:
+            #print("its air")
+            return True
+        else:
+            #print("itsnotair")
+            return False
+
+    def is_ground(self,x,y,z, ws):
+        y1 = y+1
+        y2 = y-1
+        #print(is_air(x,y2+1,z,ws) and not(is_air(x,y2,z,ws)))
+        if is_air(x,y2+1,z,ws) and not(is_air(x,y2,z,ws)) and not(ws.getBlockAt((x, y2, z))=='minecraft:water'):
+            return y2 
+
+        elif is_air(x,y1+1,z,ws) and not(is_air(x,y1,z,ws)) and not(ws.getBlockAt((x, y1, z))=='minecraft:water'):
+            return y1
+        elif is_air(x,y+1,z,ws) and not(is_air(x,y,z,ws)) and not(ws.getBlockAt((x, y, z))=='minecraft:water'):
+            return y 
+        else:
+            return 0
 
 
-    #def floodfill(self, x, y, z):
-        
+
+    def floodfill(self, x, y, z,ws):
+        print("initialising floodfill")
+        print(x,y,z)
+        stack = []
+        valide = []
+        stack.append((0,y,0))
+        while stack:
+            Node = stack.pop()
+            valide.append(Node)
+            x = Node[0]
+            z = Node[2]
+            y = Node[1]
+            print(x,y,z)
+            y1 = is_ground(x+1,y,z,ws)
+            if y1 and (x+1,y1,z) not in valide and x <90:
+                stack.append((x+1,y1,z))
+
+            #---------------
+            y2 = is_ground(x,y,z+1,ws)
+            if y2 and (x,y2,z+1) not in valide and z<90:
+                stack.append((x,y2,z+1))
+            #---------------
+            y3 = is_ground(x-1,y,z,ws)
+            if y3 and (x-1,y3,z) not in valide and x>-90:
+                stack.append((x-1,y3,z))
+            #---------------
+            y4 = is_ground(x,y,z-1,ws)
+            if y4 and (x,y4,z-1) not in valide and z>-90:
+                stack.append((x,y4,z-1))
+        self.lists.append(valide)
+        #for z in valide:
+        #    self.setBlock(z[0],z[1] -1,z[2],"minecraft:bricks")
+
+
+
+
+
+        #it's recursive and not working in python atm because there is too much recursion
+#        if ([x,y,z] in self.lists) != 1 and (abs(x)<40 and abs(z)<40):
+#            self.setBlock(x,y,z,"minecraft:bricks")
+#            self.lists = self.lists + [[x, y, z]]
+#            #------------------
+#            y1 = is_ground(x+1, y, z, ws)
+#            if y1:
+#                self.floodfill(x+1, y1, z,ws)
+#            #---------------------
+#            y2 = is_ground(x, y, z+1, ws)
+#            if y2:
+#                self.floodfill(x, y2, z+1,ws)
+#            #---------------------
+#            y3 = is_ground(x-1, y, z, ws)
+#            if y3:
+#                self.floodfill(x-1, y3, z,ws)
+#            #---------------------
+#            y4 = is_ground(x, y, z-1, ws)
+#            if y4:
+#                self.floodfill(x, y4, z-1,ws) 
 
 
 def runCommand(command):
@@ -336,17 +423,18 @@ def isBuffering():
     """**Global isBuffering**."""
     return globalinterface.isBuffering()
 
-def getHeight(x,z):
-    return globalinterface.getHeight(x,z)
+
 
 def setBuffering(val):
     """**Global setBuffering**."""
     globalinterface.setBuffering(val)
 
 
+
 def getBufferLimit():
     """**Global getBufferLimit**."""
     return globalinterface.getBufferLimit()
+
 
 
 def setBufferLimit(val):
@@ -356,7 +444,7 @@ def setBufferLimit(val):
 
 def getBlock(x, y, z):
     """**Global getBlock**."""
-    return globalinterface.getBlock(x, y, z)
+    return getBlock(x, y, z)
 
 def getAllBiome():
     return globalinterface.getAllBiome()
@@ -368,6 +456,14 @@ def fill(x1, y1, z1, x2, y2, z2, blockStr):
     """**Global fill**."""
     return globalinterface.fill(x1, y1, z1, x2, y2, z2, blockStr)
 
+def getHeight(x,z,ws):
+    return globalinterface.getHeight(x,z,ws)
+
+def is_ground(x,y,z,ws):
+    return globalinterface.is_ground(x,y,z,ws)
+
+def is_air(x,y,z,ws):
+    return globalinterface.is_air(x,y,z,ws)
 
 def setBlock(x, y, z, blockStr):
     """**Global setBlock**."""

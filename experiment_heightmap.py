@@ -10,7 +10,7 @@ from worldLoader import WorldSlice
 # Floodfill those to find different peaks
 # Filter areas that do not have 3x3
 
-build_area = iU.makeBuildArea()
+build_area = iU.requestBuildArea()
 print(build_area)
 
 slice = WorldSlice(build_area)
