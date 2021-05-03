@@ -55,6 +55,9 @@ class StructureManager:
                 )
                 self.settlementData["structures"][-1]["villagersId"].append(size + i)
             self.settlementData["freeVillager"] += numberToAdd
+        elif structure["type"] == "functionnals":
+            pass
+            # TODO
 
 
     def chooseOneHouse(self):

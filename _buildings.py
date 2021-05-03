@@ -185,7 +185,6 @@ class Buildings:
 
         print("Finish building : " + self.name)
 
-
     def returnWorldPosition(self, localPoint, flip, rotation, referencePoint, worldStructurePosition) :
         worldPosition = [0, 0, 0]
         
@@ -273,6 +272,32 @@ class Buildings:
         if rotation == 1 or rotation == 3:
             self.computedOrientation["x"] = "z"
             self.computedOrientation["z"] = "x"
+
+    """
+    Return position where reference position is the center of the local space
+    """
+    def getCornersLocalPositions(self, referencePosition, flip, rotation):
+
+        if flip == 1 or flip == 3 :
+            referencePosition[0] = self.size[0] - 1 - referencePosition[0]
+            referencePosition[2] = self.size[2] - 1 - referencePosition[2]
+        else : 
+            referencePosition[0] = self.size[0] - 1 - referencePosition[0]
+            referencePosition[2] = self.size[2] - 1 - referencePosition[2]
+
+        positions = [[- referencePosition[0],                        - referencePosition[2]], 
+                     [self.size[0] - referencePosition[0],           - referencePosition[2]], 
+                     [- referencePosition[0] - referencePosition[0], self.size[2] - referencePosition[2]], 
+                     [self.size[0] - referencePosition[0],           self.size[2] - referencePosition[2]]]
+        toReturn = []
+
+        for position in positions :
+            temp = _math.rotatePointAround([0, 0], 
+                position ,   math.pi / 2 * rotation)
+            
+            toReturn.append([int(temp[0]), referencePosition[1], int(temp[1])])
+        
+        return positions
 
 
     def getSize(self):

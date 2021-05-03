@@ -41,9 +41,11 @@ if len(sys.argv) <= 1 :
     for i in range(settlementData["structuresNumberGoal"]) : 
         settlementData["structures"].append({})
         structureMananager.chooseOneStructure()
-        structureMananager.checkDependencies()
+        structure = resources.buildings[settlementData["structures"][i]["name"]]
+        print(structure.getCornersLocalPositions(structure.info["mainEntry"]["position"], 0, 0))
         # TODO 
         # settlementData["structures"][i]["position"] = 
+        structureMananager.checkDependencies()
     
     print(settlementData)
     
