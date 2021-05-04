@@ -287,11 +287,42 @@ def generateVillageName():
     # return name
 
 
-def spawnVillager(x, y, z, entity, name):
-    command = "summon " + entity + " " + str(x) + " " + str(y) + " " + str(z) + " " + "{" + "CustomName:'{" + "\"text\":" + "\"" + str(name) + "\"" +"}'" + "}"
+def spawnVillager(x, y, z, entity, name, profession, level, type):
+    command = "summon " + entity + " " + str(x) + " " + str(y) + " " + str(z) + " " + "{VillagerData:{profession:" + profession + ",level:" + str(level) + ",type:" + type + "},CustomName:""\"\\" + '"' + str(name) + "\\" +'""' + "}"
     interfaceUtils.runCommand(command)
     print(command)
     
+# Add items to a chest
+# Items is a list of [item string, item quantity]
+def addItemChest(x, y, z, items):
+    for id,v in enumerate(items):
+        command = "replaceitem block {} {} {} {} {} {}".format(x, y, z,
+                                                               "container."+str(id),
+                                                               v[0],
+                                                               v[1])
+        interfaceUtils.runCommand(command)
+
+
+# Create a book item from a text
+def makeBookItem(text, title = "", author = "", desc = ""):
+    booktext = "pages:["
+    while len(text) > 0:
+        page = text[:15*23]
+        text = text[15*23:]
+        bookpage = "'{\"text\":\""
+        while len(page) > 0:
+            line = page[:23]
+            page = page[23:]
+            bookpage += line + "\\\\n"
+        bookpage += "\"}',"
+        booktext += bookpage
+
+    booktext = booktext + "],"
+
+    booktitle = "title:\""+title+"\","
+    bookauthor = "author:\""+author+"\","
+    bookdesc = "display:{Lore:[\""+desc+"\"]}"
+    return "written_book{"+booktext+booktitle+bookauthor+bookdesc+"}"
 
 def strToDictBlock(block):
     expended = {}
