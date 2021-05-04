@@ -409,7 +409,7 @@ class Interface:
             if len(self.listHouse)==0:
                 print("no house already placed")
                 yPos = getHeight(0,0,ws)
-                self.floodfill(0,yPos,0,ws,80)
+                self.floodfill(0,yPos,0,ws,40)
                 start = random.randint(0,len(self.lists))
                 print(start)
                 print(self.lists[start])
@@ -428,7 +428,7 @@ class Interface:
                 print("there is already " , len(self.listHouse) ,  "placed")
                 index = random.randint(0,len(self.listHouse)) -1
                 print(index)
-                Away = random.randint(7,15)
+                Away = random.randint(10,20)
                 print(Away)
                 angle = random.randint(0,359)
                 print(angle)
@@ -446,10 +446,15 @@ class Interface:
                     #if verifHouse(xPos,yPos,CornerPos):
                     #    print("verified")
                     notfinded = False
+                    for i in range(len(self.listHouse)):
+                        if xPos - self.listHouse[i][0] < 6 and zPos - self.listHouse[i][2]<6:
+                            notfinded = True
+                            print("error")
                     #else:
                     #    print("new position required")
                     #    debug -=1
                     #    print(debug , "try left")
+                self.listHouse.append((xPos,yPos,zPos))
         print(xPos,yPos,zPos)
         return [xPos,yPos,zPos]
 
