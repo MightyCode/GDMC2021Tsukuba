@@ -21,46 +21,23 @@ if len(sys.argv) <= 1 :
     settlementData["biomeName"] = resources.biomeMinecraftId[int(settlementData["biomeId"])]
     settlementData["biomeBlockId"] = str(resources.biomesBlockId[settlementData["biomeName"]])
     settlementData["villageName"] = generateVillageName()
+
     settlementData["villagerNames"] = []
-    settlementData["villagerProfession"] = ["farmer", "fisherman", "shepherd", "fletcher", "librarian", "cartographer", "cleric", "armorer", "weaponsmith", "toolsmith", "butcher", "leatherworker", "mason", "nitwit"]
+    settlementData["villagerProfession"] = []
+    settlementData["villagerGameProfession"] = []
+    settlementData["villagerProfessionList"] = [
+                "farmer", "fisherman", "shepherd", "fletcher", "librarian", "cartographer", 
+                "cleric", "armorer", "weaponsmith", "toolsmith", "butcher", "leatherworker", "mason", "nitwit"]
     
     settlementData["structuresNumberGoal"] = random.randint(5, 20)
 
     #structures contains "position", "name", "type", "group" ->, "villagersId"
     settlementData["structures"] = []
     settlementData["freeVillager"] = 0
-
-    # generate random villagers name
-    villagerFirstNamesList = getFirstNamelist()
-    firstName = getRandomVillagerNames(villagerFirstNamesList, NUMBER)
-    villagerLastNamesList = getLastNamelist()
-    lastName = getRandomVillagerNames(villagerLastNamesList, NUMBER)
     
     # generate random village name
     settlementData["villageName"] = generateVillageName()
     print("Here's a random village name: ")
-    print(settlementData["villageName"])
-    print("Here's some random villager names : ")
-    strVillagers = "List of all villagers: "
-    for i in range(NUMBER):
-        # get a random profession for a villager
-        randomProfession = rd.randint(0, len(settlementData["villagerProfession"]) - 1)
-        # get a random level for the profession of the villager (2: Apprentice, 3: Journeyman, 4: Expert, 5: Master)
-        randomProfessionLevel = rd.randint(2, 5)
-        
-        settlementData["villagerNames"].append(firstName[i] + " " + lastName[i]) 
-        strVillagers += settlementData["villagerNames"][i] + ":" + settlementData["villagerProfession"][randomProfession] + " "
-        spawnVillager(-12, 63, -177, "minecraft:villager", settlementData["villagerNames"][i], settlementData["villagerProfession"][randomProfession], randomProfessionLevel, settlementData["biomeName"])
-
-    # Add chest
-    interface.setBlock(-12, 63, -180, "minecraft:chest")
-    # Create some books
-    villageNameBook = makeBookItem("Welcome to " + settlementData["villageName"], title="Village Name")
-    villagersBook = makeBookItem(strVillagers, title="List of all villagers")
-    deadVillagersBook = makeBookItem("List of all dead villagers : ", title="List of all dead villagers")
-    items = [[villageNameBook, 1], [villagersBook, 1], [deadVillagersBook, 1]]
-    # Add chest with items
-    addItemChest(-12, 63, -180, items)
 
     settlementData["woodResources"] = 0
     settlementData["dirtResources"] = 0
@@ -78,12 +55,58 @@ if len(sys.argv) <= 1 :
         structureMananager.checkDependencies()
     
     print(settlementData)
-    
 
-    
+    strVillagers = "List of all villagers: "
+
+    for i in range(len(settlementData["villagerNames"])):
+        # get a random level for the profession of the villager (2: Apprentice, 3: Journeyman, 4: Expert, 5: Master)
+        randomProfessionLevel = rd.randint(2, 5)
+         
+        strVillagers += settlementData["villagerNames"][i] + ":" + settlementData["villagerProfession"][i] + " "
+        """spawnVillager(-12, 63, -177, "minecraft:villager", 
+            settlementData["villagerNames"][i], settlementData["villagerGameProfession"][i], randomProfessionLevel, settlementData["biomeName"])"""
+
+    # Create some books
+    villageNameBook = makeBookItem("Welcome to " + settlementData["villageName"], title="Village Name")
+    villagersBook = makeBookItem(strVillagers, title="List of all villagers")
+    deadVillagersBook = makeBookItem("List of all dead villagers : ", title="List of all dead villagers")
+
+
     # Build after every computations
     for i in range(len(settlementData["structures"])) :
-        pass
+        structure = resources.buildings[settlementData["structures"][i]["name"]]
+
+        info = structure.info
+        buildingCondition = Buildings.BUILDINGS_CONDITIONS.copy()
+        buildingCondition["rotation"] = 0
+        buildingCondition["flip"] = 0
+        buildingCondition["position"] = [-80, 63, 0]
+        buildingCondition["replaceAllAir"] = 0
+        buildingCondition["referencePoint"] = [info["mainEntry"]["position"][0], info["mainEntry"]["position"][1], info["mainEntry"]["position"][2]]
+
+        structureBiomeId = interfaceUtils.getBiome(buildingCondition["position"][0], buildingCondition["position"][2], 1, 1)
+        structureBiomeName = resources.biomeMinecraftId[int(structureBiomeId)]
+        structureBiomeBlockId = str(resources.biomesBlockId[structureBiomeName])
+
+        if structureBiomeBlockId == "-1" :
+            structureBiomeBlockId = settlementData["biomeBlockId"]    
+        
+        # Load block for structure biome
+        for aProperty in resources.biomesBlocks[settlementData["biomeBlockId"]]:
+            if aProperty in resources.biomesBlocks["rules"]["village"]:
+                buildingCondition["replacements"][aProperty] = resources.biomesBlocks[settlementData["biomeBlockId"]][aProperty]
+
+        # Load block for structure biome
+        for aProperty in resources.biomesBlocks[structureBiomeBlockId]:
+            if aProperty in resources.biomesBlocks["rules"]["structure"]:
+                buildingCondition["replacements"][aProperty] = resources.biomesBlocks[structureBiomeBlockId][aProperty]
+
+        # Add books replacements
+        buildingCondition["replacements"]["villageBook"] = villageNameBook
+        buildingCondition["replacements"]["villagerRegistry"] = villagersBook
+        buildingCondition["replacements"]["deadVillagerRegistry"] = deadVillagersBook
+
+        #resources.buildings[structure].build(worldModif, buildingCondition, chestGeneration)
 
 else : 
     if sys.argv[1] == "r" :   

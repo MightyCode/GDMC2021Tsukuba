@@ -16,5 +16,10 @@
   },
   "lootTables" : [
     ["basiclumberjachut"]
-  ]
+  ],
+  "villageInfo" : {
+    "villager" : 2,
+    "gameProfession" : "mason",
+    "profession" : "lumberjack"
+  }
 }

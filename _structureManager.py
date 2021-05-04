@@ -44,8 +44,11 @@ class StructureManager:
         
         self.numberOfStructuresForEachGroup[structure["group"]] += 1
 
+        struct = self.resources.buildings[structure["name"]]
+
+        # Houses structure
         if structure["type"] == "houses":
-            numberToAdd = self.resources.buildings[structure["name"]].info["villageInfo"]["villager"]
+            numberToAdd = struct.info["villageInfo"]["villager"]
             self.settlementData["structures"][-1]["villagersId"] = []
             size = len(self.settlementData["villagerNames"])
             for i in range(numberToAdd):
@@ -53,19 +56,31 @@ class StructureManager:
                             _utils.getRandomVillagerNames(self.villagerFirstNamesList, 1)[0]
                             + _utils.getRandomVillagerNames(self.villagerLastNamesList, 1)[0]
                 )
+                
+                self.settlementData["villagerProfession"].append("Unemployed")
+                self.settlementData["villagerGameProfession"].append("")
+
                 self.settlementData["structures"][-1]["villagersId"].append(size + i)
             self.settlementData["freeVillager"] += numberToAdd
+        
+        # Functionnals structure
         elif structure["type"] == "functionnals":
-            pass
-            # TODO
+            numberToAttribute = struct.info["villageInfo"]["villager"]
+            self.settlementData["structures"][-1]["villagersId"] = []
+            size = len(self.settlementData["villagerNames"])
+            
+            idFound = 0
+            for i in range(numberToAttribute):
+                # Find unemployed villager
+                while not self.settlementData["villagerProfession"][i] == "Unemployed":
+                    idFound += 1
 
+                self.settlementData["villagerProfession"] = struct.info["villageInfo"]["profession"]
+                self.settlementData["villagerGameProfession"] = struct.info["villageInfo"]["gameProfession"]
 
-    def chooseOneHouse(self):
-        pass
-    def chooseOneFunctional(self):
-        pass
-    def chooseOneRepresentatives(self):
-        pass
+                self.settlementData["structures"][-1]["villagersId"].append(idFound)
+
+            self.settlementData["freeVillager"] -= numberToAttribute
 
 
     def checkDependencies(self):
