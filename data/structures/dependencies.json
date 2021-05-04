@@ -30,7 +30,7 @@
     },
     "basicFarm" : {
         "structures" : [
-            "basicFarm"
+            "basicfarm"
         ],
         "type" : "functionals",
         "conditions" : {

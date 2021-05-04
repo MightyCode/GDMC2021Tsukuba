@@ -58,7 +58,7 @@ class StructureManager:
                 )
                 
                 self.settlementData["villagerProfession"].append("Unemployed")
-                self.settlementData["villagerGameProfession"].append("")
+                self.settlementData["villagerGameProfession"].append("nitwit")
 
                 self.settlementData["structures"][-1]["villagersId"].append(size + i)
             self.settlementData["freeVillager"] += numberToAdd

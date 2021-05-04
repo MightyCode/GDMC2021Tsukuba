@@ -1,10 +1,19 @@
 import random as rd
 import math
-#import pandas as pd
+import pandas as pd
 import numpy as np
 import warnings
 import interfaceUtils
 
+
+def addResourcesFromChunk(resources, settlementData, biome):
+    dictResources = resources.biomesBlocks[biome]
+    if "woodResources" in dictResources:
+        settlementData["woodResources"] += dictResources["woodResources"]
+    if "dirtResources" in dictResources:
+        settlementData["dirtResources"] += dictResources["dirtResources"]
+    if "stoneResources" in dictResources:
+        settlementData["stoneResources"] += dictResources["stoneResources"]
 
 
 VILLAGER_NAME_PATH = "data/names/"

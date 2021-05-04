@@ -14,5 +14,10 @@
   },
   "lootTables" : [
     ["basicfarm"]
-  ]
+  ],
+  "villageInfo" : {
+    "villager" : 2,
+    "gameProfession" : "farmer",
+    "profession" : "Farmer "
+  }
 }

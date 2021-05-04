@@ -410,7 +410,7 @@ class Interface:
                 print("no house already placed")
                 yPos = getHeight(0,0,ws)
                 self.floodfill(0,yPos,0,ws,40)
-                start = random.randint(0,len(self.lists))
+                start = random.randint(0, len(self.lists) - 1)
                 print(start)
                 print(self.lists[start])
                 #if verifHouse(self.lists[start][0],self.lists[start][1],self.lists[start][2],CornerPos):

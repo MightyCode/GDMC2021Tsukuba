@@ -12,5 +12,8 @@
     "replacements" : [
       [2, 1, 3, 8, 8, 10]
     ]
+  },
+  "villageInfo" : {
+    "villager" : 2
   }
 }
