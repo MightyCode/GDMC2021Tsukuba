@@ -22,6 +22,7 @@ import numpy as np
 import worldLoader
 from worldLoader import WorldSlice
 import interfaceUtils
+import random
 
 
 
@@ -41,7 +42,9 @@ class Interface:
         self.__buffering = buffering
         self.bufferlimit = bufferlimit
         self.buffer = []
-        self.lists = [[]]
+        self.lists = []
+        self.listHouse = []
+        random.seed(a=None, version=2)
 
     def __del__(self):
         """**Clean up before destruction**."""
@@ -325,36 +328,37 @@ class Interface:
 
 
 
-    def floodfill(self, x, y, z,ws):
+    def floodfill(self, xi, yi, zi,ws,taille):
         print("initialising floodfill")
-        print(x,y,z)
+        print(xi,yi,zi)
         stack = []
         valide = []
-        stack.append((0,y,0))
+        stack.append((xi,yi,zi))
         while stack:
             Node = stack.pop()
             valide.append(Node)
             x = Node[0]
             z = Node[2]
             y = Node[1]
-            print(x,y,z)
+            #print(x,y,z)
             y1 = is_ground(x+1,y,z,ws)
-            if y1 and (x+1,y1,z) not in valide and x <90:
+            if y1 and (x+1,y1,z) not in valide and x <xi+taille:
                 stack.append((x+1,y1,z))
 
             #---------------
             y2 = is_ground(x,y,z+1,ws)
-            if y2 and (x,y2,z+1) not in valide and z<90:
+            if y2 and (x,y2,z+1) not in valide and z<zi+taille:
                 stack.append((x,y2,z+1))
             #---------------
             y3 = is_ground(x-1,y,z,ws)
-            if y3 and (x-1,y3,z) not in valide and x>-90:
+            if y3 and (x-1,y3,z) not in valide and x>xi-taille:
                 stack.append((x-1,y3,z))
             #---------------
             y4 = is_ground(x,y,z-1,ws)
-            if y4 and (x,y4,z-1) not in valide and z>-90:
+            if y4 and (x,y4,z-1) not in valide and z>zi-taille:
                 stack.append((x,y4,z-1))
-        self.lists.append(valide)
+        #print(valide)
+        self.lists = valide
         #for z in valide:
         #    self.setBlock(z[0],z[1] -1,z[2],"minecraft:bricks")
 
@@ -382,6 +386,79 @@ class Interface:
 #            y4 = is_ground(x, y, z-1, ws)
 #            if y4:
 #                self.floodfill(x, y4, z-1,ws) 
+
+    def verifHouse(self, xPos, yPos, zPos, CornerPos):
+        ok=[0,0,0,0]
+
+        for i in [0,1,2,3]:
+            print(CornerPos[i][0],CornerPos[i][1])
+            if (xPos + CornerPos[i][0], yPos ,  zPos + CornerPos[i][1]) in self.lists or (xPos + CornerPos[i][0], yPos -1 ,  zPos + CornerPos[i][1]) in self.lists or (xPos + CornerPos[i][0], yPos +1 ,  zPos + CornerPos[i][1]) in self.lists or (xPos + CornerPos[i][0], yPos +2 ,  zPos + CornerPos[i][1]) in self.lists or (xPos + CornerPos[i][0], yPos -2 ,  zPos + CornerPos[i][1]) in self.lists:
+                ok[i] = 1
+                print(i,"bon")
+        if ok[0] == 1 and ok[1] == 1 and ok[2] == 1 and ok[3] == 1:
+            print("true")
+            return True
+        else:
+            print("false")
+            return False
+
+    def findPosHouse(self,CornerPos,ws):
+        notfinded = True
+        debug = 3
+        while notfinded and debug:  #pour sortir de la boucle une fois qu'on a trouvé
+            if len(self.listHouse)==0:
+                print("no house already placed")
+                yPos = getHeight(0,0,ws)
+                self.floodfill(0,yPos,0,ws,80)
+                start = random.randint(0,len(self.lists))
+                print(start)
+                print(self.lists[start])
+                #if verifHouse(self.lists[start][0],self.lists[start][1],self.lists[start][2],CornerPos):
+                #    print("need another position")
+                notfinded = False
+                #else:
+                #    debug-=1
+                #    print(debug, "try left")
+                xPos = self.lists[start][0]
+                yPos = self.lists[start][1]
+                zPos = self.lists[start][2]
+                self.listHouse.append((xPos,yPos,zPos))
+
+            else:
+                print("there is already " , len(self.listHouse) ,  "placed")
+                index = random.randint(0,len(self.listHouse)) -1
+                print(index)
+                Away = random.randint(7,15)
+                print(Away)
+                angle = random.randint(0,359)
+                print(angle)
+                xPos = self.listHouse[index][0] + math.floor(Away * math.cos(angle))
+                zPos = self.listHouse[index][2] + math.floor(Away * math.sin(angle))
+                yPos = interfaceUtils.getHeight(xPos,zPos,ws)
+                print((xPos,yPos,zPos))
+                if is_air(xPos,yPos,zPos,ws):
+                    notfinded = True
+                    print("its air, new house position needed")
+                else:
+                    print("checking position")
+                    NewHousePos = [xPos , yPos,  zPos]
+                    self.floodfill(xPos,yPos,zPos,ws,10)
+                    #if verifHouse(xPos,yPos,CornerPos):
+                    #    print("verified")
+                    notfinded = False
+                    #else:
+                    #    print("new position required")
+                    #    debug -=1
+                    #    print(debug , "try left")
+        print(xPos,yPos,zPos)
+        return [xPos,yPos,zPos]
+
+
+                        
+ 
+
+
+
 
 
 def runCommand(command):
@@ -423,6 +500,8 @@ def isBuffering():
     """**Global isBuffering**."""
     return globalinterface.isBuffering()
 
+def getHeight(x,z):
+    return globalinterface.getHeight(x,z)
 
 
 def setBuffering(val):
@@ -471,6 +550,12 @@ def setBlock(x, y, z, blockStr):
 
 def getBiome(x, z, dx, dz):
     return globalinterface.getBiome(x,z,dx,dz)
+
+def findPosHouse(CornerPos,ws):
+    return globalinterface.findPosHouse(CornerPos,ws)
+
+def verifHouse(xPos, yPos, zPos, CornerPos):
+    return globalinterface.verifHouse(xPos, yPos, zPos, CornerPos)
 
 # ----------------------------------------------------- block buffers
 
