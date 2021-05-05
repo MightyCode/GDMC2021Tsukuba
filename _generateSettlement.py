@@ -81,18 +81,14 @@ if len(sys.argv) <= 1 :
     strVillagers = "List of all villagers: "
 
     for i in range(len(settlementData["villagerNames"])):
-        # get a random level for the profession of the villager (2: Apprentice, 3: Journeyman, 4: Expert, 5: Master)
-        randomProfessionLevel = random.randint(2, 5)
-         
         strVillagers += settlementData["villagerNames"][i] + ":" + settlementData["villagerProfession"][i] + " "
-        """spawnVillager(-12, 63, -177, "minecraft:villager", 
-            settlementData["villagerNames"][i], settlementData["villagerGameProfession"][i], randomProfessionLevel, settlementData["biomeName"])"""
+
 
     # Create some books
     villageNameBook = _utils.makeBookItem("Welcome to " + settlementData["villageName"], title="Village Name")
     villagersBook = _utils.makeBookItem(strVillagers, title="List of all villagers")
     deadVillagersBook = _utils.makeBookItem("List of all dead villagers : ", title="List of all dead villagers")
-    #print(settlementData)
+    print(settlementData)
 
     # Build after every computations
     for i in range(len(settlementData["structures"])) :
@@ -127,9 +123,11 @@ if len(sys.argv) <= 1 :
         buildingCondition["replacements"]["villagerRegistry"] = villagersBook
         buildingCondition["replacements"]["deadVillagerRegistry"] = deadVillagersBook
 
-        #structure.build(worldModif, buildingCondition, chestGeneration)
+        structure.build(worldModif, buildingCondition, chestGeneration)
 
-    #worldModif.saveToFile(file)
+        _utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
+
+    worldModif.saveToFile(file)
 
 else : 
     if sys.argv[1] == "r" :   

@@ -39,6 +39,7 @@ class Buildings:
         "replacements" : {},
     }
 
+
     def __init__(self, nbtfile, info, name):
         self.size = [nbtfile["size"][0].value, nbtfile["size"][1].value, nbtfile["size"][2].value]
         self.file = nbtfile
@@ -184,6 +185,7 @@ class Buildings:
                         chestGeneration.generate(blockPosition[0], blockPosition[1], blockPosition[2], choosenLootTable, buildingCondition["replacements"])
 
         print("Finish building : " + self.name)
+
 
     def returnWorldPosition(self, localPoint, flip, rotation, referencePoint, worldStructurePosition) :
         worldPosition = [0, 0, 0]

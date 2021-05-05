@@ -4,7 +4,9 @@ import _utils
 
 class StructureManager:
     PATH = "data/structures/dependencies.json"
-
+    HOUSES = "houses"
+    FUNCTIONALS = "functionals"
+    REPRESENATIVES = "representatives"
 
     def __init__(self, settlementData, resources):
         with open(StructureManager.PATH) as json_file:
@@ -47,13 +49,13 @@ class StructureManager:
         struct = self.resources.buildings[structure["name"]]
 
         # Houses structure
-        if structure["type"] == "houses":
+        if structure["type"] == StructureManager.HOUSES:
             numberToAdd = struct.info["villageInfo"]["villager"]
             self.settlementData["structures"][-1]["villagersId"] = []
             size = len(self.settlementData["villagerNames"])
             for i in range(numberToAdd):
                 self.settlementData["villagerNames"].append(
-                            _utils.getRandomVillagerNames(self.villagerFirstNamesList, 1)[0]
+                            _utils.getRandomVillagerNames(self.villagerFirstNamesList, 1)[0] + " "
                             + _utils.getRandomVillagerNames(self.villagerLastNamesList, 1)[0]
                 )
                 
@@ -64,7 +66,8 @@ class StructureManager:
             self.settlementData["freeVillager"] += numberToAdd
         
         # Functionnals structure
-        elif structure["type"] == "functionnals":
+        elif structure["type"] == StructureManager.FUNCTIONALS:
+            print(self.settlementData["freeVillager"])
             numberToAttribute = struct.info["villageInfo"]["villager"]
             self.settlementData["structures"][-1]["villagersId"] = []
             size = len(self.settlementData["villagerNames"])
@@ -72,7 +75,7 @@ class StructureManager:
             idFound = 0
             for i in range(numberToAttribute):
                 # Find unemployed villager
-                while not self.settlementData["villagerProfession"][i] == "Unemployed":
+                while not self.settlementData["villagerProfession"][idFound] == "Unemployed" and idFound < len(self.settlementData["villagerProfession"][idFound]):
                     idFound += 1
 
                 self.settlementData["villagerProfession"] = struct.info["villageInfo"]["profession"]

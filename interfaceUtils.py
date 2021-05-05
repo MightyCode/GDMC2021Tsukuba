@@ -447,7 +447,7 @@ class Interface:
                     #    print("verified")
                     notfinded = False
                     for i in range(len(self.listHouse)):
-                        if xPos - self.listHouse[i][0] < 6 and zPos - self.listHouse[i][2]<6:
+                        if abs(xPos - self.listHouse[i][0]) < 6 and abs(zPos - self.listHouse[i][2]) <6:
                             notfinded = True
                             print("error")
                     #else:

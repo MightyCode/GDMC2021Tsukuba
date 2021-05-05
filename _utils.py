@@ -15,6 +15,17 @@ def addResourcesFromChunk(resources, settlementData, biome):
     if "stoneResources" in dictResources:
         settlementData["stoneResources"] += dictResources["stoneResources"]
 
+"""
+Spawn a villager at his house if unemployed or at his building of work
+"""
+def spawnVillagerForStructure(settlementData, structureData, position):
+    for id in structureData["villagersId"]:
+        if (structureData["type"] == "houses" and settlementData["villagerProfession"][id] == "Unemployed") or (structureData["type"] != "houses" and settlementData["villagerProfession"][id] != "Unemployed") : 
+            # get a random level for the profession of the villager (2: Apprentice, 3: Journeyman, 4: Expert, 5: Master)
+            randomProfessionLevel = rd.randint(2, 5)
+
+            spawnVillager(position[0], position[1], position[2], "minecraft:villager", 
+                settlementData["villagerNames"][id], settlementData["villagerGameProfession"][id], randomProfessionLevel, settlementData["biomeName"])
 
 VILLAGER_NAME_PATH = "data/names/"
 NUMBER = 5
@@ -297,9 +308,10 @@ def generateVillageName():
 
 
 def spawnVillager(x, y, z, entity, name, profession, level, type):
-    command = "summon " + entity + " " + str(x) + " " + str(y) + " " + str(z) + " " + "{VillagerData:{profession:" + profession + ",level:" + str(level) + ",type:" + type + "},CustomName:""\"\\" + '"' + str(name) + "\\" +'""' + "}"
+    command = "summon " + entity + " " + str(x) + " " + str(y) + " " + str(z) + " "
+    command += "{VillagerData:{profession:" + profession + ",level:" + str(level) + ",type:" + type + "},CustomName:""\"\\" + '"' + str(name) + "\\" +'""' + "}"
+
     interfaceUtils.runCommand(command)
-    print(command)
     
 # Add items to a chest
 # Items is a list of [item string, item quantity]
