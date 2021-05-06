@@ -1,12 +1,12 @@
 from generation._resources import *
 from generation._chestGeneration import *
-from generation._buildings import *
+from generation.structures.structures import *
 from generation._structureManager import *
 from generation._floodFill import *
 import generation._resourcesLoader as resLoader
 import utils._utils as _utils
 from utils._worldModification import *
-from worldLoader import WorldSlice
+from lib.worldLoader import WorldSlice
 import random
 import sys
 
@@ -101,7 +101,7 @@ if len(sys.argv) <= 1 :
     for i in range(len(settlementData["structures"])) :
         structure = resources.buildings[settlementData["structures"][i]["name"]]
         info = structure.info
-        buildingCondition = Buildings.BUILDINGS_CONDITIONS.copy()
+        buildingCondition = Structures.BUILDING_CONDITIONS.copy()
         buildingCondition["flip"] = settlementData["structures"][i]["flip"]
         buildingCondition["rotation"] = settlementData["structures"][i]["rotation"]
         buildingCondition["position"] = settlementData["structures"][i]["position"]

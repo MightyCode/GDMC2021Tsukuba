@@ -1,11 +1,17 @@
 import sys
 import lib.interfaceUtils as interfaceUtils
-import collections, numpy
+import numpy, collections
+from generation.structures.structures import *
+from generation.structures.generated.generatedQuarry import *
+from utils._worldModification import *
+from generation._resources import *
+from generation._chestGeneration import *
 
 
 interface = interfaceUtils.Interface()
-
-listOfBlocks = numpy.array([])
+worldModif = WorldModification(interface)
+resources = Resources()
+chestGeneration = ChestGeneration(resources, interface)
 
 # x position, z position, x size, z size
 area = (0, 0, 128, 128)  # default build area if build area is not set
@@ -37,15 +43,11 @@ cy = 255
 while interfaceUtils.getBlock(cx, cy, cz) == 'minecraft:air' :
     cy -= 1
 
+buildingConditions = Structures.BUILDING_CONDITIONS.copy()
+buildingConditions["position"] = [cx, cy, cz]
 
-## Building the quarry.
-for dy in range(11):
-    for dx in range(11):
-        for dz in range(11):
-            block = interfaceUtils.getBlock(cx+dx, cy-dy, cz+dz)
-            listOfBlocks = numpy.append(listOfBlocks, block)
-            interfaceUtils.setBlock(cx+dx, cy-dy, cz+dz, "minecraft:air")
-interfaceUtils.sendBlocks()
+quarry = GeneratedQuarry()
+quarry.build(worldModif, buildingConditions, chestGeneration) 
 
-print(collections.Counter(listOfBlocks))
+print(collections.Counter(quarry.listOfBlocks))
 print("Done")

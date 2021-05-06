@@ -24,6 +24,7 @@ class WorldModification:
             if "debugMode" in config.keys():
                 WorldModification.DEBUG_MODE = config["debugMode"]
 
+
     def setBlock(self, x, y, z, block, compareBlockState=False):
         if WorldModification.DEBUG_MODE:
             previousBlock = self.interface.getBlock(x, y, z, True)

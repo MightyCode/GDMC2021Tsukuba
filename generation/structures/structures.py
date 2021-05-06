@@ -3,7 +3,7 @@ import math
 import utils._utils as _utils
 from nbt import nbt
 
-class Buildings:
+class Structures:
     REPLACEMENTS = "replacements"
     CHANGE = "Change"
     CHANGE_TO = "ChangeTo"
@@ -30,7 +30,7 @@ class Buildings:
     referencePoint : point x, z where the building will rotate around, the block at the reference point will be on position point
     replacement : change one type of block to another
     """
-    BUILDINGS_CONDITIONS =  {
+    BUILDING_CONDITIONS =  {
         "rotation" : 0,
         "flip" : 0,
         "replaceAllAir" : 0,
@@ -49,46 +49,46 @@ class Buildings:
         self.computedOrientation = {}
         # Indicate for each block in palette if it should change or not and to change to what
         for block in self.file["palette"]:
-            if Buildings.REPLACEMENTS in self.info.keys():
+            if Structures.REPLACEMENTS in self.info.keys():
                 blockName = block["Name"].value.split("[")[0]
 
-                for replacementWord in self.info[Buildings.REPLACEMENTS].keys():
+                for replacementWord in self.info[Structures.REPLACEMENTS].keys():
                     # Checking for block replacement
                     if blockName == replacementWord:
-                        block.tags.append(nbt.TAG_Int(name=Buildings.CHANGE_STATE, value=self.info[Buildings.REPLACEMENTS][blockName]["state"]))
+                        block.tags.append(nbt.TAG_Int(name=Structures.CHANGE_STATE, value=self.info[Structures.REPLACEMENTS][blockName]["state"]))
                                                                         #  """AND states equals"""
-                        if block[Buildings.CHANGE_STATE].value == 1 or (block[Buildings.CHANGE_STATE].value == 0):
-                            block.tags.append(nbt.TAG_Byte(name=Buildings.CHANGE, value=True))
-                            block.tags.append(nbt.TAG_String(name=Buildings.CHANGE_TO, value=self.info[Buildings.REPLACEMENTS][block["Name"].value]["type"]))   
-                            block.tags.append(nbt.TAG_String(name=Buildings.CHANGE_ORIGINAL_BLOCK, value=block["Name"].value))
-                            block.tags.append(nbt.TAG_String(name=Buildings.CHANGE_REPLACEMENT_WORD, value=replacementWord))
-                            block.tags.append(nbt.TAG_Byte(name=Buildings.CHANGE_EXCLUDED_ZONES, 
-                                value=("excluded" in self.info[Buildings.REPLACEMENTS][replacementWord].keys())))
+                        if block[Structures.CHANGE_STATE].value == 1 or (block[Structures.CHANGE_STATE].value == 0):
+                            block.tags.append(nbt.TAG_Byte(name=Structures.CHANGE, value=True))
+                            block.tags.append(nbt.TAG_String(name=Structures.CHANGE_TO, value=self.info[Structures.REPLACEMENTS][block["Name"].value]["type"]))   
+                            block.tags.append(nbt.TAG_String(name=Structures.CHANGE_ORIGINAL_BLOCK, value=block["Name"].value))
+                            block.tags.append(nbt.TAG_String(name=Structures.CHANGE_REPLACEMENT_WORD, value=replacementWord))
+                            block.tags.append(nbt.TAG_Byte(name=Structures.CHANGE_EXCLUDED_ZONES, 
+                                value=("excluded" in self.info[Structures.REPLACEMENTS][replacementWord].keys())))
                             break
                         
                     # Checking for substr replacement 
                     elif replacementWord in blockName:
                         # The replacementWord can be in unexpected blocks
                         # "oak" is on every "...dark_oak..." block
-                        if replacementWord in Buildings.REPLACEMENTS_EXCLUSIF:
-                            if Buildings.REPLACEMENTS_EXCLUSIF[replacementWord] in blockName:
+                        if replacementWord in Structures.REPLACEMENTS_EXCLUSIF:
+                            if Structures.REPLACEMENTS_EXCLUSIF[replacementWord] in blockName:
                                 continue
 
-                        if replacementWord in self.info[Buildings.REPLACEMENTS].keys():
-                            if self.info[Buildings.REPLACEMENTS][replacementWord]["state"] == 2:
-                                block.tags.append(nbt.TAG_Byte(name=Buildings.CHANGE, value=True))
-                                block.tags.append(nbt.TAG_String(name=Buildings.CHANGE_TO, value=self.info[Buildings.REPLACEMENTS][replacementWord]["type"]))  
-                                block.tags.append(nbt.TAG_Int(name=Buildings.CHANGE_STATE, value=2))
-                                block.tags.append(nbt.TAG_String(name=Buildings.CHANGE_ORIGINAL_BLOCK, value=(block["Name"].value) ))
-                                block.tags.append(nbt.TAG_String(name=Buildings.CHANGE_REPLACEMENT_WORD, value=replacementWord))
+                        if replacementWord in self.info[Structures.REPLACEMENTS].keys():
+                            if self.info[Structures.REPLACEMENTS][replacementWord]["state"] == 2:
+                                block.tags.append(nbt.TAG_Byte(name=Structures.CHANGE, value=True))
+                                block.tags.append(nbt.TAG_String(name=Structures.CHANGE_TO, value=self.info[Structures.REPLACEMENTS][replacementWord]["type"]))  
+                                block.tags.append(nbt.TAG_Int(name=Structures.CHANGE_STATE, value=2))
+                                block.tags.append(nbt.TAG_String(name=Structures.CHANGE_ORIGINAL_BLOCK, value=(block["Name"].value) ))
+                                block.tags.append(nbt.TAG_String(name=Structures.CHANGE_REPLACEMENT_WORD, value=replacementWord))
 
                                 # True or False
-                                block.tags.append(nbt.TAG_Byte(name=Buildings.CHANGE_EXCLUDED_ZONES, 
-                                    value=("excluded" in self.info[Buildings.REPLACEMENTS][replacementWord].keys())))
+                                block.tags.append(nbt.TAG_Byte(name=Structures.CHANGE_EXCLUDED_ZONES, 
+                                    value=("excluded" in self.info[Structures.REPLACEMENTS][replacementWord].keys())))
                                 break
                                 
 
-            block.tags.append(nbt.TAG_Byte(name=Buildings.CHANGE, value=False))
+            block.tags.append(nbt.TAG_Byte(name=Structures.CHANGE, value=False))
         
         # Looting table
         self.lootTable = False
@@ -109,13 +109,13 @@ class Buildings:
         # Replace bloc by these given
         print("Prebuilding Palette")
         for blockPalette in self.file["palette"]:
-            if blockPalette[Buildings.CHANGE].value:
-                changeState = blockPalette[Buildings.CHANGE_STATE].value
+            if blockPalette[Structures.CHANGE].value:
+                changeState = blockPalette[Structures.CHANGE_STATE].value
                 if changeState == 0 or changeState == 1:
-                    blockPalette["Name"].value = buildingCondition["replacements"][blockPalette[Buildings.CHANGE_TO].value].split("[")[0]
+                    blockPalette["Name"].value = buildingCondition["replacements"][blockPalette[Structures.CHANGE_TO].value].split("[")[0]
                 elif changeState == 2:
-                    blockPalette["Name"].value = blockPalette[Buildings.CHANGE_ORIGINAL_BLOCK].value.replace(
-                        blockPalette[Buildings.CHANGE_REPLACEMENT_WORD].value, buildingCondition["replacements"][blockPalette[Buildings.CHANGE_TO].value].split("[")[0] )
+                    blockPalette["Name"].value = blockPalette[Structures.CHANGE_ORIGINAL_BLOCK].value.replace(
+                        blockPalette[Structures.CHANGE_REPLACEMENT_WORD].value, buildingCondition["replacements"][blockPalette[Structures.CHANGE_TO].value].split("[")[0] )
 
         # Air zone
         print("Prebuilding air")
@@ -131,7 +131,7 @@ class Buildings:
                                                      buildingCondition["flip"], buildingCondition["rotation"], 
                                                      buildingCondition["referencePoint"], buildingCondition["position"])
                                                      
-                worldModif.fillBlocks(blockFrom[0], blockFrom[1], blockFrom[2], blockTo[0], blockTo[1], blockTo[2], Buildings.AIR_BLOCK)
+                worldModif.fillBlocks(blockFrom[0], blockFrom[1], blockFrom[2], blockTo[0], blockTo[1], blockTo[2], Structures.AIR_BLOCK)
 
         print("Building : " + self.name)
 
@@ -142,17 +142,17 @@ class Buildings:
             # Check if the current block is in excluded zone
             takeOriginalBlock = False
             blockName = blockPalette["Name"].value
-            if (blockPalette[Buildings.CHANGE].value):
-                if (blockPalette[Buildings.CHANGE_EXCLUDED_ZONES].value):
-                    for zone in self.info["replacements"][blockPalette[Buildings.CHANGE_REPLACEMENT_WORD].value]["excluded"] :
+            if (blockPalette[Structures.CHANGE].value):
+                if (blockPalette[Structures.CHANGE_EXCLUDED_ZONES].value):
+                    for zone in self.info["replacements"][blockPalette[Structures.CHANGE_REPLACEMENT_WORD].value]["excluded"] :
                         if _math.isPointInSquare([ block["pos"][0].value, block["pos"][1].value, block["pos"][2].value], zone) :
-                            print(blockPalette[Buildings.CHANGE_ORIGINAL_BLOCK].value)
+                            print(blockPalette[Structures.CHANGE_ORIGINAL_BLOCK].value)
                             takeOriginalBlock = True
-                            blockName = blockPalette[Buildings.CHANGE_ORIGINAL_BLOCK].value
+                            blockName = blockPalette[Structures.CHANGE_ORIGINAL_BLOCK].value
                             break
 
             # Check for block air replacement
-            if blockName == Buildings.AIR_BLOCK and buildingCondition["replaceAllAir"] == 1:
+            if blockName == Structures.AIR_BLOCK and buildingCondition["replaceAllAir"] == 1:
                 continue
             
             # Compute position of block from local space to world space
@@ -217,7 +217,7 @@ class Buildings:
     def convertNbtBlockToStr(self, blockPalette, rotation, flip, takeOriginalBlockName=False):
         block = "["
         if takeOriginalBlockName:
-            block = blockPalette[Buildings.CHANGE_ORIGINAL_BLOCK].value + block
+            block = blockPalette[Structures.CHANGE_ORIGINAL_BLOCK].value + block
         else:
             block = blockPalette["Name"].value + block
 
@@ -244,10 +244,10 @@ class Buildings:
             "right" : "right",
             "x" : "x",
             "y" : "y",
-            Buildings.ORIENTATIONS[0] : Buildings.ORIENTATIONS[0],
-            Buildings.ORIENTATIONS[1] : Buildings.ORIENTATIONS[1],
-            Buildings.ORIENTATIONS[2] : Buildings.ORIENTATIONS[2],
-            Buildings.ORIENTATIONS[3] : Buildings.ORIENTATIONS[3]
+            Structures.ORIENTATIONS[0] : Structures.ORIENTATIONS[0],
+            Structures.ORIENTATIONS[1] : Structures.ORIENTATIONS[1],
+            Structures.ORIENTATIONS[2] : Structures.ORIENTATIONS[2],
+            Structures.ORIENTATIONS[3] : Structures.ORIENTATIONS[3]
         }
         
         # Apply flip to orientation
