@@ -223,46 +223,13 @@ def initialize():
                 arr_cum_pre.append(summ)
         arr_cum_pre = np.array(arr_cum_pre, dtype=object)
         arr_ind_pre = np.array(arr_ind_pre, dtype=object)
-        #print(arr_deb)
-        #print(arr_cum_pre)
-        #print(arr_ind_pre)
-
-        # prob_file = open(VILLAGER_NAME_PATH + "probs.txt", 'w') 
-        # np.savetxt(prob_file, [arr_cum_pre], newline=';\n', fmt='%s')
-        # np.savetxt(prob_file, [arr_ind_pre], newline=';\n', fmt='%s')
-        # np.savetxt(prob_file, [carac], newline=';\n', fmt='%s')
-        # np.savetxt(prob_file, arr_cum1, fmt='%s')
-        # np.savetxt(prob_file, arr_ind1, fmt='%s')
-        # np.savetxt(prob_file, arr_cum2, fmt='%s')
-        # np.savetxt(prob_file, arr_ind2, fmt='%s')
-        # np.savetxt(prob_file, last_ind, fmt='%s', delimiter=';')
-        
-        # prob_file.close()
         f.close()   
-        # return last_ind
         return arr_cum_pre, arr_ind_pre, carac, arr_cum1, arr_ind1, arr_cum2, arr_ind2, last_ind
 
 
 # Generation of random name
 def generateVillageName():
     arr_cum_pre, arr_ind_pre, carac, arr_cum1, arr_ind1, arr_cum2, arr_ind2, last_ind = initialize()
-    # last_ind = initialize()
-    # a_file = open(VILLAGER_NAME_PATH + "probs.txt", 'r')
-    # with warnings.catch_warnings():
-    #     warnings.simplefilter("ignore")
-    #     arr_cum_pre = np.genfromtxt(a_file,delimiter=';', usecols=np.arange(0,1))
-    #     print("arr_cum_pre")
-    #     print(arr_cum_pre)
-    #     arr_ind_pre = np.genfromtxt(a_file, delimiter=';', usecols=np.arange(0,1))
-    #     print("arr_ind_pre")
-    #     print(arr_ind_pre)
-    #     carac = np.genfromtxt(a_file, delimiter='', dtype=str, usecols=np.arange(0,1))
-    #     arr_cum1 = np.genfromtxt(a_file, delimiter='', usecols=np.arange(0,1))
-    #     arr_ind1 = np.genfromtxt(a_file, delimiter='', usecols=np.arange(0,1))
-    #     arr_cum2 = np.genfromtxt(a_file,delimiter='', usecols=np.arange(0,1))
-    #     arr_ind2 = np.genfromtxt(a_file, delimiter= '', usecols=np.arange(0,1))
-        # last_ind = np.genfromtxt(a_file, delimiter= ';',dtype=int, usecols=np.arange(0,1))
-
     word = []
     # Generation of first letter
     random = rd.random()

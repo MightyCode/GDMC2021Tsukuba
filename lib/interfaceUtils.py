@@ -349,7 +349,7 @@ def setBufferLimit(val):
 
 def getBlock(x, y, z):
     """**Global getBlock**."""
-    return getBlock(x, y, z)
+    return globalinterface.getBlock(x, y, z)
 
 def getAllBiome():
     return globalinterface.getAllBiome()
