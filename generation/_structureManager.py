@@ -1,6 +1,6 @@
 import json
 import random
-import _utils
+import utils._utils as _utils
 
 class StructureManager:
     PATH = "data/structures/dependencies.json"
@@ -55,8 +55,8 @@ class StructureManager:
             size = len(self.settlementData["villagerNames"])
             for i in range(numberToAdd):
                 self.settlementData["villagerNames"].append(
-                            _utils.getRandomVillagerNames(self.villagerFirstNamesList, 1)[0] + " "
-                            + _utils.getRandomVillagerNames(self.villagerLastNamesList, 1)[0]
+                            _utils.getRandomVillagerNames(self.villagerFirstNamesList, 1)[0] + 
+                            " " + _utils.getRandomVillagerNames(self.villagerLastNamesList, 1)[0]
                 )
                 
                 self.settlementData["villagerProfession"].append("Unemployed")
@@ -78,8 +78,8 @@ class StructureManager:
                 while not self.settlementData["villagerProfession"][idFound] == "Unemployed" and idFound < len(self.settlementData["villagerProfession"][idFound]):
                     idFound += 1
 
-                self.settlementData["villagerProfession"] = struct.info["villageInfo"]["profession"]
-                self.settlementData["villagerGameProfession"] = struct.info["villageInfo"]["gameProfession"]
+                self.settlementData["villagerProfession"][idFound] = struct.info["villageInfo"]["profession"]
+                self.settlementData["villagerGameProfession"][idFound] = struct.info["villageInfo"]["gameProfession"]
 
                 self.settlementData["structures"][-1]["villagersId"].append(idFound)
 

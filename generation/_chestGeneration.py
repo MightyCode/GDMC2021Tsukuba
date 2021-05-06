@@ -1,5 +1,5 @@
 import random
-import interfaceUtils
+import lib.interfaceUtils as interfaceUtils
 
 class ChestGeneration:
     def __init__(self, resources, interface):

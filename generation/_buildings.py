@@ -1,6 +1,6 @@
-import _math
+import utils._math as _math
 import math
-import _utils
+import utils._utils as _utils
 from nbt import nbt
 
 class Buildings:

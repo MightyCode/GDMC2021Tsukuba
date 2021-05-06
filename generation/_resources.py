@@ -1,5 +1,5 @@
 from nbt import nbt
-from _buildings import *
+from generation._buildings import *
 import json
 
 class Resources :

@@ -1,11 +1,7 @@
-from _worldModification import *
-from _resources import *
-from _buildings import *
-import requests
-import time
-import sys
-import random
-import interfaceUtils
+from generation._resources import *
+from generation._buildings import *
+from utils._worldModification import *
+import lib.interfaceUtils as interfaceUtils
 from nbt.nbt import *
 
 

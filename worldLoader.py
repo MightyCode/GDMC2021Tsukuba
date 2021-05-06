@@ -15,7 +15,7 @@ import nbt
 import numpy as np
 import requests
 
-from bitarray import BitArray
+from lib.bitarray import BitArray
 
 
 def getChunks(x, z, dx, dz, rtype='text'):
