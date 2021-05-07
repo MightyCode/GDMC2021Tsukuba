@@ -19,8 +19,8 @@ import requests
 import math
 import nbt
 import numpy as np
-import worldLoader
-from worldLoader import WorldSlice
+import lib.worldLoader as worldLoader
+from lib.worldLoader import WorldSlice
 import random
 
 class Interface:

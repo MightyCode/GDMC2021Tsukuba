@@ -1,5 +1,5 @@
 from nbt import nbt
-from generation._buildings import *
+from generation.structures.structures import *
 import json
 
 class Resources :
@@ -50,7 +50,7 @@ class Resources :
            info = json.load(json_file)
 
         assert(not name in self.buildings.keys())
-        self.buildings[name] = Buildings(nbtfile, info, name)
+        self.buildings[name] = Structures(nbtfile, info, name)
 
 
     def loadLootTable(self, path, name):

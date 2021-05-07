@@ -266,9 +266,9 @@ class Structures:
 
         # Apply rotation to orientation
         for orientation in self.computedOrientation.keys():
-            if orientation in Buildings.ORIENTATIONS:
-                self.computedOrientation[orientation] = Buildings.ORIENTATIONS[
-                    (Buildings.ORIENTATIONS.index(self.computedOrientation[orientation]) + rotation) % len(Buildings.ORIENTATIONS)
+            if orientation in Structures.ORIENTATIONS:
+                self.computedOrientation[orientation] = Structures.ORIENTATIONS[
+                    (Structures.ORIENTATIONS.index(self.computedOrientation[orientation]) + rotation) % len(Structures.ORIENTATIONS)
                 ]
 
         if rotation == 1 or rotation == 3:
