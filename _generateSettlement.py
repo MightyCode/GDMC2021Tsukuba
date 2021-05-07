@@ -26,10 +26,6 @@ area = (x1, z1, x2 - x1, z2 - z1)
 if len(sys.argv) <= 1 :
     resources = Resources()
     resLoader.loadAllResources(resources)
-    for flip in range(4):
-        for rotation in range(4):
-            print(resources.structures["basichouse1"].getCornersLocalPositions([1, 63, 1], flip, rotation))
-    exit()
 
     chestGeneration = ChestGeneration(resources, interface)
     ws = WorldSlice(area)
