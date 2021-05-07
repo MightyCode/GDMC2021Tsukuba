@@ -6,7 +6,7 @@ class FloodFill:
     # Ignoreblockvalue is the list of block that we want to ignore when we read the field
     IGNORED_BLOCKS = ['minecraft:air', 'minecraft:oak_leaves',  'minecraft:leaves',  'minecraft:birch_leaves',
         'minecraft:oak_log',  'minecraft:spruce_log',  'minecraft:birch_log',  'minecraft:jungle_log', 'minecraft:acacia_log',
-        'minecraft:dark_oak_log','minecraft:water','minecraft:grass','minecraft:cave_air']
+        'minecraft:dark_oak_log','minecraft:water','minecraft:grass','minecraft:cave_air','minecraft:snow']
 
     def __init__(self):
         self.lists = []
@@ -116,32 +116,125 @@ class FloodFill:
             print("false")
             return False
 
+    def compareHouse(self,xPos,zPos,CornerPos,house):
+        ok = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
+        #for i in [0,1,2,3]:
+        #    for j in [0,1,2,3]:
+
+                #if (xPos+CornerPos[i][0])>(house[j][0]+house[j][3][1][0]) and (xPos+CornerPos[i][0]) A FINIR
+            
+        if True:
+            return True
+        else:
+            return False
+
+
 
     def findPosHouse(self, CornerPos, ws):
         notfinded = True
+        debug = 5
+        debugnohouse = 5
+        verif1 = False
+        verif2 = False
+        while notfinded and debug and debugnohouse:
+            if len(self.listHouse)==0:
+                xPos = -1**random.randint(0,1) * random.randint(0,150)
+                zPos = xPos = -1**random.randint(0,1) * random.randint(0,150)
+                yPos = self.getHeight(xPos,zPos, ws)
+                if self.is_air(xPos,yPos,zPos,ws):
+                    print("this position is air or water")
+                    print("retrying")
+                else:
+                    self.floodfill(xPos,yPos,zPos,ws,15)
+                    if self.verifHouse(xPos,yPos,zPos,CornerPos):
+                        print("trying to find a place large enough")
+                        notfinded = False
+                        self.floodfill(xPos,yPos,zPos,ws,60)
+                        if len(self.lists) > 6000:
+                            print(len(self.lists))
+                            print("it's large enough")
+                        else:
+                            print("trying to find somewhere larger")
+                            notfinded = True
+                            debugnohouse-=1
+                    else:
+                        print("neednewposition")
+                    
+            else:
+                while verif1 == False and verif2 == False and debug:
+                    print("there is already",len(self.listHouse),"placed")
+                    index = random.randint(0,len(self.listHouse)-1)
+                    self.floodfill(self.listHouse[index][0],self.listHouse[index][1],self.listHouse[index][2],ws,15)
+                    placeindex = random.randint(0,len(self.lists)-1)
+                    xPos = self.lists[placeindex][0]
+                    yPos = self.lists[placeindex][1]
+                    zPos = self.lists[placeindex][2]
+                    print(xPos,yPos,zPos, "is the position i want to build on")
+
+                    if self.verifHouse(xPos,yPos,zPos,CornerPos):
+                        verif1 = True
+                        print("First Verification worked")
+                        listverifhouse=self.listHouse.copy()
+                        print(listverifhouse)
+                        while listverifhouse:
+                            house = listverifhouse.pop()
+                            print(house)
+                            if self.compareHouse(xPos,zPos,CornerPos,house):
+                                print("this place is acceptable to be placed on")
+                                verif2 = True
+                            else:
+                                verif2 = False
+                                verif1 = False
+                                print("need a new position")
+                                debug-=1
+                            print(listverifhouse)
+                        if verif1 and verif2:
+                            notfinded = False
+                        
+                    else:
+                        verif1 = False
+                        print("first verification echec")
+
+
+                
+
+        if debug == 0:
+            xPos=0
+            yPos=0
+            zPos=0
+            print("debug failed")
+        else:
+            self.listHouse.append((xPos,yPos,zPos,CornerPos))
+        return [xPos,yPos,zPos]
+
+
+
+"""        notfinded = True
         debug = 3
         while notfinded and debug:  #pour sortir de la boucle une fois qu'on a trouvé
-            if len(self.listHouse)==0:
-                print("no house already placed")
+            if len(self.listHouse)==0 and debug>0:
+                print("no house already placed or new location needed")
                 yPos = self.getHeight(0, 0, ws)
                 self.floodfill(0, yPos, 0, ws, 40)
-                start = random.randint(0, len(self.lists) - 1)
-                print(start)
-                print(self.lists[start])
-                #if verifHouse(self.lists[start][0],self.lists[start][1],self.lists[start][2],CornerPos):
-                #    print("need another position")
-                notfinded = False
-                #else:
-                #    debug-=1
-                #    print(debug, "try left")
-                xPos = self.lists[start][0]
-                yPos = self.lists[start][1]
-                zPos = self.lists[start][2]
-                self.listHouse.append((xPos,yPos,zPos))
+                notfinded2 = True
+                while notfinded2 and debug:
+                    start = random.randint(0, len(self.lists) - 1)
+                    print(start)
+                    print(self.lists[start])
+                    if self.verifHouse(self.lists[start][0],self.lists[start][1],self.lists[start][2],CornerPos):
+                        print("need another position")
+                        notfinded2 = False
+                    else:
+                        debug-=1
+                        print(debug, "try left")
+                    xPos = self.lists[start][0]
+                    yPos = self.lists[start][1]
+                    zPos = self.lists[start][2]
+                    self.listHouse.append((xPos,yPos,zPos))
 
             else:
                 print("there is already " , len(self.listHouse) ,  "placed")
-                index = random.randint(0,len(self.listHouse)) -1
+                index = random.randint(0,len(self.listHouse)-1)
                 print(index)
                 Away = random.randint(10,20)
                 print(Away)
@@ -159,21 +252,21 @@ class FloodFill:
                     print("checking position")
                     NewHousePos = [xPos , yPos,  zPos]
                     self.floodfill(xPos,yPos,zPos,ws,10)
-                    #if verifHouse(xPos,yPos,CornerPos):
-                    #    print("verified")
-                    notfinded = False
-                    for i in range(len(self.listHouse)):
-                        if abs(xPos - self.listHouse[i][0]) < 6 and abs(zPos - self.listHouse[i][2]) <6:
-                            notfinded = True
-                            print("error")
-                    #else:
-                    #    print("new position required")
-                    #    debug -=1
+                    if self.verifHouse(xPos,yPos,zPos,CornerPos):
+                        print("verified")
+                        notfinded = False
+                        for i in range(len(self.listHouse)):
+                            if abs(xPos - self.listHouse[i][0]) < 8 and abs(zPos - self.listHouse[i][2]) <8:
+                                notfinded = True
+                                print("error")
+                    else:
+                        print("new position required")
+                        debug -=1
                     #    print(debug , "try left")
-                self.listHouse.append((xPos,yPos,zPos))
+        self.listHouse.append((xPos,yPos,zPos))
 
         print(xPos,yPos,zPos)
         return [xPos,yPos,zPos]
-
+"""
 
                         
