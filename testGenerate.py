@@ -8,6 +8,8 @@ from generation._resources import *
 from generation._chestGeneration import *
 
 
+file = "temp.txt"
+
 interface = interfaceUtils.Interface()
 worldModif = WorldModification(interface)
 resources = Resources()
@@ -31,23 +33,32 @@ z2 = buildArea[5]
 # print(buildArea)
 area = (x1, z1, x2 - x1, z2 - z1)
 
-# Find the highest non-air block and build the quarry there
+if len(sys.argv) <= 1:
 
-cx = int(area[0] + area[2]/2)
-cz = int(area[1] + area[3]/2)
+    # Find the highest non-air block and build the quarry there
 
-## Find highest non-air block
-## Note that in real construction, you want to ignore "transparent" blocks,
-## Such as leaves, snow, grass, etc.
-cy = 255
-while interfaceUtils.getBlock(cx, cy, cz) == 'minecraft:air' :
-    cy -= 1
+    cx = int(area[0] + area[2]/2)
+    cz = int(area[1] + area[3]/2)
 
-buildingConditions = Structures.BUILDING_CONDITIONS.copy()
-buildingConditions["position"] = [cx, cy, cz]
+    ## Find highest non-air block
+    ## Note that in real construction, you want to ignore "transparent" blocks,
+    ## Such as leaves, snow, grass, etc.
+    cy = 255
+    while interfaceUtils.getBlock(cx, cy, cz) == 'minecraft:air' :
+        cy -= 1
 
-quarry = GeneratedQuarry()
-quarry.build(worldModif, buildingConditions, chestGeneration) 
+    buildingConditions = Structures.BUILDING_CONDITIONS.copy()
+    buildingConditions["position"] = [cx, cy, cz]
 
-print(collections.Counter(quarry.listOfBlocks))
-print("Done")
+    quarry = GeneratedQuarry()
+    quarry.build(worldModif, buildingConditions, chestGeneration) 
+
+
+    worldModif.saveToFile(file)
+
+else : 
+    if sys.argv[1] == "r" :   
+        worldModif.loadFromFile(file)
+    else :
+        worldModif.loadFromFile(sys.argv[1])
+    worldModif.undoAllModification()

@@ -2,6 +2,7 @@ import os.path
 from os import path
 import json 
 import lib.interfaceUtils as interfaceUtils
+import utils._utils as _utils
 
 # Class which serve to save all modification, do undo actions
 class WorldModification: 

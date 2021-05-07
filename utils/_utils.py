@@ -289,6 +289,7 @@ def addItemChest(x, y, z, items):
         interfaceUtils.runCommand(command)
 
 
+
 # Create a book item from a text
 def makeBookItem(text, title = "", author = "", desc = ""):
     booktext = "pages:["
