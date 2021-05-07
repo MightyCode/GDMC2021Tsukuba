@@ -46,7 +46,7 @@ class StructureManager:
         
         self.numberOfStructuresForEachGroup[structure["group"]] += 1
 
-        struct = self.resources.buildings[structure["name"]]
+        struct = self.resources.structures[structure["name"]]
 
         # Houses structure
         if structure["type"] == StructureManager.HOUSES:

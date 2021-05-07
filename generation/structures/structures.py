@@ -1,9 +1,10 @@
 import utils._math as _math
 import math
 import utils._utils as _utils
+from generation.structures.baseStructure import *
 from nbt import nbt
 
-class Structures:
+class Structures(BaseStructure):
     REPLACEMENTS = "replacements"
     CHANGE = "Change"
     CHANGE_TO = "ChangeTo"
@@ -41,9 +42,11 @@ class Structures:
 
 
     def __init__(self, nbtfile, info, name):
+        super(BaseStructure, self).__init__()
+        self.setInfo(info)
+        
         self.size = [nbtfile["size"][0].value, nbtfile["size"][1].value, nbtfile["size"][2].value]
         self.file = nbtfile
-        self.info = info
         self.name = name
 
         self.computedOrientation = {}

@@ -11,7 +11,7 @@ class Resources :
     def __init__(self):
 
         # Each structures
-        self.buildings = {}
+        self.structures = {}
         self.lootTables = {}
 
         # Contains for each biome, its minecraft id
@@ -44,13 +44,23 @@ class Resources :
             i = i + 1
 
 
-    def loadBuildings(self, path, infoPath, name):
+    def loadStructures(self, path, infoPath, name):
         nbtfile = nbt.NBTFile(Resources.STRUCTURE_PATH + path,'rb')
         with open(Resources.STRUCTURE_PATH + infoPath) as json_file:
            info = json.load(json_file)
 
-        assert(not name in self.buildings.keys())
-        self.buildings[name] = Structures(nbtfile, info, name)
+        assert(not name in self.structures.keys())
+        self.structures[name] = Structures(nbtfile, info, name)
+
+
+    def addGeneratedStructures(self, object, infoPath, name):
+        with open(Resources.STRUCTURE_PATH + infoPath) as json_file:
+           info = json.load(json_file)
+           
+        object.setInfo(info)
+
+        assert(not name in self.structures.keys())
+        self.structures[name] = object
 
 
     def loadLootTable(self, path, name):

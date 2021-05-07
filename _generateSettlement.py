@@ -66,7 +66,7 @@ if len(sys.argv) <= 1 :
     for i in range(settlementData["structuresNumberGoal"]) : 
         settlementData["structures"].append({})
         structureMananager.chooseOneStructure()
-        structure = resources.buildings[settlementData["structures"][i]["name"]]
+        structure = resources.structures[settlementData["structures"][i]["name"]]
         corners = structure.getCornersLocalPositions(structure.info["mainEntry"]["position"], 0, 0)
         settlementData["structures"][i]["flip"] = 0
         settlementData["structures"][i]["rotation"] = 0
@@ -99,7 +99,7 @@ if len(sys.argv) <= 1 :
 
     # Build after every computations
     for i in range(len(settlementData["structures"])) :
-        structure = resources.buildings[settlementData["structures"][i]["name"]]
+        structure = resources.structures[settlementData["structures"][i]["name"]]
         info = structure.info
         buildingCondition = Structures.BUILDING_CONDITIONS.copy()
         buildingCondition["flip"] = settlementData["structures"][i]["flip"]

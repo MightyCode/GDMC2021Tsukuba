@@ -1,6 +1,7 @@
 import collections, numpy
+from generation.structures.baseStructure import * 
 
-class GeneratedQuarry:
+class GeneratedQuarry(BaseStructure):
     def __init__(self) :
         self.listOfBlocks = numpy.array([])
 
