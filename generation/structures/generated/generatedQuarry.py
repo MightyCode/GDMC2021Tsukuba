@@ -1,10 +1,12 @@
 import collections, numpy
 import utils._utils as utils
 import math
+from generation.structures.baseStructure import * 
 
-class GeneratedQuarry:
+class GeneratedQuarry(BaseStructure):
     def __init__(self) :
-        self.listOfBlocks = numpy.array([[]])
+        self.listOfBlocks = numpy.array([])
+        self.size = [11, 11]
 
     def build(self, worldModif, buildingCondition, chestGeneration):
         self.listOfBlocks = numpy.array([[]])

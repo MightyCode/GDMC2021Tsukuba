@@ -38,5 +38,16 @@
             "previous" : { "name" : "basicLumberJackHut", "min" : 1 },
             "dirtResources" : { "min" : 1}
         }
+    },
+    "basicQuarry" : {
+        "structures" : [
+            "basicGeneratedQuarry"
+        ],
+        "type" : "functionals",
+        "conditions" : {
+            "villagerNeeded" : { "min" : 2 },
+            "previous" : { "name" : "basicLumberJackHut", "min" : 1 },
+            "stoneResources" : { "min" : 1}
+        }
     }
 }

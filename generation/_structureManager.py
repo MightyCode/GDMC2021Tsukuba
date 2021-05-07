@@ -1,3 +1,4 @@
+from generation.structures.structures import Structures
 import json
 import random
 import utils._utils as _utils
@@ -46,7 +47,7 @@ class StructureManager:
         
         self.numberOfStructuresForEachGroup[structure["group"]] += 1
 
-        struct = self.resources.buildings[structure["name"]]
+        struct = self.resources.structures[structure["name"]]
 
         # Houses structure
         if structure["type"] == StructureManager.HOUSES:
@@ -75,7 +76,7 @@ class StructureManager:
             idFound = 0
             for i in range(numberToAttribute):
                 # Find unemployed villager
-                while not self.settlementData["villagerProfession"][idFound] == "Unemployed" and idFound < len(self.settlementData["villagerProfession"][idFound]):
+                while idFound < len(self.settlementData["villagerProfession"][idFound]) and not self.settlementData["villagerProfession"][idFound] == "Unemployed" :
                     idFound += 1
 
                 self.settlementData["villagerProfession"][idFound] = struct.info["villageInfo"]["profession"]
@@ -109,7 +110,10 @@ class StructureManager:
             
             # Add all the structure of this group
             for structure in self.dependencies[group]["structures"]:
-                data = { "name" : structure, "group" : group, "type" : self.dependencies[group]["type"], "weight" : 1 }
+                weight = 1
+                if self.dependencies[group]["type"] == StructureManager.FUNCTIONALS:
+                    weight = 10
+                data = { "name" : structure, "group" : group, "type" : self.dependencies[group]["type"], "weight" : weight }
 
                 if data["type"] == "houses" :
                     self.houses.append(data)

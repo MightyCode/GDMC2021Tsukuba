@@ -1,9 +1,9 @@
 import utils._math as _math
-import math
 import utils._utils as _utils
+from generation.structures.baseStructure import *
 from nbt import nbt
 
-class Structures:
+class Structures(BaseStructure):
     REPLACEMENTS = "replacements"
     CHANGE = "Change"
     CHANGE_TO = "ChangeTo"
@@ -13,8 +13,6 @@ class Structures:
     CHANGE_EXCLUDED_ZONES = ""
 
     AIR_BLOCK = "minecraft:air"
-
-    ORIENTATIONS = ["west", "north" , "east", "south"]
 
     REPLACEMENTS_EXCLUSIF = {
         "oak" : "dark_oak"
@@ -41,9 +39,11 @@ class Structures:
 
 
     def __init__(self, nbtfile, info, name):
+        super(BaseStructure, self).__init__()
+        self.setInfo(info)
+
         self.size = [nbtfile["size"][0].value, nbtfile["size"][1].value, nbtfile["size"][2].value]
         self.file = nbtfile
-        self.info = info
         self.name = name
 
         self.computedOrientation = {}
@@ -187,33 +187,6 @@ class Structures:
         print("Finish building : " + self.name)
 
 
-    def returnWorldPosition(self, localPoint, flip, rotation, referencePoint, worldStructurePosition) :
-        worldPosition = [0, 0, 0]
-        
-        # Position in building local spacereplacements
-        if flip == 1 or flip == 3 :
-            worldPosition[0] = self.size[0] - 1 - localPoint[0]
-            worldPosition[2] = self.size[2] - 1 - localPoint[2]
-        else : 
-            worldPosition[0] = localPoint[0]
-            worldPosition[2] = localPoint[2]
-
-        worldPosition[1] = localPoint[1]
-
-        # Take rotation into account, apply to building local positions
-        worldPosition[0], worldPosition[2] = _math.rotatePointAround(
-            [worldStructurePosition[0] + referencePoint[0], worldStructurePosition[2] + referencePoint[2]], 
-            [worldStructurePosition[0] + worldPosition[0], worldStructurePosition[2] + worldPosition[2]], 
-            rotation *  math.pi / 2)
-
-        # Position in real world
-        
-        worldPosition[0] = int(worldPosition[0])                        - referencePoint[0]
-        worldPosition[1] = worldStructurePosition[1] + worldPosition[1] - referencePoint[1] 
-        worldPosition[2] = int(worldPosition[2])                        - referencePoint[2]
-        return worldPosition 
-    
-
     def convertNbtBlockToStr(self, blockPalette, rotation, flip, takeOriginalBlockName=False):
         block = "["
         if takeOriginalBlockName:
@@ -228,95 +201,3 @@ class Structures:
             block = block[:-1] 
         block += "]"
         return block
-
-
-    def convertProperty(self, propertyName, propertyValue, rotation, flip):
-        if propertyValue in self.computedOrientation.keys():
-            propertyValue = self.computedOrientation[propertyValue]
-
-        return propertyName + "=" + propertyValue
-
-
-    def computeOrientation(self, rotation, flip) :
-        # Construct orientation
-        self.computedOrientation = { 
-            "left" : "left",
-            "right" : "right",
-            "x" : "x",
-            "y" : "y",
-            Structures.ORIENTATIONS[0] : Structures.ORIENTATIONS[0],
-            Structures.ORIENTATIONS[1] : Structures.ORIENTATIONS[1],
-            Structures.ORIENTATIONS[2] : Structures.ORIENTATIONS[2],
-            Structures.ORIENTATIONS[3] : Structures.ORIENTATIONS[3]
-        }
-        
-        # Apply flip to orientation
-        if flip == 1 or flip == 3:
-            self.computedOrientation["east"] = "west" 
-            self.computedOrientation["west"] = "east"
-
-            if flip != 3:
-                self.computedOrientation["left"] = "right"
-                self.computedOrientation["right"] = "left"
-            
-        if flip == 2 or flip == 3:
-            self.computedOrientation["south"] = "north"
-            self.computedOrientation["north"] = "south"
-
-
-        # Apply rotation to orientation
-        for orientation in self.computedOrientation.keys():
-            if orientation in Structures.ORIENTATIONS:
-                self.computedOrientation[orientation] = Structures.ORIENTATIONS[
-                    (Structures.ORIENTATIONS.index(self.computedOrientation[orientation]) + rotation) % len(Structures.ORIENTATIONS)
-                ]
-
-        if rotation == 1 or rotation == 3:
-            self.computedOrientation["x"] = "z"
-            self.computedOrientation["z"] = "x"
-
-    """
-    Return position where reference position is the center of the local space
-    """
-    def getCornersLocalPositions(self, referencePosition, flip, rotation):
-
-        if flip == 1 or flip == 3 :
-            referencePosition[0] = self.size[0] - 1 - referencePosition[0]
-            referencePosition[2] = self.size[2] - 1 - referencePosition[2]
-        else : 
-            referencePosition[0] = self.size[0] - 1 - referencePosition[0]
-            referencePosition[2] = self.size[2] - 1 - referencePosition[2]
-
-        positions = [[- referencePosition[0],                        - referencePosition[2]], 
-                     [self.size[0] - referencePosition[0],           - referencePosition[2]], 
-                     [- referencePosition[0] - referencePosition[0], self.size[2] - referencePosition[2]], 
-                     [self.size[0] - referencePosition[0],           self.size[2] - referencePosition[2]]]
-        toReturn = []
-
-        for position in positions :
-            temp = _math.rotatePointAround([0, 0], 
-                position ,   math.pi / 2 * rotation)
-            
-            toReturn.append([int(temp[0]), referencePosition[1], int(temp[1])])
-        
-        return positions
-
-
-    def getSize(self):
-        return self.size
-    
-
-    def size_x(self):
-        return self.size[0]
-        
-
-    def size_y(self):
-        return self.size[1]
-        
-
-    def size_z(self):
-        return self.size[2]
-
-
-    def getRotateSize(self):
-        return [self.size[2], self.size[1], self.size[0]]
