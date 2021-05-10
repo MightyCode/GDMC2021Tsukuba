@@ -12,7 +12,7 @@ import sys
 
 interface = interfaceUtils.Interface()
 area = (0, 0, 128, 128)
-interfaceUtils.runCommand("execute at @p run setbuildarea ~-100 0 ~-100 ~100 255 ~100")
+interfaceUtils.runCommand("execute at @p run setbuildarea ~-150 0 ~-150 ~150 255 ~150")
 buildArea = interfaceUtils.requestBuildArea()
 floodFill = FloodFill()
 if buildArea != -1:
@@ -24,6 +24,8 @@ if buildArea != -1:
     area = (x1, z1, x2 - x1, z2 - z1)
 print(area)
 ws = WorldSlice(area)
-print(floodFill.findPosHouse([[-12, 63, -1], [-12, 63, 10], [1, 63, -1], [1, 63, 20]],ws))
-print(floodFill.findPosHouse([[-12, 63, -1], [-12, 63, 10], [1, 63, -1], [1, 63, 20]],ws))
-print(floodfill.findPosHouse([[-12, 63, -1], [-12, 63, 10], [1, 63, -1], [1, 63, 20]],ws))
+house1 = floodFill.findPosHouse([[-1, 63, -1], [-1, 63, 6], [3, 63, -1], [3, 63, 6]],ws)
+house2 = floodFill.findPosHouse([[-1, 63, -1], [-1, 63, 6], [3, 63, -1], [3, 63, 6]],ws)
+
+house3 = floodFill.findPosHouse([[-1, 63, -1], [-1, 63, 6], [3, 63, -1], [3, 63, 6]],ws)
+print(house1,house2,house3)
