@@ -52,7 +52,7 @@ if len(sys.argv) <= 1 :
                 "farmer", "fisherman", "shepherd", "fletcher", "librarian", "cartographer", 
                 "cleric", "armorer", "weaponsmith", "toolsmith", "butcher", "leatherworker", "mason", "nitwit"]
     
-    settlementData["structuresNumberGoal"] = random.randint(5, 20)
+    settlementData["structuresNumberGoal"] = random.randint(5, 70)
 
     #structures contains "position", "rotation", "flip" "name", "type", "group" ->, "villagersId"
     settlementData["structures"] = []
@@ -72,7 +72,8 @@ if len(sys.argv) <= 1 :
         settlementData["structures"][i]["flip"] = 0
         settlementData["structures"][i]["rotation"] = 0
 
-        settlementData["structures"][i]["position"] = floodFill.findPosHouse(corners, ws)
+        #settlementData["structures"][i]["position"] = floodFill.findPosHouse(corners, ws)
+        settlementData["structures"][i]["position"] = [random.randint(0, 256), 63, random.randint(0, 256)]
 
         # If new chunck discovererd, add new ressources
         chunk = [int(settlementData["structures"][i]["position"][0] / 16), int(settlementData["structures"][i]["position"][2] / 16)] 
@@ -131,11 +132,11 @@ if len(sys.argv) <= 1 :
         buildingCondition["replacements"]["villagerRegistry"] = villagersBook
         buildingCondition["replacements"]["deadVillagerRegistry"] = deadVillagersBook
 
-        structure.build(worldModif, buildingCondition, chestGeneration)
+        #structure.build(worldModif, buildingCondition, chestGeneration)
 
-        _utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
+        #_utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
         
-    worldModif.saveToFile(file)
+    #worldModif.saveToFile(file)
 
 else : 
     if sys.argv[1] == "r" :   

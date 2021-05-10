@@ -68,7 +68,6 @@ class StructureManager:
         
         # Functionnals structure
         elif structure["type"] == StructureManager.FUNCTIONALS:
-            print(self.settlementData["freeVillager"])
             numberToAttribute = struct.info["villageInfo"]["villager"]
             self.settlementData["structures"][-1]["villagersId"] = []
             size = len(self.settlementData["villagerNames"])
@@ -76,8 +75,11 @@ class StructureManager:
             idFound = 0
             for i in range(numberToAttribute):
                 # Find unemployed villager
-                while idFound < len(self.settlementData["villagerProfession"][idFound]) and not self.settlementData["villagerProfession"][idFound] == "Unemployed" :
+                while idFound < len(self.settlementData["villagerProfession"]) :
+                    if self.settlementData["villagerProfession"][idFound] == "Unemployed" :
+                        break
                     idFound += 1
+
 
                 self.settlementData["villagerProfession"][idFound] = struct.info["villageInfo"]["profession"]
                 self.settlementData["villagerGameProfession"][idFound] = struct.info["villageInfo"]["gameProfession"]
@@ -115,11 +117,11 @@ class StructureManager:
                     weight = 10
                 data = { "name" : structure, "group" : group, "type" : self.dependencies[group]["type"], "weight" : weight }
 
-                if data["type"] == "houses" :
+                if data["type"] == StructureManager.HOUSES :
                     self.houses.append(data)
-                elif data["type"] == "functionals" : 
+                elif data["type"] == StructureManager.FUNCTIONALS : 
                     self.functionals.append(data)
-                elif data["type"] == "reprentatives" : 
+                elif data["type"] == StructureManager.REPRESENATIVES : 
                     self.reprentatives.append(data)
                 self.allStructures.append(data)
 
