@@ -5,8 +5,9 @@ from generation.structures.baseStructure import *
 
 class GeneratedQuarry(BaseStructure):
     def __init__(self) :
+        super(BaseStructure, self).__init__()
         self.listOfBlocks = numpy.array([])
-        self.size = [11, 13, 11]
+        self.setSize([11, 13, 11])
 
     def build(self, worldModif, buildingCondition, chestGeneration):
         self.listOfBlocks = numpy.array([[]])

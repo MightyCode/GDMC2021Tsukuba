@@ -42,7 +42,7 @@ class Structures(BaseStructure):
         super(BaseStructure, self).__init__()
         self.setInfo(info)
 
-        self.size = [nbtfile["size"][0].value, nbtfile["size"][1].value, nbtfile["size"][2].value]
+        self.setSize([nbtfile["size"][0].value, nbtfile["size"][1].value, nbtfile["size"][2].value])
         self.file = nbtfile
         self.name = name
 
