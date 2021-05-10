@@ -101,7 +101,7 @@ class BaseStructure:
 
         positions = [[- referencePosition[0],                        - referencePosition[2]], 
                      [self.size[0] - 1 - referencePosition[0],       - referencePosition[2]], 
-                     [- referencePosition[0] - referencePosition[0], self.size[2] - 1 - referencePosition[2]], 
+                     [- referencePosition[0],                       self.size[2] - 1 - referencePosition[2]], 
                      [self.size[0] - 1 - referencePosition[0],       self.size[2] - 1 - referencePosition[2]]]
         toReturn = []
 
