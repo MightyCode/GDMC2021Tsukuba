@@ -15,5 +15,8 @@
   },
   "villageInfo" : {
     "villager" : 1
+  },
+  "ground" : {
+    "info" : "all"
   }
 }

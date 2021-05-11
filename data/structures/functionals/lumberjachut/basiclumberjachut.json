@@ -21,5 +21,8 @@
     "villager" : 1,
     "gameProfession" : "mason",
     "profession" : "Lumberjack"
+  },
+  "ground" : {
+    "info" : "all"
   }
 }
