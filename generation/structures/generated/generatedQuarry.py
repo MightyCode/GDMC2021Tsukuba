@@ -10,20 +10,24 @@ class GeneratedQuarry(BaseStructure):
         self.setSize([11, 13, 11])
 
     def build(self, worldModif, buildingCondition, chestGeneration):
-        self.listOfBlocks = numpy.array([[]])
+        cx = buildingCondition["position"][0]
+        cy = buildingCondition["position"][1]
+        cz = buildingCondition["position"][2]
+        self.listOfBlocks = numpy.array([])
+        uselessBlocks = ["minecraft:air", "minecraft:cave_air", "minecraft:grass", "minecraft:tall_grass", "minecraft:poppy", "minecraft:water", "minecraft:lava", "minecraft:dead_bush", "minecraft:cactus", "minecraft:sugar_cane"]
         ## Building the quarry.
-        for dy in range(11):
-            for dx in range(11):
-                for dz in range(11):
+        for dy in range(self.size[1]):
+            for dx in range(self.size[0]):
+                for dz in range(self.size[2]):
                     # Get all the block we chunk
-                    block = worldModif.interface.getBlock(buildingCondition["position"][0] + dx, buildingCondition["position"][1] - dy, buildingCondition["position"][2] + dz)
+                    block = worldModif.interface.getBlock(cx + dx, cy - dy, cz + dz)
                     if block != "minecraft:air" and block != "minecraft:cave_air":
                         self.listOfBlocks = numpy.append(self.listOfBlocks, block)   
                         
         # Fill the area with air block           
-        worldModif.fillBlocks(buildingCondition["position"][0], buildingCondition["position"][1], buildingCondition["position"][2], buildingCondition["position"][0] + dx, buildingCondition["position"][1] - dy, buildingCondition["position"][2] + dz, "minecraft:air")
+        worldModif.fillBlocks(cx, cy, cz, cx + dx, cy - dy, cz + dz, "minecraft:air")
         # Set a chest
-        worldModif.interface.setBlock(buildingCondition["position"][0] + 5, buildingCondition["position"][1] + 1, buildingCondition["position"][2] - 2, "minecraft:chest")
+        worldModif.interface.setBlock(cx+5, cy + 1, cz - 2, "minecraft:chest")
         # Add the items to the chests
         counter = collections.Counter(self.listOfBlocks)
         items = counter.items()
@@ -43,6 +47,70 @@ class GeneratedQuarry(BaseStructure):
                 sublist.append(i[0])
                 sublist.append(i[1])
                 itemsList.append(sublist)
-        utils.addItemChest(buildingCondition["position"][0] + 5, buildingCondition["position"][1] + 1, buildingCondition["position"][2] - 2, itemsList)
+        utils.addItemChest(cx+5, cy+1, cz-2, itemsList)
         print(itemsList)
+        
+        # Add the fences for the quarry
+        worldModif.interface.setBlock(cx-1, cy+1, cz-1, "minecraft:oak_fence")
+        
+        # First line
+        for i in range(self.size[0] + 1):
+            for y in range(self.size[1]):
+                block = worldModif.interface.getBlock(cx+i, cy-y, cz-1)
+                # print(block)
+                # Check if there is an useless block below so we can replace it with a fence
+                if  block in uselessBlocks:
+                    worldModif.interface.setBlock(cx+i, cy-y, cz-1, "minecraft:oak_fence")
+            worldModif.interface.setBlock(cx+i, cy+1, cz-1, "minecraft:oak_fence")
+            
+        # Second line
+        for j in range(self.size[2] + 1):
+            for y in range(self.size[1]):
+                block = worldModif.interface.getBlock(cx+self.size[0], cy-y, cz+j)
+                # print(block)
+                # Check if there is an useless block below so we can replace it with a fence
+                if block in uselessBlocks:
+                    worldModif.interface.setBlock(cx+self.size[0], cy-y, cz+j, "minecraft:oak_fence")
+            worldModif.interface.setBlock(cx+self.size[0], cy+1, cz+j, "minecraft:oak_fence")
+            
+        # Third line
+        for k in range(self.size[0] + 1):
+            for y in range(self.size[1]):
+                block = worldModif.interface.getBlock(cx-k+self.size[0], cy-y, cz+self.size[2])
+                # print(block)
+                # Check if there is an useless block below so we can replace it with a fence
+                if block in uselessBlocks:
+                    worldModif.interface.setBlock(cx-k+self.size[0], cy-y, cz+self.size[2], "minecraft:oak_fence")
+            worldModif.interface.setBlock(cx-k+self.size[0], cy+1, cz+self.size[2], "minecraft:oak_fence")
+            
+        # Fourth line
+        for l in range(self.size[2] + 1):
+            for y in range(self.size[1]):
+                block = worldModif.interface.getBlock(cx-1, cy-y, cz+l)
+                # print(block)
+                # Check if there is an useless block below so we can replace it with a fence
+                if block in uselessBlocks:
+                    worldModif.interface.setBlock(cx-1, cy-y, cz+l, "minecraft:oak_fence")
+            worldModif.interface.setBlock(cx-1, cy+1, cz+l, "minecraft:oak_fence")
+            
+        # Add the fence gate
+        z = math.floor(self.size[2]/2)
+        for y in range(self.size[1]):
+            block = worldModif.interface.getBlock(cx-1, cy-y, cz+z)
+            if block == "minecraft:oak_fence":
+                worldModif.interface.setBlock(cx-1, cy-y, cz+z, "minecraft:oak_fence_gate[facing=east]")
+        worldModif.interface.setBlock(cx-1, cy+1, cz+z, "minecraft:oak_fence_gate[facing=east]")
+        
+        # Set air around the fence gate
+        worldModif.interface.setBlock(cx-2, cy+1, cz+z, "minecraft:air")
+        worldModif.interface.setBlock(cx, cy+1, cz+z, "minecraft:air")
+        worldModif.interface.setBlock(cx-2, cy+2, cz+z, "minecraft:air")
+        worldModif.interface.setBlock(cx, cy+2, cz+z, "minecraft:air")
+        
+        
+        # Add the ladders
+        for ladder in range(self.size[1]):
+            worldModif.interface.setBlock(cx, cy-ladder, cz+z, "minecraft:ladder[facing=east]")
+        
         print("Done")
+        

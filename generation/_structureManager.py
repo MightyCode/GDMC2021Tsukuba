@@ -135,8 +135,12 @@ class StructureManager:
         elif "Resources" in name:
             valueToCheck =  self.settlementData[name]
         elif name == "previous":
+            for previous in conditionValues:
+                if not self.checkOneCondition("previousItem", previous):
+                    return False
+            return True
+        elif name == "previousItem":
             valueToCheck = self.numberOfStructuresForEachGroup[conditionValues["name"]]
-
 
         if "min" in conditionValues:
             if valueToCheck < conditionValues["min"] :
