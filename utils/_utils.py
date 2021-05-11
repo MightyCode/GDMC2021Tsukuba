@@ -5,6 +5,9 @@ import lib.interfaceUtils as interfaceUtils
 
 
 def addResourcesFromChunk(resources, settlementData, biome):
+    if biome == "-1":
+        return
+        
     dictResources = resources.biomesBlocks[biome]
     if "woodResources" in dictResources:
         settlementData["woodResources"] += dictResources["woodResources"]

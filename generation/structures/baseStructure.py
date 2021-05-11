@@ -10,7 +10,7 @@ class BaseStructure:
 
     def setInfo(self, info):
         self.info = info
-        self.size = [0, 0]
+        self.size = [0, 0, 0]
         self.computedOrientation = {}
 
     def returnWorldPosition(self, localPoint, flip, rotation, referencePoint, worldStructurePosition) :
@@ -93,6 +93,8 @@ class BaseStructure:
     Return position where reference position is the center of the local space
     """
     def getCornersLocalPositions(self, referencePosition, flip, rotation):
+        print(referencePosition)
+        print(self.size)
         if flip == 1 or flip == 3 :
             referencePosition[0] = self.size[0] - 1 - referencePosition[0]
 
@@ -101,7 +103,7 @@ class BaseStructure:
 
         positions = [[- referencePosition[0],                        - referencePosition[2]], 
                      [self.size[0] - 1 - referencePosition[0],       - referencePosition[2]], 
-                     [- referencePosition[0] - referencePosition[0], self.size[2] - 1 - referencePosition[2]], 
+                     [- referencePosition[0],                       self.size[2] - 1 - referencePosition[2]], 
                      [self.size[0] - 1 - referencePosition[0],       self.size[2] - 1 - referencePosition[2]]]
         toReturn = []
 
@@ -121,6 +123,10 @@ class BaseStructure:
                         toReturn[2 - j] = temp
         
         return toReturn
+
+
+    def setSize(self, size):
+        self.size = size
 
 
     def getSize(self):

@@ -39,9 +39,9 @@ if len(sys.argv) <= 1 :
     settlementData["biomeId"] = interface.getBiome(settlementData["center"][0], settlementData["center"][2], 1, 1) # TODO get mean
     settlementData["biomeName"] = resources.biomeMinecraftId[int(settlementData["biomeId"])]
     settlementData["biomeBlockId"] = str(resources.biomesBlockId[settlementData["biomeName"]])
-    if settlementData["biomeBlockId"] == -1: 
+    if settlementData["biomeBlockId"] == "-1": 
         print("Generation on biome block id -1")
-        settlementData["biomeBlockId"] = 0
+        settlementData["biomeBlockId"] = "0"
 
     settlementData["villageName"] = _utils.generateVillageName()
 
@@ -52,7 +52,7 @@ if len(sys.argv) <= 1 :
                 "farmer", "fisherman", "shepherd", "fletcher", "librarian", "cartographer", 
                 "cleric", "armorer", "weaponsmith", "toolsmith", "butcher", "leatherworker", "mason", "nitwit"]
     
-    settlementData["structuresNumberGoal"] = random.randint(5, 20)
+    settlementData["structuresNumberGoal"] = random.randint(5, 70)
 
     #structures contains "position", "rotation", "flip" "name", "type", "group" ->, "villagersId"
     settlementData["structures"] = []
@@ -133,7 +133,7 @@ if len(sys.argv) <= 1 :
 
         structure.build(worldModif, buildingCondition, chestGeneration)
 
-        _utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
+        #_utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
         
     worldModif.saveToFile(file)
 

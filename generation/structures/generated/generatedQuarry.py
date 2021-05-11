@@ -5,9 +5,9 @@ from generation.structures.baseStructure import *
 
 class GeneratedQuarry(BaseStructure):
     def __init__(self) :
+        super(BaseStructure, self).__init__()
         self.listOfBlocks = numpy.array([])
-        # [x, y, z]
-        self.size = [11, 11, 11]
+        self.setSize([11, 13, 11])
 
     def build(self, worldModif, buildingCondition, chestGeneration):
         cx = buildingCondition["position"][0]
@@ -23,6 +23,7 @@ class GeneratedQuarry(BaseStructure):
                     block = worldModif.interface.getBlock(cx + dx, cy - dy, cz + dz)
                     if block != "minecraft:air" and block != "minecraft:cave_air":
                         self.listOfBlocks = numpy.append(self.listOfBlocks, block)   
+                        
         # Fill the area with air block           
         worldModif.fillBlocks(cx, cy, cz, cx + dx, cy - dy, cz + dz, "minecraft:air")
         # Set a chest
