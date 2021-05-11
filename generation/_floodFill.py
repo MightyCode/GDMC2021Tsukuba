@@ -132,7 +132,7 @@ class FloodFill:
                         if len(FloodFillValue) > 7000:
                             print(len(FloodFillValue))
                             print("it's large enough")
-                            FloodFillValue=self.floodfill(xPos,yPos,zPos,ws,30)
+                            FloodFillValue=self.floodfill(xPos,yPos,zPos,ws,35)
                         else:
                             print("trying to find somewhere larger")
                             notfinded = True
@@ -147,7 +147,7 @@ class FloodFill:
                 while verif1 == False and verif2 == False and debug:
                     print("there is already",len(self.listHouse),"placed")
                     index = random.randint(0,len(self.listHouse)-1)
-                    print(self.listHouse[index][0],self.listHouse[index][2])
+                    print(abs(self.listHouse[index][0]),abs(self.listHouse[index][2]))
                     if abs(self.listHouse[index][0]) > 110 or abs(self.listHouse[index][2]) > 110:
                         print("out of bound, retrying ...")
                     else:
@@ -194,7 +194,10 @@ class FloodFill:
                                 print(verif1,verif2)
                                 if verif1 and verif2:
                                     notfinded = False
-                                    FloodFillValue = self.floodfill(xPos,yPos,zPos,ws,30)
+                                    if xPos > 120 or yPos > 120:
+                                        FloodFillValue = [xPos,yPos,zPos]
+                                    else:
+                                        FloodFillValue = self.floodfill(xPos,yPos,zPos,ws,35)
                                 
                             else:
                                 verif1 = False
