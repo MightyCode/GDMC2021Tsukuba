@@ -140,7 +140,7 @@ class FloodFill:
                     else:
                         print("neednewposition")   
             else:
-                debug = 10
+                debug = 20
                 verif1 = False
                 verif2 = False
                 print("test")
@@ -201,6 +201,8 @@ class FloodFill:
                                 
                             else:
                                 verif1 = False
+                                debug-=1
+                                print(debug,"try left")
                                 print("first verification echec")
 
 
@@ -210,6 +212,8 @@ class FloodFill:
             xPos=self.listHouse[index][0]
             yPos=self.listHouse[index][1]
             zPos=self.listHouse[index][2]
+            
+            FloodFillValue = [xPos,yPos,zPos]
             print("debug failed")
         else:
             self.listHouse.append((xPos,yPos,zPos,CornerPos,FloodFillValue))
