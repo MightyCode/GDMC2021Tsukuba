@@ -13,6 +13,7 @@ import sys
 file = "temp.txt"
 interface = interfaceUtils.Interface()
 worldModif = WorldModification(interface)
+interfaceUtils.runCommand("execute at @p run setbuildarea ~-150 0 ~-150 ~150 255 ~150")
 buildArea = interfaceUtils.requestBuildArea()
 
 if buildArea == -1:
@@ -52,7 +53,7 @@ if len(sys.argv) <= 1 :
                 "farmer", "fisherman", "shepherd", "fletcher", "librarian", "cartographer", 
                 "cleric", "armorer", "weaponsmith", "toolsmith", "butcher", "leatherworker", "mason", "nitwit"]
     
-    settlementData["structuresNumberGoal"] = random.randint(5, 70)
+    settlementData["structuresNumberGoal"] = random.randint(15, 40)
 
     #structures contains "position", "rotation", "flip" "name", "type", "group" ->, "villagersId"
     settlementData["structures"] = []
