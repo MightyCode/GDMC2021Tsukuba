@@ -34,17 +34,15 @@ z2 = buildArea[5]
 area = (x1, z1, x2 - x1, z2 - z1)
 
 if len(sys.argv) <= 1:
-
+    transparentBlocks = ["minecraft:air", "minecraft:oak_leaves", "minecraft:birch_leaves", "minecraft:jungle_leaves", "minecraft:acacia_leaves", "minecraft:dark_oak_leaves", "minecraft:snow", "minecraft:grass", "minecraft:poppy"]
     # Find the highest non-air block and build the quarry there
 
     cx = int(area[0] + area[2]/2)
     cz = int(area[1] + area[3]/2)
 
     ## Find highest non-air block
-    ## Note that in real construction, you want to ignore "transparent" blocks,
-    ## Such as leaves, snow, grass, etc.
     cy = 255
-    while interfaceUtils.getBlock(cx, cy, cz) == 'minecraft:air' :
+    while interfaceUtils.getBlock(cx, cy, cz) in transparentBlocks:
         cy -= 1
 
     buildingConditions = Structures.BUILDING_CONDITIONS.copy()
