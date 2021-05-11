@@ -53,7 +53,7 @@ if len(sys.argv) <= 1 :
                 "farmer", "fisherman", "shepherd", "fletcher", "librarian", "cartographer", 
                 "cleric", "armorer", "weaponsmith", "toolsmith", "butcher", "leatherworker", "mason", "nitwit"]
     
-    settlementData["structuresNumberGoal"] = random.randint(15, 40)
+    settlementData["structuresNumberGoal"] = random.randint(15, 50)
 
     #structures contains "position", "rotation", "flip" "name", "type", "group" ->, "villagersId"
     settlementData["structures"] = []
@@ -132,11 +132,11 @@ if len(sys.argv) <= 1 :
         buildingCondition["replacements"]["villagerRegistry"] = villagersBook
         buildingCondition["replacements"]["deadVillagerRegistry"] = deadVillagersBook
 
-        #structure.build(worldModif, buildingCondition, chestGeneration)
+        structure.build(worldModif, buildingCondition, chestGeneration)
 
         #_utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
         
-    #worldModif.saveToFile(file)
+    worldModif.saveToFile(file)
 
 else : 
     if sys.argv[1] == "r" :   
