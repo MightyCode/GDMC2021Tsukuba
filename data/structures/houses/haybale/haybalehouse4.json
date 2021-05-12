@@ -12,5 +12,11 @@
     "preferedAirMode" : 1,
     "replacements" : [
     ]
+  },
+  "villageInfo" : {
+    "villager" : 1
+  },
+  "ground" : {
+    "info" : "all"
   }
 }

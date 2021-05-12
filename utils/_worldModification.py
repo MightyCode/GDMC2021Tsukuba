@@ -1,7 +1,8 @@
 import os.path
 from os import path
 import json 
-import interfaceUtils
+import lib.interfaceUtils as interfaceUtils
+import utils._utils as _utils
 
 # Class which serve to save all modification, do undo actions
 class WorldModification: 
@@ -23,6 +24,7 @@ class WorldModification:
             config = json.load(f)
             if "debugMode" in config.keys():
                 WorldModification.DEBUG_MODE = config["debugMode"]
+
 
     def setBlock(self, x, y, z, block, compareBlockState=False):
         if WorldModification.DEBUG_MODE:

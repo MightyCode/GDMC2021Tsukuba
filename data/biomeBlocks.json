@@ -9,6 +9,9 @@
     },
     "0" : {
         "Comment" : "Plaine and normal forest biome",
+        "woodResources" : 1.5,
+        "dirtResources" : 0.5,
+        "stoneResources" : 0.34,
         "woodType" : "oak",
         "woodType2" : "spruce",
         "woodType3" : "birch",
@@ -18,6 +21,9 @@
     },
     "1" : {
         "Comment": "Oak biome, but darker",
+        "woodResources" : 1.5,
+        "dirtResources" : 0.5,
+        "stoneResources" : 0.34,
         "woodType" : "oak",
         "woodType2" : "dark_oak",
         "woodType3" : "spruce",
@@ -27,6 +33,9 @@
     },
     "2" : {
         "Comment": "Mushroom special biome",
+        "woodResources" : 0.5,
+        "dirtResources" : 0.25,
+        "stoneResources" : 0.5,
         "woodType" : "oak",
         "woodType2" : "dark_oak",
         "woodType3" : "spruce",
@@ -36,6 +45,9 @@
     },
     "3" : {
         "Comment" : "Very Hot biome, normal sand",
+        "woodResources" : 0.34,
+        "dirtResources" : 0.17,
+        "stoneResources" : 0.17,
         "woodType" : "acacia",
         "woodType2" : "jungle",
         "woodType3" : "birch",
@@ -45,6 +57,9 @@
     },
     "4" : {
         "Comment" : "Hot biome, vegetation, normal ground",
+        "woodResources" : 0.5,
+        "dirtResources" : 1,
+        "stoneResources" : 0.34,
         "woodType" : "acacia",
         "woodType2" : "birch",
         "woodType3" : "oak",
@@ -54,6 +69,9 @@
     },
     "5" : {
         "Comment" : "Hot biome, vegetation, red sand",
+        "woodResources" : 0.34,
+        "dirtResources" : 0.1,
+        "stoneResources" : 0.17,
         "woodType" : "acacia",
         "woodType2" : "birch",
         "woodType3" : "oak",
@@ -63,6 +81,9 @@
     },
     "6" : {
         "Comment": "Cold biome, normal ground",
+        "woodResources" : 0.5,
+        "dirtResources" : 0.34,
+        "stoneResources" : 0.17,
         "woodType" : "spruce",
         "woodType2" : "dark_oak",
         "woodType3" : "oak",
@@ -72,6 +93,9 @@
     },
     "7": {
         "Comment": "Cold biome, sand ground",
+        "woodResources" : 0.5,
+        "dirtResources" : 0.17,
+        "stoneResources" : 0.17,
         "woodType" : "spruce",
         "woodType2" : "dark_oak",
         "woodType3" : "oak",
@@ -81,6 +105,9 @@
     },
     "8" : {
         "Comment": "Cold biome, podzol ground",
+        "woodResources" : 0.5,
+        "dirtResources" : 0.75,
+        "stoneResources" : 0.34,
         "woodType" : "spruce",
         "woodType2" : "dark_oak",
         "woodType3" : "oak",
@@ -90,6 +117,9 @@
     },
     "9" : {
         "Comment": "Cold biome, snow ground",
+        "woodResources" : 0.5,
+        "dirtResources" : 0.5,
+        "stoneResources" : 0.17,
         "woodType" : "spruce",
         "woodType2" : "dark_oak",
         "woodType3" : "oak",
@@ -99,6 +129,9 @@
     },
     "10" : {
         "Comment": "Cold biome, gravel ground",
+        "woodResources" : 0.5,
+        "dirtResources" : 0.34,
+        "stoneResources" : 0.34,
         "woodType" : "spruce",
         "woodType2" : "dark_oak",
         "woodType3" : "oak",
@@ -108,6 +141,9 @@
     },
     "11" : {
         "Comment" : "Jungle biome and derivated",
+        "woodResources" : 1.5,
+        "dirtResources" : 0.75,
+        "stoneResources" : 0.34,
         "woodType" : "jungle",
         "woodType2" : "spruce",
         "woodType3" : "oak",
@@ -117,6 +153,9 @@
     },
     "12" : {
         "Comment" : "Biome which use birch",
+        "woodResources" : 1.5,
+        "dirtResources" : 0.75,
+        "stoneResources" : 0.34,
         "woodType" : "birch",
         "woodType2" : "oak",
         "woodType3" : "spruce",
@@ -126,6 +165,9 @@
     },
     "13" : {
         "Comment" : "Dark biome",
+        "woodResources" : 1,
+        "dirtResources" : 1,
+        "stoneResources" : 0.34,
         "woodType" : "dark_oak",
         "woodType2" : "oak",
         "woodType3" : "spruce",

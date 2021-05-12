@@ -1,0 +1,69 @@
+{
+    "haybaleHouses" : {
+        "structures" : [
+            "haybalehouse1",
+            "haybalehouse2",
+            "haybalehouse3",
+            "haybalehouse4"
+        ],
+        "type" : "houses",
+        "conditions" : {
+            "previous" : [
+                {  "name" : "haybaleHouses", "max" : 10 } 
+            ]
+        }
+    },
+    "basicLumberJackHut" : {
+        "structures" : [
+            "basiclumberjachut"
+        ],
+        "type" : "functionals",
+        "conditions" : {
+            "villagerNeeded" : { "min" : 1 },
+            "woodResources" : { "min" : 1 },
+            "previous" : [
+                {  "name" : "basicLumberJackHut", "max" : 3 } 
+            ]
+        }
+    },
+    "basicHouses" : {
+        "structures" : [
+            "basichouse1"
+        ],
+        "type" : "houses",
+        "conditions" : {
+            "previous" : [
+                {  "name" : "basicLumberJackHut", "min" : 1 },
+                { "name" : "basicHouses", "max" : 20 } 
+            ]
+        }
+    },
+    "basicFarm" : {
+        "structures" : [
+            "basicfarm"
+        ],
+        "type" : "functionals",
+        "conditions" : {
+            "villagerNeeded" : { "min" : 2 },
+            "previous" :  [ 
+                { "name" : "basicLumberJackHut", "min" : 1 },
+                { "name" : "basicFarm", "max" : 5 } 
+            ],
+            "dirtResources" : { "min" : 1}
+        }
+    },
+    "basicQuarry" : {
+        "structures" : [
+            "basicGeneratedQuarry"
+        ],
+        "type" : "functionals",
+        "conditions" : {
+            "villagerNeeded" : { "min" : 2 },
+            "previous" : [
+                { "name" : "basicLumberJackHut", "min" : 1 },
+                { "name" : "basicQuarry", "max" : 3 } 
+            ],
+            "stoneResources" : { "min" : 1}
+        }
+    }
+}

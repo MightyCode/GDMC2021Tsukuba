@@ -14,27 +14,28 @@ __all__ = ['Interface', 'requestBuildArea', 'runCommand',
 import requests
 from requests.exceptions import ConnectionError
 from io import BytesIO
-from bitarray import BitArray
+from lib.bitarray import BitArray
 import requests
 import math
 import nbt
 import numpy as np
-import worldLoader
-
-
+import lib.worldLoader as worldLoader
+from lib.worldLoader import WorldSlice
+import random
 
 class Interface:
     """**Provides tools for interacting with the HTML interface**.
 
     All function parameters and returns are in local coordinates.
     """
-
     def __init__(self, x=0, y=0, z=0, buffering=False, bufferlimit=1024):
         """**Initialise an interface with offset and buffering**."""
         self.offset = x, y, z
         self.__buffering = buffering
         self.bufferlimit = bufferlimit
         self.buffer = []
+
+        random.seed(a=None, version=2)
 
     def __del__(self):
         """**Clean up before destruction**."""
@@ -239,7 +240,6 @@ class Interface:
         biomeId = response.text.split(":")
         biomeinfo = biomeId[6].split(";")
         biome = biomeinfo[1].split(",")
-        print(biome[0])
         return biome[0]
 
     def getAllBiome(self):
@@ -265,7 +265,7 @@ class Interface:
         return value
             
 
-    def getNameBiome(self,biome):
+    def getNameBiome(self, biome):
         filin = open("data/biome.txt")
         lignes = filin.readlines()
         biomename = lignes[int(biome)].split(":")[0]
@@ -326,15 +326,20 @@ def isBuffering():
     """**Global isBuffering**."""
     return globalinterface.isBuffering()
 
+def getHeight(x,z):
+    return globalinterface.getHeight(x,z)
+
 
 def setBuffering(val):
     """**Global setBuffering**."""
     globalinterface.setBuffering(val)
 
 
+
 def getBufferLimit():
     """**Global getBufferLimit**."""
     return globalinterface.getBufferLimit()
+
 
 
 def setBufferLimit(val):
@@ -356,6 +361,14 @@ def fill(x1, y1, z1, x2, y2, z2, blockStr):
     """**Global fill**."""
     return globalinterface.fill(x1, y1, z1, x2, y2, z2, blockStr)
 
+def getHeight(x,z,ws):
+    return globalinterface.getHeight(x,z,ws)
+
+def is_ground(x,y,z,ws):
+    return globalinterface.is_ground(x,y,z,ws)
+
+def is_air(x,y,z,ws):
+    return globalinterface.is_air(x,y,z,ws)
 
 def setBlock(x, y, z, blockStr):
     """**Global setBlock**."""
@@ -363,6 +376,12 @@ def setBlock(x, y, z, blockStr):
 
 def getBiome(x, z, dx, dz):
     return globalinterface.getBiome(x,z,dx,dz)
+
+def findPosHouse(CornerPos,ws):
+    return globalinterface.findPosHouse(CornerPos,ws)
+
+def verifHouse(xPos, yPos, zPos, CornerPos):
+    return globalinterface.verifHouse(xPos, yPos, zPos, CornerPos)
 
 # ----------------------------------------------------- block buffers
 

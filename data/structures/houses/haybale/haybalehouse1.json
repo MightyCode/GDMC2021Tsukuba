@@ -13,5 +13,13 @@
     "replacements" : [
       [1, 1, 1, 3, 4, 4]
     ]
+  },
+  "villageInfo" : {
+    "villager" : 1
+  },
+  "ground" : {
+    "zones" : [
+      [0, 1, 4, 5]
+    ]
   }
 }

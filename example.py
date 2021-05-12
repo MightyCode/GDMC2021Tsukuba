@@ -28,10 +28,10 @@ area = (0, 0, 128, 128)  # default build area
 # you can set a build area in minecraft using the /setbuildarea command
 buildArea = interfaceUtils.requestBuildArea()
 if buildArea != -1:
-    x1 = buildArea["xFrom"]
-    z1 = buildArea["zFrom"]
-    x2 = buildArea["xTo"]
-    z2 = buildArea["zTo"]
+    x1 = buildArea[0]
+    z1 = buildArea[1]
+    x2 = buildArea[2]
+    z2 = buildArea[3]
     # print(buildArea)
     area = (x1, z1, x2 - x1, z2 - z1)
 
