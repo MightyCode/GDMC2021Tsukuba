@@ -129,6 +129,7 @@ class Structures(BaseStructure):
         ## Computing : Modify from blocks
         for block in self.file["blocks"]:
             blockPalette = self.file["palette"][block["state"].value]
+            placeImmediately = False
 
             # Check if the current block is in excluded zone
             takeOriginalBlock = False
@@ -152,6 +153,9 @@ class Structures(BaseStructure):
                 buildingCondition["flip"], buildingCondition["rotation"], 
                 buildingCondition["referencePoint"], buildingCondition["position"] )
             
+            if "chest" in blockName:
+                placeImmediately = True
+
             worldModif.setBlock(
                 blockPosition[0], blockPosition[1], blockPosition[2],
                 self.convertNbtBlockToStr(
@@ -159,7 +163,7 @@ class Structures(BaseStructure):
                     buildingCondition["rotation"],
                     buildingCondition["flip"],
                     takeOriginalBlock
-                    ), 
+                    ), placeImmediately=placeImmediately
             )
 
             # If structure has loot tables and chest encounter

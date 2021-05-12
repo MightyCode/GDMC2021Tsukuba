@@ -7,6 +7,7 @@ class ChestGeneration:
         self.interface = interface
     
     def generate(self, x, y, z, lootTableName, changeItemName={}):
+        print(lootTableName)
         lootTable = self.resources.lootTables[lootTableName]["pools"][0]
 
         numberItem = 0
@@ -57,7 +58,7 @@ class ChestGeneration:
                     else :
                         items.append([ item["name"], numberOfItem ])
                     break
-                                   
+        
         interfaceUtils.Interface.addItemChest(x, y, z, items, itemPlaces)
 
 

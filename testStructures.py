@@ -27,13 +27,13 @@ area = (x1, z1, x2 - x1, z2 - z1)
 if len(sys.argv) <= 1 :
     resources = Resources()
     resLoader.loadAllResources(resources)
-    structure = resources.structures["basiclumberjachut"]
     chestGeneration = ChestGeneration(resources, interface)
+    structure = resources.structures["basicstonecutter"]
     info = structure.info
     buildingCondition = Structures.BUILDING_CONDITIONS.copy()
     buildingCondition["flip"] = 0
     buildingCondition["rotation"] = 0
-    buildingCondition["position"] = [15, 100, 15]
+    buildingCondition["position"] = [-12, 100, -40]
     buildingCondition["replaceAllAir"] = 0
     buildingCondition["referencePoint"] = [info["mainEntry"]["position"][0], info["mainEntry"]["position"][1], info["mainEntry"]["position"][2]]
 
