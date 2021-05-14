@@ -134,7 +134,6 @@ if len(sys.argv) <= 1 :
         buildingCondition["replacements"]["deadVillagerRegistry"] = deadVillagersBook
 
         structure.build(worldModif, buildingCondition, chestGeneration)
-        wait(200)
         
         #_utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
     worldModif.saveToFile(file)  
