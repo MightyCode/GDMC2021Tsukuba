@@ -8,8 +8,9 @@
       "spruce" : { "type" : "woodType2", "state" : 2 }
     },
     "air" : {
-      "preferedAirMode" : 1,
+      "preferedAirMode" : 2,
       "replacements" : [
+        [1, 0, 0, 4, 5, 6]
       ]
     },
     "lootTables" : [

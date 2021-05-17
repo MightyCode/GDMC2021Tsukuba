@@ -189,13 +189,15 @@
     },
     "basicTavern" : {
         "structures" : [
-            "basicTavern"
+            "basictavern"
         ],
         "type" : "representatives",
         "conditions" : {
             "villagerNeeded" : { "min" : 1 },
             "previous" : [
                 { "name" : "basicWindmill", "min" : 1 },
+                { "name" : "basicFarm", "min" : 2 },
+                { "name" : "basicFurnace", "min" : 1 },
                 { "name" : "basicTavern", "max" : 1 } 
             ]
         },

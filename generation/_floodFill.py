@@ -4,9 +4,12 @@ import math
 class FloodFill:
     
     # Ignoreblockvalue is the list of block that we want to ignore when we read the field
-    IGNORED_BLOCKS = ['minecraft:air', 'minecraft:oak_leaves',  'minecraft:leaves',  'minecraft:birch_leaves',
-        'minecraft:oak_log',  'minecraft:spruce_log',  'minecraft:birch_log',  'minecraft:jungle_log', 'minecraft:acacia_log',
-        'minecraft:dark_oak_log','minecraft:water','minecraft:grass','minecraft:cave_air','minecraft:snow','minecraft:spruce_leaves']
+    IGNORED_BLOCKS = [
+        'minecraft:air', 'minecraft:cave_air', 'minecraft:water', 
+        'minecraft:oak_leaves',  'minecraft:leaves',  'minecraft:birch_leaves', 'minecraft:spruce_leaves'
+        'minecraft:oak_log',  'minecraft:spruce_log',  'minecraft:birch_log',  'minecraft:jungle_log', 'minecraft:acacia_log', 'minecraft:dark_oak_log',
+        'minecraft:grass', 'minecraft:snow',
+        'minecraft:dead_bush', "minecraft:cactus"]
 
     def __init__(self):
         self.listHouse = []

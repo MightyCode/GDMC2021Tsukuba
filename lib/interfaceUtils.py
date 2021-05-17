@@ -236,7 +236,8 @@ class Interface:
         try:
             response = requests.get(url)
         except ConnectionError:
-            return "minecraft:plains"
+            #return "minecraft:plains"
+            return 0
         biomeId = response.text.split(":")
         biomeinfo = biomeId[6].split(";")
         biome = biomeinfo[1].split(",")

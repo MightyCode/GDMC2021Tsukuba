@@ -6,8 +6,9 @@
   "replacements" : {
   },
   "air" : {
-    "preferedAirMode" : 1,
+    "preferedAirMode" : 2,
     "replacements" : [
+      [0, 1, 1, 2, 4, 3]
     ]
   },
   "lootTables" : [

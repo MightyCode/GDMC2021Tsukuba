@@ -82,11 +82,11 @@ if len(sys.argv) <= 1 :
         corners = structure.getCornersLocalPositionsAllFlipRotation(structure.info["mainEntry"]["position"])
 
         #settlementData["structures"][i]["position"] = [random.randint(0, 256), 0, random.randint(0, 256)]
-        r = floodFill.findPosHouse(corners, ws)
-        print(r)
-        settlementData["structures"][i]["position"] = r
-        settlementData["structures"][i]["flip"] = 0
-        settlementData["structures"][i]["rotation"] = 0
+        result = floodFill.findPosHouse(corners, ws)
+
+        settlementData["structures"][i]["position"] = result["position"]
+        settlementData["structures"][i]["flip"] = result["flip"]
+        settlementData["structures"][i]["rotation"] = result["rotation"]
 
         # If new chunck discovererd, add new ressources
         chunk = [int(settlementData["structures"][i]["position"][0] / 16), int(settlementData["structures"][i]["position"][2] / 16)] 
@@ -147,9 +147,9 @@ if len(sys.argv) <= 1 :
         buildingCondition["replacements"]["villagerRegistry"] = villagersBook
         buildingCondition["replacements"]["deadVillagerRegistry"] = deadVillagersBook
 
-        #structure.build(worldModif, buildingCondition, chestGeneration)
+        structure.build(worldModif, buildingCondition, chestGeneration)
         
-        _utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
+        #_utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
         time.sleep
     worldModif.saveToFile(file)  
     
