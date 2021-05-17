@@ -13,7 +13,7 @@ class Structures(BaseStructure):
     CHANGE_REPLACEMENT_WORD = "ReplacementWord"
     CHANGE_EXCLUDED_ZONES = "ExcludedZone"
 
-    AIR_BLOCK = "minecraft:air"
+    AIR_BLOCKS = ["minecraft:air", "minecraft:void_air", "minecraft:cave_air"]
 
     REPLACEMENTS_EXCLUSIF = {
         "oak" : "dark_oak"
@@ -116,7 +116,8 @@ class Structures(BaseStructure):
                     blockPalette["Name"].value = buildingCondition["replacements"][blockPalette[Structures.CHANGE_TO].value].split("[")[0]
                 elif changeState == 2:
                     blockPalette["Name"].value = blockPalette[Structures.CHANGE_ORIGINAL_BLOCK].value.replace(
-                        blockPalette[Structures.CHANGE_REPLACEMENT_WORD].value, buildingCondition["replacements"][blockPalette[Structures.CHANGE_TO].value].split("[")[0] )
+                        blockPalette[Structures.CHANGE_REPLACEMENT_WORD].value, 
+                        buildingCondition["replacements"][blockPalette[Structures.CHANGE_TO].value].split("[")[0] )
 
         # Place support underHouse
         self.placeSupportUnderStructure(worldModif, buildingCondition)
@@ -138,18 +139,18 @@ class Structures(BaseStructure):
                 if (blockPalette[Structures.CHANGE_EXCLUDED_ZONES].value):
                     for zone in self.info["replacements"][blockPalette[Structures.CHANGE_REPLACEMENT_WORD].value]["excluded"] :
                         if _math.isPointInSquare([ block["pos"][0].value, block["pos"][1].value, block["pos"][2].value], zone) :
-                            print(blockPalette[Structures.CHANGE_ORIGINAL_BLOCK].value)
                             takeOriginalBlock = True
                             blockName = blockPalette[Structures.CHANGE_ORIGINAL_BLOCK].value
                             break
 
+
             # Check for block air replacement
-            if blockName == Structures.AIR_BLOCK and buildingCondition["replaceAllAir"] == 1:
+            if blockName in Structures.AIR_BLOCKS and buildingCondition["replaceAllAir"] != 1:
                 continue
             
             # Compute position of block from local space to world space
             blockPosition = self.returnWorldPosition(
-                [ block["pos"][0].value, block["pos"][1].value, block["pos"][2].value ],
+                [ block["pos"][0].value, block["pos"][1].value + 1, block["pos"][2].value ],
                 buildingCondition["flip"], buildingCondition["rotation"], 
                 buildingCondition["referencePoint"], buildingCondition["position"] )
             
@@ -222,7 +223,7 @@ class Structures(BaseStructure):
                                                      buildingCondition["flip"], buildingCondition["rotation"], 
                                                      buildingCondition["referencePoint"], buildingCondition["position"])
                                                      
-                worldModif.fillBlocks(blockFrom[0], blockFrom[1], blockFrom[2], blockTo[0], blockTo[1], blockTo[2], Structures.AIR_BLOCK)
+                worldModif.fillBlocks(blockFrom[0], blockFrom[1], blockFrom[2], blockTo[0], blockTo[1], blockTo[2], "minecraft:air_block")
 
 
     def convertNbtBlockToStr(self, blockPalette, rotation, flip, takeOriginalBlockName=False):

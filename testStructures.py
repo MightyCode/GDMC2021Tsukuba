@@ -28,16 +28,15 @@ if len(sys.argv) <= 1 :
     resources = Resources()
     resLoader.loadAllResources(resources)
     chestGeneration = ChestGeneration(resources, interface)
-    structure = resources.structures["basicgraveyard"]
+    structure = resources.structures["basictownhall"]
     corners = structure.getCornersLocalPositionsAllFlipRotation(structure.info["mainEntry"]["position"])
-    print(corners)
 
     info = structure.info
     buildingCondition = Structures.BUILDING_CONDITIONS.copy()
     buildingCondition["flip"] = 0
     buildingCondition["rotation"] = 1
-    buildingCondition["position"] = [828, 68, 1175]
-    buildingCondition["replaceAllAir"] = 0
+    buildingCondition["position"] = [-69, 63, -48]
+    buildingCondition["replaceAllAir"] = 3
     buildingCondition["referencePoint"] = [info["mainEntry"]["position"][0], info["mainEntry"]["position"][1], info["mainEntry"]["position"][2]]
 
     structureBiomeId = interfaceUtils.getBiome(buildingCondition["position"][0], buildingCondition["position"][2], 1, 1)
