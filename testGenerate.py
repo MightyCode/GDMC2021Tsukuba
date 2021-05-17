@@ -1,6 +1,5 @@
 import sys
 import lib.interfaceUtils as interfaceUtils
-import numpy, collections
 from generation.structures.structures import *
 from generation.structures.generated.generatedQuarry import *
 from utils._worldModification import *
@@ -50,7 +49,8 @@ if len(sys.argv) <= 1:
 
     quarry = GeneratedQuarry()
     quarry.build(worldModif, buildingConditions, chestGeneration) 
-
+    
+ 
 
     worldModif.saveToFile(file)
 
