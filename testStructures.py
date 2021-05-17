@@ -11,7 +11,7 @@ import random
 import sys
 
 file = "temp.txt"
-interface = interfaceUtils.Interface(buffering=True)
+interface = interfaceUtils.Interface()
 worldModif = WorldModification(interface)
 interfaceUtils.runCommand("execute at @p run setbuildarea ~-150 0 ~-150 ~150 255 ~150")
 buildArea = interfaceUtils.requestBuildArea()
@@ -28,12 +28,12 @@ if len(sys.argv) <= 1 :
     resources = Resources()
     resLoader.loadAllResources(resources)
     chestGeneration = ChestGeneration(resources, interface)
-    structure = resources.structures["basicstonecutter"]
+    structure = resources.structures["basicworkshop"]
     info = structure.info
     buildingCondition = Structures.BUILDING_CONDITIONS.copy()
     buildingCondition["flip"] = 0
-    buildingCondition["rotation"] = 0
-    buildingCondition["position"] = [-12, 100, -40]
+    buildingCondition["rotation"] = 1
+    buildingCondition["position"] = [828, 68, 1175]
     buildingCondition["replaceAllAir"] = 0
     buildingCondition["referencePoint"] = [info["mainEntry"]["position"][0], info["mainEntry"]["position"][1], info["mainEntry"]["position"][2]]
 

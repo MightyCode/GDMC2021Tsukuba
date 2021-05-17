@@ -19,9 +19,21 @@ def loadAllResources(resources) :
     
     resources.loadStructures("functionals/farm/basicfarm.nbt", "functionals/farm/basicfarm.json", "basicfarm")
 
+    resources.loadStructures("functionals/windmill/basicwindmill.nbt", "functionals/windmill/basicwindmill.json", "basicwindmill")
     resources.loadStructures("functionals/windmill/mediumwindmill.nbt", "functionals/windmill/mediumwindmill.json", "mediumwindmill")
 
     resources.loadStructures("functionals/furnace/basicfurnace1.nbt", "functionals/furnace/basicfurnace1.json", "basicfurnace1")
+
+    resources.loadStructures("functionals/smeltery/basicsmeltery.nbt", "functionals/smeltery/basicsmeltery.json", "basicsmeltery")
+
+    resources.loadStructures("functionals/workshop/basicworkshop.nbt", "functionals/workshop/basicworkshop.json", "basicworkshop")
+
+    resources.loadStructures("representatives/townhall/basictownhall.nbt", "representatives/townhall/basictownhall.json", "basictownhall")
+
+    resources.loadStructures("representatives/jail/basicjail.nbt", "representatives/jail/basicjail.json", "basicjail")
+
+    resources.loadStructures("representatives/tavern/basictavern.nbt", "representatives/tavern/basictavern.json", "basictavern")
+    resources.loadStructures("representatives/barrack/basicbarrack.nbt", "representatives/barrack/basicbarrack.json", "basicbarrack")
 
     resources.addGeneratedStructures(GeneratedQuarry(), "functionals/quarry/basicgeneratedquarry.json", "basicGeneratedQuarry")
 
@@ -30,3 +42,10 @@ def loadAllResources(resources) :
     resources.loadLootTable("functionals/basiclumberjachut.json", "basiclumberjachut")
     resources.loadLootTable("functionals/basicfarm.json", "basicfarm")
     resources.loadLootTable("functionals/basicstonecutter.json", "basicstonecutter")
+    resources.loadLootTable("functionals/smeltery.json", "smeltery")
+    resources.loadLootTable("functionals/workshop.json", "workshop")
+
+    resources.loadLootTable("representatives/townhall.json", "townhall")
+    resources.loadLootTable("representatives/jail.json", "jail")
+    resources.loadLootTable("representatives/tavern.json", "tavern")
+    resources.loadLootTable("representatives/barrack.json", "barrack")
