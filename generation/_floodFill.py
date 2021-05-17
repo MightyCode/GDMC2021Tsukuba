@@ -100,7 +100,7 @@ class FloodFill:
     def compareHouse(self,xPos,zPos,CornerPos,house):
         print("corner :",xPos,zPos,CornerPos)
         print("house",house[0],house[1],house[2],house[3])
-        if xPos + CornerPos[3][0] +2 < house[0]+house[3][0][0] or xPos + CornerPos[0][0] -2 > house[0]+house[3][3][0] or zPos + CornerPos[0][2] -2 > house[2]+house[3][3][2] or zPos + CornerPos[2][2] +2 < house[2]+house[3][0][2] :
+        if xPos + CornerPos[3][0] +4 < house[0]+house[3][0][0] or xPos + CornerPos[0][0] -4 > house[0]+house[3][3][0] or zPos + CornerPos[0][2] -4 > house[2]+house[3][3][2] or zPos + CornerPos[2][2] +4 < house[2]+house[3][0][2] :
             return True
         else:
             return False
@@ -125,22 +125,33 @@ class FloodFill:
                     print("retrying")
                 else:
                     #self.floodfill(xPos,yPos,zPos,ws,15)
-                    if self.verifHouse(xPos,yPos,zPos,CornerPos,ws):
-                        print("trying to find a place large enough")
-                        notfinded = False
-                        FloodFillValue=self.floodfill(xPos,yPos,zPos,ws,60)
-                        if len(FloodFillValue) > 7000:
-                            print(len(FloodFillValue))
-                            print("it's large enough")
-                            FloodFillValue=self.floodfill(xPos,yPos,zPos,ws,35)
-                        else:
-                            print("trying to find somewhere larger")
-                            notfinded = True
-                            debugnohouse-=1
-                    else:
-                        print("neednewposition")   
+                    fliptest = [0,1,2,3]
+                    while fliptest and notfinded:
+                        rand1 = fliptest[random.randint(0,len(fliptest)-1)]
+                        fliptest.remove(rand1)
+                        rotationtest = [0,1,2,3]
+                        while rotationtest and notfinded: 
+                            rand2 = rotationtest[random.randint(0,len(rotationtest)-1)]
+                            rotationtest.remove(rand2)
+                            print("trying flip : ",rand1,"with rotation :", rand2)
+                            print(CornerPos)
+                            print(CornerPos[rand1*4 + rand2])
+                            if self.verifHouse(xPos,yPos,zPos,CornerPos[rand1*4 + rand2],ws):
+                                print("trying to find a place large enough")
+                                notfinded = False
+                                FloodFillValue=self.floodfill(xPos,yPos,zPos,ws,60)
+                                if len(FloodFillValue) > 7000:
+                                    print(len(FloodFillValue))
+                                    print("it's large enough")
+                                    FloodFillValue=self.floodfill(xPos,yPos,zPos,ws,35)
+                                else:
+                                    print("trying to find somewhere larger")
+                                    notfinded = True
+                                    debugnohouse-=1
+                            else:
+                                print("neednewposition")   
             else:
-                debug = 20
+                debug = 25
                 verif1 = False
                 verif2 = False
                 print("test")
@@ -162,48 +173,59 @@ class FloodFill:
                         else:
                             print(CornerPos)
                             #FloofFillValue = self.floodfill(xPos,yPos,zPos,ws,20)
-                            if self.verifHouse(xPos,yPos,zPos,CornerPos,ws):
-                                verif1 = True
-                                print("First Verification worked")
-                                listverifhouse=self.listHouse.copy()
-                                house = listverifhouse.pop()
-                                while listverifhouse:
-                                    
-                                    #print(house)
-                                    if self.compareHouse(xPos,zPos,CornerPos,house):
-                                        print("this place is acceptable to be placed on")
-                                        verif2 = True
+                            fliptest = [0,1,2,3]
+                            while fliptest and notfinded:
+                                rand1 = fliptest[random.randint(0,len(fliptest)-1)]
+                                fliptest.remove(rand1)
+                                rotationtest = [0,1,2,3]
+                                while rotationtest and notfinded: 
+                                    rand2 = rotationtest[random.randint(0,len(rotationtest)-1)]
+                                    rotationtest.remove(rand2)
+                                    print("trying flip : ",rand1,"with rotation :", rand2)
+                                    #print(CornerPos)
+                                    print(CornerPos[rand1*4 + rand2])
+                                    if self.verifHouse(xPos,yPos,zPos,CornerPos[rand1*4 + rand2],ws):
+                                        verif1 = True
+                                        print("First Verification worked")
+                                        listverifhouse=self.listHouse.copy()
+                                        house = listverifhouse.pop()
+                                        while listverifhouse:
+                                            
+                                            #print(house)
+                                            if self.compareHouse(xPos,zPos,CornerPos[rand1*4 + rand2],house):
+                                                print("this place is acceptable to be placed on")
+                                                verif2 = True
+                                            else:
+                                                verif2 = False
+                                                verif1 = False
+                                                print("need a new position")
+                                                debug-=1
+                                            house = listverifhouse.pop()
+                                        #print(house)
+                                        if self.compareHouse(xPos,zPos,CornerPos[rand1*4 + rand2],house):
+                                            #print(house)
+                                            print("this place is acceptable to be placed on")
+                                            verif2 = True
+                                        else:
+                                            verif2 = False
+                                            verif1 = False
+                                            print("need a new position")
+                                            debug-=1
+                                            print(debug,"try left")
+                                        #print(listverifhouse)
+                                        print(verif1,verif2)
+                                        if verif1 and verif2:
+                                            notfinded = False
+                                            if xPos > 120 or yPos > 120:
+                                                FloodFillValue = [xPos,yPos,zPos]
+                                            else:
+                                                FloodFillValue = self.floodfill(xPos,yPos,zPos,ws,35)
+                                        
                                     else:
-                                        verif2 = False
                                         verif1 = False
-                                        print("need a new position")
                                         debug-=1
-                                    house = listverifhouse.pop()
-                                #print(house)
-                                if self.compareHouse(xPos,zPos,CornerPos,house):
-                                    #print(house)
-                                    print("this place is acceptable to be placed on")
-                                    verif2 = True
-                                else:
-                                    verif2 = False
-                                    verif1 = False
-                                    print("need a new position")
-                                    debug-=1
-                                    print(debug,"try left")
-                                #print(listverifhouse)
-                                print(verif1,verif2)
-                                if verif1 and verif2:
-                                    notfinded = False
-                                    if xPos > 120 or yPos > 120:
-                                        FloodFillValue = [xPos,yPos,zPos]
-                                    else:
-                                        FloodFillValue = self.floodfill(xPos,yPos,zPos,ws,35)
-                                
-                            else:
-                                verif1 = False
-                                debug-=1
-                                print(debug,"try left")
-                                print("first verification echec")
+                                        print(debug,"try left")
+                                        print("first verification echec")
 
 
                 
@@ -212,12 +234,14 @@ class FloodFill:
             xPos=self.listHouse[index][0]
             yPos=self.listHouse[index][1]
             zPos=self.listHouse[index][2]
+            dictionnary = {"position" : [xPos,yPos,zPos] , "validPosition" : False , "flip" : rand1 , "rotation" : rand2}
             
             FloodFillValue = [xPos,yPos,zPos]
             print("debug failed")
         else:
-            self.listHouse.append((xPos,yPos,zPos,CornerPos,FloodFillValue))
-            print([xPos,yPos,zPos])
-        return [xPos,yPos,zPos]
+            self.listHouse.append((xPos,yPos,zPos,CornerPos[rand1*4 + rand2],FloodFillValue))
+            dictionnary = {"position" : [xPos,yPos,zPos],"validPosition" : True , "flip" : rand1 , "rotation" : rand2}
+            print(dictionnary)
+        return dictionnary
 
                       
