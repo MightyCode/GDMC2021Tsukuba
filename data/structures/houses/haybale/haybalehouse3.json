@@ -16,5 +16,10 @@
   },
   "villageInfo" : {
     "villager" : 1
+  },
+  "ground" : {
+    "zones" : [
+      [0, 1, 3, 6]
+    ]
   }
 }

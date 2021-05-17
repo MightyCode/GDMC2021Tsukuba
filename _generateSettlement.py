@@ -11,7 +11,7 @@ import random
 import sys
 
 file = "temp.txt"
-interface = interfaceUtils.Interface()
+interface = interfaceUtils.Interface(True)
 worldModif = WorldModification(interface)
 interfaceUtils.runCommand("execute at @p run setbuildarea ~-150 0 ~-150 ~150 255 ~150")
 buildArea = interfaceUtils.requestBuildArea()
@@ -53,7 +53,7 @@ if len(sys.argv) <= 1 :
                 "farmer", "fisherman", "shepherd", "fletcher", "librarian", "cartographer", 
                 "cleric", "armorer", "weaponsmith", "toolsmith", "butcher", "leatherworker", "mason", "nitwit"]
     
-    settlementData["structuresNumberGoal"] = random.randint(15, 50)
+    settlementData["structuresNumberGoal"] = random.randint(10, 30)
 
     #structures contains "position", "rotation", "flip" "name", "type", "group" ->, "villagersId"
     settlementData["structures"] = []
@@ -68,6 +68,7 @@ if len(sys.argv) <= 1 :
     for i in range(settlementData["structuresNumberGoal"]) : 
         settlementData["structures"].append({})
         structureMananager.chooseOneStructure()
+        print(settlementData["structures"][i]["name"])
         structure = resources.structures[settlementData["structures"][i]["name"]]
         corners = structure.getCornersLocalPositions(structure.info["mainEntry"]["position"], 0, 0)
         settlementData["structures"][i]["flip"] = 0
@@ -133,10 +134,10 @@ if len(sys.argv) <= 1 :
         buildingCondition["replacements"]["deadVillagerRegistry"] = deadVillagersBook
 
         structure.build(worldModif, buildingCondition, chestGeneration)
-
-        #_utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
         
-    worldModif.saveToFile(file)
+        #_utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
+    worldModif.saveToFile(file)  
+    
 
 else : 
     if sys.argv[1] == "r" :   

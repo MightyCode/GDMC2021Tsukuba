@@ -26,7 +26,7 @@ class WorldModification:
                 WorldModification.DEBUG_MODE = config["debugMode"]
 
 
-    def setBlock(self, x, y, z, block, compareBlockState=False):
+    def setBlock(self, x, y, z, block, compareBlockState=False, placeImmediately=False):
         if WorldModification.DEBUG_MODE:
             previousBlock = self.interface.getBlock(x, y, z, True)
 
@@ -42,7 +42,10 @@ class WorldModification:
             self.before_modification.append([x, y, z, previousBlock])
             self.after_modificaton.append([x, y, z, block])
 
-        self.interface.setBlock(x, y, z, block)
+        if placeImmediately : 
+            self.interface.placeBlock(x, y, z, block)
+        else :
+            self.interface.setBlock(x, y, z, block)
 
     def fillBlocks(self, from_x, from_y, from_z, to_x, to_y, to_z, block, compareBlockState=False):
         if WorldModification.DEBUG_MODE :

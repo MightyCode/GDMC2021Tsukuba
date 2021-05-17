@@ -1,0 +1,26 @@
+{
+  "mainEntry": {
+    "facing" : "est",
+    "position" : [5, 0, 2]
+  },
+  "replacements" : {
+  },
+  "air" : {
+    "preferedAirMode" : 1,
+    "replacements" : [
+    ]
+  },
+  "lootTables" : [
+    ["basicfarm"]
+  ],
+  "villageInfo" : {
+    "villager" : 2,
+    "gameProfession" : "butcher",
+    "profession" : "Cooker"
+  },
+  "ground" : {
+    "zones" : [
+      [0, 0, 3, 2]
+    ]
+  }
+}

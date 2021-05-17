@@ -45,11 +45,11 @@
         "type" : "functionals",
         "conditions" : {
             "villagerNeeded" : { "min" : 2 },
+            "dirtResources" : { "min" : 1},
             "previous" :  [ 
                 { "name" : "basicLumberJackHut", "min" : 1 },
                 { "name" : "basicFarm", "max" : 5 } 
-            ],
-            "dirtResources" : { "min" : 1}
+            ]
         }
     },
     "basicQuarry" : {
@@ -64,6 +64,32 @@
                 { "name" : "basicQuarry", "max" : 3 } 
             ],
             "stoneResources" : { "min" : 1}
+        }
+    },
+    "basicFurnace" : {
+        "structures" : [
+            "basicfurnace1"
+        ],
+        "type" : "functionals",
+        "conditions" : {
+            "villagerNeeded" : { "min" : 2 },
+            "previous" : [
+                { "name" : "basicQuarry", "min" : 1 },
+                { "name" : "basicFurnace", "max" : 10 } 
+            ]
+        }
+    },
+    "basicStoneCutter" : {
+        "structures" : [
+            "basicstonecutter"
+        ],
+        "type" : "functionals",
+        "conditions" : {
+            "villagerNeeded" : { "min" : 1 },
+            "previous" : [
+                { "name" : "basicQuarry", "min" : 1 },
+                { "name" : "basicStoneCutter", "max" : 3 } 
+            ]
         }
     }
 }

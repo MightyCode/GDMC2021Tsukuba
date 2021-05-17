@@ -2,6 +2,7 @@ import utils._math as _math
 import utils._utils as _utils
 from generation.structures.baseStructure import *
 from nbt import nbt
+import generation._floodFill as floodFill
 
 class Structures(BaseStructure):
     REPLACEMENTS = "replacements"
@@ -10,7 +11,7 @@ class Structures(BaseStructure):
     CHANGE_STATE = "ChangeState"
     CHANGE_ORIGINAL_BLOCK = "OriginalBlock"
     CHANGE_REPLACEMENT_WORD = "ReplacementWord"
-    CHANGE_EXCLUDED_ZONES = ""
+    CHANGE_EXCLUDED_ZONES = "ExcludedZone"
 
     AIR_BLOCK = "minecraft:air"
 
@@ -117,27 +118,18 @@ class Structures(BaseStructure):
                     blockPalette["Name"].value = blockPalette[Structures.CHANGE_ORIGINAL_BLOCK].value.replace(
                         blockPalette[Structures.CHANGE_REPLACEMENT_WORD].value, buildingCondition["replacements"][blockPalette[Structures.CHANGE_TO].value].split("[")[0] )
 
-        # Air zone
-        print("Prebuilding air")
-        if buildingCondition["replaceAllAir"] == 3:
-            buildingCondition["replaceAllAir"] = self.info["air"]["preferedAirMode"]
+        # Place support underHouse
+        self.placeSupportUnderStructure(worldModif, buildingCondition)
 
-        if buildingCondition["replaceAllAir"] == 2:
-            for zones in self.info["air"]["replacements"]:
-                blockFrom = self.returnWorldPosition([ zones[0], zones[1], zones[2] ],
-                                                     buildingCondition["flip"], buildingCondition["rotation"], 
-                                                     buildingCondition["referencePoint"], buildingCondition["position"])
-                blockTo   = self.returnWorldPosition([ zones[3], zones[4], zones[5] ],
-                                                     buildingCondition["flip"], buildingCondition["rotation"], 
-                                                     buildingCondition["referencePoint"], buildingCondition["position"])
-                                                     
-                worldModif.fillBlocks(blockFrom[0], blockFrom[1], blockFrom[2], blockTo[0], blockTo[1], blockTo[2], Structures.AIR_BLOCK)
+        # Air zone
+        self.placeAirZones(worldModif, buildingCondition)
 
         print("Building : " + self.name)
 
         ## Computing : Modify from blocks
         for block in self.file["blocks"]:
             blockPalette = self.file["palette"][block["state"].value]
+            placeImmediately = False
 
             # Check if the current block is in excluded zone
             takeOriginalBlock = False
@@ -161,6 +153,9 @@ class Structures(BaseStructure):
                 buildingCondition["flip"], buildingCondition["rotation"], 
                 buildingCondition["referencePoint"], buildingCondition["position"] )
             
+            if "chest" in blockName:
+                placeImmediately = True
+
             worldModif.setBlock(
                 blockPosition[0], blockPosition[1], blockPosition[2],
                 self.convertNbtBlockToStr(
@@ -168,7 +163,7 @@ class Structures(BaseStructure):
                     buildingCondition["rotation"],
                     buildingCondition["flip"],
                     takeOriginalBlock
-                    ), 
+                    ), placeImmediately=placeImmediately
             )
 
             # If structure has loot tables and chest encounter
@@ -185,6 +180,49 @@ class Structures(BaseStructure):
                         chestGeneration.generate(blockPosition[0], blockPosition[1], blockPosition[2], choosenLootTable, buildingCondition["replacements"])
 
         print("Finish building : " + self.name)
+
+
+    def placeSupportUnderStructure(self, worldModif, buildingCondition):
+        zones = []
+        if "info" in self.info["ground"].keys():
+            if "all" == self.info["ground"]["info"] :
+                zones.append([0, 0, self.size[0] - 1, self.size[2] - 1])
+        elif "zones" in self.info["ground"].keys() :
+            zones = self.info["ground"]["zones"]
+
+        for zone in zones : 
+            for x in range(zone[0], zone[2] + 1):
+                for z in range(zone[1], zone[3] + 1):
+                    position = self.returnWorldPosition( 
+                        [ x, 0, z],
+                        buildingCondition["flip"], buildingCondition["rotation"], 
+                        buildingCondition["referencePoint"], buildingCondition["position"] 
+                    )
+
+                    if worldModif.interface.getBlock(position[0], position[1] - 1, position[2]) in floodFill.FloodFill.IGNORED_BLOCKS:
+                        i = -2 
+                        while worldModif.interface.getBlock(position[0], position[1] + i, position[2]) in floodFill.FloodFill.IGNORED_BLOCKS:
+                            i -= 1
+                        
+                        worldModif.fillBlocks(position[0], position[1]-1, position[2], position[0], position[1] + i, position[2], 
+                        buildingCondition["replacements"]["ground2"])
+
+    def placeAirZones(self, worldModif, buildingCondition):
+
+        print("Prebuilding air")
+        if buildingCondition["replaceAllAir"] == 3:
+            buildingCondition["replaceAllAir"] = self.info["air"]["preferedAirMode"]
+
+        if buildingCondition["replaceAllAir"] == 2:
+            for zones in self.info["air"]["replacements"]:
+                blockFrom = self.returnWorldPosition([ zones[0], zones[1], zones[2] ],
+                                                     buildingCondition["flip"], buildingCondition["rotation"], 
+                                                     buildingCondition["referencePoint"], buildingCondition["position"])
+                blockTo   = self.returnWorldPosition([ zones[3], zones[4], zones[5] ],
+                                                     buildingCondition["flip"], buildingCondition["rotation"], 
+                                                     buildingCondition["referencePoint"], buildingCondition["position"])
+                                                     
+                worldModif.fillBlocks(blockFrom[0], blockFrom[1], blockFrom[2], blockTo[0], blockTo[1], blockTo[2], Structures.AIR_BLOCK)
 
 
     def convertNbtBlockToStr(self, blockPalette, rotation, flip, takeOriginalBlockName=False):
