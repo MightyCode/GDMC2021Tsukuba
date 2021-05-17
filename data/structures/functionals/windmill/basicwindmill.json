@@ -21,5 +21,10 @@
     "zones" : [
       [1, 0, 7, 13]
     ]
+  },
+  "villageInfo" : {
+    "villager" : 2,
+    "gameProfession" : "farmer",
+    "profession" : "Crusher"
   }
 }

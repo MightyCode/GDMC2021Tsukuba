@@ -16,12 +16,12 @@
   "lootTables" : [
     ["workshop"]
   ],
-    "villageInfo" : {
-      "villager" : 2,
-      "gameProfession" : "toolsmith",
-      "profession" : "Craftman"
-    },
-    "ground" : {
-      "info" : "all"
-    }
+  "villageInfo" : {
+    "villager" : 2,
+    "gameProfession" : "toolsmith",
+    "profession" : "Craftman"
+  },
+  "ground" : {
+    "info" : "all"
   }
+}

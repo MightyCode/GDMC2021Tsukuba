@@ -93,8 +93,6 @@ class BaseStructure:
     Return position where reference position is the center of the local space
     """
     def getCornersLocalPositions(self, referencePosition, flip, rotation):
-        print(referencePosition)
-        print(self.size)
         if flip == 1 or flip == 3 :
             referencePosition[0] = self.size[0] - 1 - referencePosition[0]
 
@@ -115,7 +113,7 @@ class BaseStructure:
         
         # Sort corner
         for dimension in (0, 2):
-            for i in range(1):
+            for i in range(2):
                 for j in range(3):
                     if toReturn[3 - j][dimension] < toReturn[2 - j][dimension]:
                         temp = toReturn[3 - j]
@@ -123,6 +121,16 @@ class BaseStructure:
                         toReturn[2 - j] = temp
         
         return toReturn
+
+
+    def getCornersLocalPositionsAllFlipRotation(self, referencePosition):
+        corners = []
+        for rotation in [0, 1, 2, 3]:
+            for flip in [0, 1, 2, 3]:
+                corners.append(self.getCornersLocalPositions(referencePosition, flip, rotation))
+                print(corners[-1])
+
+        return corners
 
 
     def setSize(self, size):

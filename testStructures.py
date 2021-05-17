@@ -28,7 +28,10 @@ if len(sys.argv) <= 1 :
     resources = Resources()
     resLoader.loadAllResources(resources)
     chestGeneration = ChestGeneration(resources, interface)
-    structure = resources.structures["basicworkshop"]
+    structure = resources.structures["basicgraveyard"]
+    corners = structure.getCornersLocalPositionsAllFlipRotation(structure.info["mainEntry"]["position"])
+    print(corners)
+
     info = structure.info
     buildingCondition = Structures.BUILDING_CONDITIONS.copy()
     buildingCondition["flip"] = 0

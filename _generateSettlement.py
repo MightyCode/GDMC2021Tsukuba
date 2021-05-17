@@ -9,9 +9,10 @@ from utils._worldModification import *
 from lib.worldLoader import WorldSlice
 import random
 import sys
+import time
 
 file = "temp.txt"
-interface = interfaceUtils.Interface(True)
+interface = interfaceUtils.Interface()
 worldModif = WorldModification(interface)
 interfaceUtils.runCommand("execute at @p run setbuildarea ~-150 0 ~-150 ~150 255 ~150")
 buildArea = interfaceUtils.requestBuildArea()
@@ -53,7 +54,7 @@ if len(sys.argv) <= 1 :
                 "farmer", "fisherman", "shepherd", "fletcher", "librarian", "cartographer", 
                 "cleric", "armorer", "weaponsmith", "toolsmith", "butcher", "leatherworker", "mason", "nitwit"]
     
-    settlementData["structuresNumberGoal"] = random.randint(10, 30)
+    settlementData["structuresNumberGoal"] = random.randint(15, 50)
 
     #structures contains "position", "rotation", "flip" "name", "type", "group" ->, "villagersId"
     settlementData["structures"] = []
@@ -67,14 +68,25 @@ if len(sys.argv) <= 1 :
 
     for i in range(settlementData["structuresNumberGoal"]) : 
         settlementData["structures"].append({})
-        structureMananager.chooseOneStructure()
-        print(settlementData["structures"][i]["name"])
+        # 0 -> normal, 1 -> replacement, 2 -> no more structure
+        result = structureMananager.chooseOneStructure()
+        if result == 2 :
+            settlementData["structuresNumberGoal"] = i
+            break
+        
+        if result == 1: 
+            settlementData["structuresNumberGoal"] -= 1
+            continue
+
         structure = resources.structures[settlementData["structures"][i]["name"]]
-        corners = structure.getCornersLocalPositions(structure.info["mainEntry"]["position"], 0, 0)
+        corners = structure.getCornersLocalPositionsAllFlipRotation(structure.info["mainEntry"]["position"])
+
+        #settlementData["structures"][i]["position"] = [random.randint(0, 256), 0, random.randint(0, 256)]
+        r = floodFill.findPosHouse(corners, ws)
+        print(r)
+        settlementData["structures"][i]["position"] = r
         settlementData["structures"][i]["flip"] = 0
         settlementData["structures"][i]["rotation"] = 0
-
-        settlementData["structures"][i]["position"] = floodFill.findPosHouse(corners, ws)
 
         # If new chunck discovererd, add new ressources
         chunk = [int(settlementData["structures"][i]["position"][0] / 16), int(settlementData["structures"][i]["position"][2] / 16)] 
@@ -99,6 +111,8 @@ if len(sys.argv) <= 1 :
     villagersBook = _utils.makeBookItem(strVillagers, title="List of all villagers")
     deadVillagersBook = _utils.makeBookItem("List of all dead villagers : ", title="List of all dead villagers")
     print(settlementData)
+    print("")
+    structureMananager.printStructureChoose()
 
     # Build after every computations
     for i in range(len(settlementData["structures"])) :
@@ -133,9 +147,10 @@ if len(sys.argv) <= 1 :
         buildingCondition["replacements"]["villagerRegistry"] = villagersBook
         buildingCondition["replacements"]["deadVillagerRegistry"] = deadVillagersBook
 
-        structure.build(worldModif, buildingCondition, chestGeneration)
+        #structure.build(worldModif, buildingCondition, chestGeneration)
         
-        #_utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
+        _utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
+        time.sleep
     worldModif.saveToFile(file)  
     
 

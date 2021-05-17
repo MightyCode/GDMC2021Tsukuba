@@ -11,7 +11,8 @@
             "previous" : [
                 {  "name" : "haybaleHouses", "max" : 10 } 
             ]
-        }
+        },
+        "upgrade" : [ "basicHouses" ]
     },
     "basicLumberJackHut" : {
         "structures" : [
@@ -91,5 +92,113 @@
                 { "name" : "basicStoneCutter", "max" : 3 } 
             ]
         }
+    },
+    "basicSmeltery" : {
+        "structures" : [
+            "basicsmeltery"
+        ],
+        "type" : "functionals",
+        "conditions" : {
+            "villagerNeeded" : { "min" : 2 },
+            "previous" : [
+                { "name" : "basicQuarry", "min" : 1 },
+                { "name" : "basicSmeltery", "max" : 3 } 
+            ]
+        }
+    },
+    "basicWorkshop" : {
+        "structures" : [
+            "basicworkshop"
+        ],
+        "type" : "functionals",
+        "conditions" : {
+            "villagerNeeded" : { "min" : 2 },
+            "previous" : [
+                { "name" : "basicStoneCutter", "min" : 1 },
+                { "name" : "basicSmeltery", "min" : 1 },
+                { "name" : "basicWorkshop", "max" : 3 } 
+            ]
+        }
+    },
+    "basicGraveyard" : {
+        "structures" : [
+            "basicgraveyard"
+        ],
+        "type" : "representatives",
+        "conditions" : {
+            "villagerNeeded" : { "min" : 0 },
+            "previous" : [
+                { "name" : "basicFurnace", "min" : 1 },
+                { "name" : "basicGraveyard", "max" : 1 } 
+            ]
+        },
+        "priority" : "full"
+    },
+    "basicJail" : {
+        "structures" : [
+            "basicjail"
+        ],
+        "type" : "representatives",
+        "conditions" : {
+            "villagerNeeded" : { "min" : 0 },
+            "previous" : [
+                { "name" : "basicStoneCutter", "min" : 1 },
+                { "name" : "basicJail", "max" : 2 } 
+            ]
+        }
+    },
+    "basicWindmill" : {
+        "structures" : [
+            "basicwindmill"
+        ],
+        "type" : "functionals",
+        "conditions" : {
+            "villagerNeeded" : { "min" : 2 },
+            "previous" : [
+                { "name" : "basicWorkshop", "min" : 1 },
+                { "name" : "basicWindmill", "max" : 3 } 
+            ]
+        }
+    },
+    "basicTownHall" : {
+        "structures" : [
+            "basictownhall"
+        ],
+        "type" : "representatives",
+        "conditions" : {
+            "villagerNeeded" : { "min" : 1 },
+            "previous" : [
+                { "name" : "basicWorkshop", "min" : 1 },
+                { "name" : "basicTownHall", "max" : 1 } 
+            ]
+        },
+        "priority" : "full"
+    },
+    "basicBarrack" : {
+        "structures" : [
+            "basicBarrack"
+        ],
+        "type" : "representatives",
+        "conditions" : {
+            "villagerNeeded" : { "min" : 3 },
+            "previous" : [
+                { "name" : "basicWorkshop", "min" : 1 },
+                { "name" : "basicBarrack", "max" : 2 } 
+            ]
+        }
+    },
+    "basicTavern" : {
+        "structures" : [
+            "basicTavern"
+        ],
+        "type" : "representatives",
+        "conditions" : {
+            "villagerNeeded" : { "min" : 1 },
+            "previous" : [
+                { "name" : "basicWindmill", "min" : 1 },
+                { "name" : "basicTavern", "max" : 1 } 
+            ]
+        },
+        "priority" : "full"
     }
 }
