@@ -76,7 +76,7 @@
             "villagerNeeded" : { "min" : 2 },
             "previous" : [
                 { "name" : "basicQuarry", "min" : 1 },
-                { "name" : "basicFurnace", "max" : 10 } 
+                { "name" : "basicFurnace", "max" : 3 } 
             ]
         }
     },

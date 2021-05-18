@@ -13,52 +13,10 @@ import lookup
 __version__ = 'v4.2_dev'
 __year__ = '2021'
 
-
-file = "temp.txt"
-
-interface = interfaceUtils.Interface()
-worldModif = WorldModification(interface)
-resources = Resources()
-chestGeneration = ChestGeneration(resources, interface)
-
-# x position, z position, x size, z size
-area = (0, 0, 128, 128)  # default build area if build area is not set
-
-interfaceUtils.runCommand("execute at @p run setbuildarea ~-64 0 ~-64 ~64 255 ~64")
-
-
-# see if a build area has been specified
-# you can set a build area in minecraft using the /setbuildarea command
-buildArea = interfaceUtils.requestBuildArea()
-if buildArea == -1:
-    exit()
-x1 = buildArea[0]
-z1 = buildArea[2]
-x2 = buildArea[3]
-z2 = buildArea[5]
-# print(buildArea)
-area = (x1, z1, x2 - x1, z2 - z1)
-
-if len(sys.argv) <= 1:
-    transparentBlocks = ["minecraft:air", "minecraft:oak_leaves", "minecraft:birch_leaves", "minecraft:jungle_leaves", "minecraft:acacia_leaves",
-     "minecraft:dark_oak_leaves", "minecraft:snow", "minecraft:grass", "minecraft:poppy"]
-    # Find the highest non-air block and build the quarry there
-
-    cx = int(area[0] + area[2]/2)
-    cz = int(area[1] + area[3]/2)
-
-    ## Find highest non-air block
-    cy = 255
-    while interfaceUtils.getBlock(cx, cy, cz) in transparentBlocks:
-        cy -= 1
-
-    buildingConditions = Structures.BUILDING_CONDITIONS.copy()
-    buildingConditions["position"] = [cx, cy, cz]
-
-    def writeBook(text, title="Chronicle", author='' ,
+def writeBook(text, title="Chronicle", author='' ,
                 description="I wonder what's inside?", desccolor='gold'):
         
-        r"""**Return NBT data for a correctly formatted book**.
+    r"""**Return NBT data for a correctly formatted book**.
         The following special characters are used for formatting the book:
         - `\n`: New line
         - `\f`: Form/page break
@@ -92,10 +50,10 @@ if len(sys.argv) <= 1:
         IMPORTANT: When using `\\s` text is directly interpreted by Minecraft,
             so all line breaks must be `\\\\n` to function
         """
-        characters_left = CHARACTERS = 255  # per page
-        lines_left = LINES = 14             # per page
-        pixels_left = PIXELS = 113          # per line
-        toprint = ''
+    characters_left = CHARACTERS = 255  # per page
+    lines_left = LINES = 14             # per page
+    pixels_left = PIXELS = 113          # per line
+    toprint = ''
         @lru_cache()
         def fontwidth(word):
             """**Return the length of a word based on character width**.
@@ -195,11 +153,11 @@ if len(sys.argv) <= 1:
             # newpage()               # finish page
         finalpage()        # end last page (book is complete)
         return bookData
-
-    def placeLectern(x, y, z, bookData, facing="east"):
-        """**Place a lectern with a book in the world**."""
-        worldModif.setBlock(x, y, z, f"lectern[facing={facing}, has_book=true]")
-        _utils.addBookToLectern(interface, x, y, z, bookData)
+      
+def placeLectern(x, y, z, bookData, worldModif, facing="east"):
+    """**Place a lectern with a book in the world**."""
+    worldModif.setBlock(x, y, z, f"lectern[facing={facing}, has_book=true]")
+    _utils.addBookToLectern(x, y, z, bookData)
         
     worldModif.saveToFile(file)
     
@@ -209,3 +167,4 @@ else :
     else :
         worldModif.loadFromFile(sys.argv[1])
     worldModif.undoAllModification()
+

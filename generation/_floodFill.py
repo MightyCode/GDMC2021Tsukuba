@@ -14,6 +14,7 @@ class FloodFill:
     def __init__(self):
         self.listHouse = []
         random.seed(a=None, version=2)
+        self.taille = 150
 
 
     def getHeight(self, x, z, ws): #to get the height of a x,z position
@@ -87,22 +88,15 @@ class FloodFill:
 
     def verifHouse(self, xPos, yPos, zPos, CornerPos,ws):
         ok=[0,0,0,0]
-        print(CornerPos)
         for i in [0,1,2,3]:
-            print(CornerPos[i][0],CornerPos[i][2])
             if self.is_ground(xPos + CornerPos[i][0],yPos,zPos + CornerPos[i][2],ws):
                 ok[i] = 1
-                print(i,"bon")
         if ok[0] == 1 and ok[1] == 1 and ok[2] == 1 and ok[3] == 1:
-            print("true")
             return True
         else:
-            print("false")
             return False
 
     def compareHouse(self,xPos,zPos,CornerPos,house):
-        print("corner :",xPos,zPos,CornerPos)
-        print("house",house[0],house[1],house[2],house[3])
         if xPos + CornerPos[3][0] +4 < house[0]+house[3][0][0] or xPos + CornerPos[0][0] -4 > house[0]+house[3][3][0] or zPos + CornerPos[0][2] -4 > house[2]+house[3][3][2] or zPos + CornerPos[2][2] +4 < house[2]+house[3][0][2] :
             return True
         else:
@@ -111,23 +105,22 @@ class FloodFill:
 
 
     def findPosHouse(self, CornerPos, ws):
+        taillestructure = max(abs(CornerPos[0][0][0]) + abs(CornerPos[0][1][0]),abs(CornerPos[0][0][2]) + abs(CornerPos[0][2][2]))
         notfinded = True
-        debug = 5
+        debug = 25
         debugnohouse = 5
         verif1 = False
         verif2 = False
+        print("there is already",len(self.listHouse),"placed")
         while notfinded and debug and debugnohouse and verif1==False:
             if len(self.listHouse)==0:
-                xPos = (-1)**random.randint(0,1) * random.randint(0,90)
-                zPos = (-1)**random.randint(0,1) * random.randint(0,90)
-                print(xPos, zPos)
+                xPos = (-1)**random.randint(0,1) * random.randint(0, int(self.taille/5))       #To get starting position of the village
+                zPos = (-1)**random.randint(0,1) * random.randint(0, int(self.taille/5))
+                print("starting position :" ,xPos, zPos)
                 yPos = self.getHeight(xPos,zPos, ws)
                 print(yPos)
-                if ws.getBlockAt((xPos,yPos,zPos))=='minecraft:water':
-                    print("this position is air or water")
-                    print("retrying")
-                else:
-                    #self.floodfill(xPos,yPos,zPos,ws,15)
+                if not(ws.getBlockAt((xPos,yPos,zPos))=='minecraft:water'):
+
                     fliptest = [0,1,2,3]
                     while fliptest and notfinded:
                         rand1 = fliptest[random.randint(0,len(fliptest)-1)]
@@ -136,46 +129,28 @@ class FloodFill:
                         while rotationtest and notfinded: 
                             rand2 = rotationtest[random.randint(0,len(rotationtest)-1)]
                             rotationtest.remove(rand2)
-                            print("trying flip : ",rand1,"with rotation :", rand2)
-                            print(CornerPos)
-                            print(CornerPos[rand1*4 + rand2])
+
                             if self.verifHouse(xPos,yPos,zPos,CornerPos[rand1*4 + rand2],ws):
-                                print("trying to find a place large enough")
                                 notfinded = False
-                                FloodFillValue=self.floodfill(xPos,yPos,zPos,ws,60)
-                                if len(FloodFillValue) > 7000:
-                                    print(len(FloodFillValue))
-                                    print("it's large enough")
-                                    FloodFillValue=self.floodfill(xPos,yPos,zPos,ws,35)
+                                FloodFillValue=self.floodfill(xPos,yPos,zPos,ws,40)                 #to be sure the place is large enough to build the village
+                                if len(FloodFillValue) > 5000:
+                                    FloodFillValue=self.floodfill(xPos,yPos,zPos,ws,taillestructure + 10)
                                 else:
-                                    print("trying to find somewhere larger")
                                     notfinded = True
                                     debugnohouse-=1
-                            else:
-                                print("neednewposition")   
             else:
-                debug = 25
                 verif1 = False
                 verif2 = False
-                print("test")
                 while verif1 == False and verif2 == False and debug:
-                    print("there is already",len(self.listHouse),"placed")
+                    
                     index = random.randint(0,len(self.listHouse)-1)
-                    print(abs(self.listHouse[index][0]),abs(self.listHouse[index][2]))
-                    if abs(self.listHouse[index][0]) > 110 or abs(self.listHouse[index][2]) > 110:
-                        print("out of bound, retrying ...")
-                    else:
-                        #FloodFillValue = self.floodfill(self.listHouse[index][0],self.listHouse[index][1],self.listHouse[index][2],ws,40)
+                    #print(abs(self.listHouse[index][0]),abs(self.listHouse[index][2]))
+                    if not(abs(self.listHouse[index][0]) > self.taille-(self.taille/5) or abs(self.listHouse[index][2]) > self.taille-(self.taille/5)):
                         placeindex = random.randint(0,len(self.listHouse[index][4])-1)
                         xPos = self.listHouse[index][4][placeindex][0]
                         yPos = self.listHouse[index][4][placeindex][1]
                         zPos = self.listHouse[index][4][placeindex][2]
-                        print(xPos,yPos,zPos, "is the position i want to build on")
-                        if ws.getBlockAt((xPos,yPos,zPos))=='minecraft:water':
-                            print("it's air")
-                        else:
-                            print(CornerPos)
-                            #FloofFillValue = self.floodfill(xPos,yPos,zPos,ws,20)
+                        if not(ws.getBlockAt((xPos,yPos,zPos))=='minecraft:water'):                 #to get a random flip and rotation and to test if one is possible
                             fliptest = [0,1,2,3]
                             while fliptest and notfinded:
                                 rand1 = fliptest[random.randint(0,len(fliptest)-1)]
@@ -184,51 +159,35 @@ class FloodFill:
                                 while rotationtest and notfinded: 
                                     rand2 = rotationtest[random.randint(0,len(rotationtest)-1)]
                                     rotationtest.remove(rand2)
-                                    print("trying flip : ",rand1,"with rotation :", rand2)
-                                    #print(CornerPos)
-                                    print(CornerPos[rand1*4 + rand2])
                                     if self.verifHouse(xPos,yPos,zPos,CornerPos[rand1*4 + rand2],ws):
                                         verif1 = True
-                                        print("First Verification worked")
                                         listverifhouse=self.listHouse.copy()
                                         house = listverifhouse.pop()
                                         while listverifhouse:
-                                            
-                                            #print(house)
                                             if self.compareHouse(xPos,zPos,CornerPos[rand1*4 + rand2],house):
-                                                print("this place is acceptable to be placed on")
                                                 verif2 = True
                                             else:
                                                 verif2 = False
                                                 verif1 = False
-                                                print("need a new position")
                                                 debug-=1
                                             house = listverifhouse.pop()
-                                        #print(house)
                                         if self.compareHouse(xPos,zPos,CornerPos[rand1*4 + rand2],house):
-                                            #print(house)
-                                            print("this place is acceptable to be placed on")
                                             verif2 = True
                                         else:
                                             verif2 = False
                                             verif1 = False
-                                            print("need a new position")
                                             debug-=1
-                                            print(debug,"try left")
-                                        #print(listverifhouse)
-                                        print(verif1,verif2)
+
                                         if verif1 and verif2:
                                             notfinded = False
-                                            if xPos > 120 or yPos > 120:
+                                            if xPos > self.taille-(self.taille/5) or yPos > self.taille-(self.taille/5):
                                                 FloodFillValue = [xPos,yPos,zPos]
                                             else:
-                                                FloodFillValue = self.floodfill(xPos,yPos,zPos,ws,35)
+                                                FloodFillValue = self.floodfill(xPos,yPos,zPos,ws, taillestructure + 10)
                                         
                                     else:
                                         verif1 = False
                                         debug-=1
-                                        print(debug,"try left")
-                                        print("first verification echec")
 
 
                 
