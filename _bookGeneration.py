@@ -135,18 +135,16 @@ if len(sys.argv) <= 1:
         def finalpage():
             nonlocal bookData
             bookData += ('--------------\\\\n'
-                        '|                      |\\\\n'
-                        '|                      |\\\\n'
-                        '|      Published    |\\\\n'
-                        '|         by          |\\\\n'
-                        '|       Yusuf        |\\\\n'
-                        '|                      |\\\\n'
-                        '|                      |\\\\n'
-                        '|                      |\\\\n'
-                        '|      GDMC          |\\\\n'
-                       f'|      {__year__}          |\\\\n'
-                        '|                      |\\\\n'
-                        '|                      |\\\\n'
+                        '                     \\\\n'
+                        '                   \\\\n'
+                        '      Published    \\\\n'
+                        '         by         \\\\n'
+                        '       Yusuf       \\\\n'
+                        '                      \\\\n'
+                        '                      \\\\n'
+                        '      GDMC          \\\\n'
+                       f'      {__year__}          \\\\n'
+                        '                      \\\\n'
                         '---------------\\\\n'
                         '"}\']}')
         pages = [page for page in text.split('\f')]
@@ -192,7 +190,7 @@ if len(sys.argv) <= 1:
                     characters_left -= len(word) + 1
                     pixels_left -= width
                 newline()           # finish line
-            newpage()               # finish page
+            # newpage()               # finish page
         finalpage()        # end last page (book is complete)
         return bookData
 
@@ -210,7 +208,7 @@ if len(sys.argv) <= 1:
                 f"{response}")
         
 
-    # worldModif.saveToFile(file)
+    worldModif.saveToFile(file)
     
 else : 
     if sys.argv[1] == "r" :   

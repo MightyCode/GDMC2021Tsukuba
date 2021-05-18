@@ -291,7 +291,18 @@ def addItemChest(x, y, z, items):
                                                                v[1])
         interfaceUtils.runCommand(command)
 
-
+def getHighestNonAirBlock(cx, cy, cz):
+    cy = 255
+    IGNORED_BLOCKS = [
+        'minecraft:air', 'minecraft:cave_air', 'minecraft:water', 
+        'minecraft:oak_leaves',  'minecraft:leaves',  'minecraft:birch_leaves', 'minecraft:spruce_leaves'
+        'minecraft:oak_log',  'minecraft:spruce_log',  'minecraft:birch_log',  'minecraft:jungle_log', 'minecraft:acacia_log', 'minecraft:dark_oak_log',
+        'minecraft:grass', 'minecraft:snow',
+        'minecraft:dead_bush', "minecraft:cactus"]
+    ## Find highest non-air block
+    while interfaceUtils.getBlock(cx, cy, cz) in IGNORED_BLOCKS:
+        cy -= 1
+    return cy
 
 # Create a book item from a text
 def makeBookItem(text, title = "", author = "", desc = ""):

@@ -13,7 +13,7 @@ import sys
 import time
 
 file = "temp.txt"
-interface = interfaceUtils.Interface(True)
+interface = interfaceUtils.Interface()
 worldModif = WorldModification(interface)
 interfaceUtils.runCommand("execute at @p run setbuildarea ~-150 0 ~-150 ~150 255 ~150")
 buildArea = interfaceUtils.requestBuildArea()
@@ -35,7 +35,7 @@ if len(sys.argv) <= 1 :
     floodFill = FloodFill()
     
     settlementData = {}
-    settlementData["center"] = [int((area[0] + area[2]) / 2) , 4, int((area[1] + area[3]) / 2)]
+    settlementData["center"] = [int((area[0] + area[2]) / 2) , 120, int((area[1] + area[3]) / 2)]
     settlementData["size"] = [area[0] - area[2], area[1] - area[3]]
     settlementData["discoveredChunk"] = []
 
@@ -55,7 +55,7 @@ if len(sys.argv) <= 1 :
                 "farmer", "fisherman", "shepherd", "fletcher", "librarian", "cartographer", 
                 "cleric", "armorer", "weaponsmith", "toolsmith", "butcher", "leatherworker", "mason", "nitwit"]
     
-    settlementData["structuresNumberGoal"] = random.randint(15, 50)
+    settlementData["structuresNumberGoal"] = random.randint(1, 10)
 
     #structures contains "position", "rotation", "flip" "name", "type", "group" ->, "villagersId"
     settlementData["structures"] = []
@@ -108,38 +108,36 @@ if len(sys.argv) <= 1 :
     print (listOfVillagers)
 
     # Create some books
-    textVillageName = ('\f\\\\s--------------\\\\n'
-            '|                      |\\\\n'
-            '|                      |\\\\n'
-            '|   Welcome to      |\\\\n'
-           f'| {settlementData["villageName"]} |\\\\n'
-            '|                      |\\\\n'
-            '|                      |\\\\n'
-            '|                      |\\\\n'
-            '|                      |\\\\n'
-            '|                      |\\\\n'
-            '|                      |\\\\n'
-            '|                      |\\\\n'
-            '|                      |\\\\n'
-            '|--------------')
-    textVillagerNames = ('\f\\\\s-----------------\\\\n')
-    for i in range(len(listOfVillagers)):
-        if i <= 6: 
-            textVillagerNames += (f'{listOfVillagers[i]}       \\\\n')
-        if i == 6 or i == 12 or i == 18:
-            textVillagerNames += ('-----------------\\\\n\f')
-        if i > 6:
-            textVillagerNames += (f'{listOfVillagers[i]}       \\\\n')
-    textVillagerNames += ('-----------------\\\\n\f')
-
+    textVillagePresentationBook = (
+            '\f\\\\s--------------\\\\n'
+            '                      \\\\n'
+            '                      \\\\n'
+            '   Welcome to      \\\\n'
+           f' {settlementData["villageName"]} \\\\n'
+            '                      \\\\n'
+            '                      \\\\n'
+            '                      \\\\n'
+            '                      \\\\n'
+            '                      \\\\n'
+            '                      \\\\n'
+            '                      \\\\n'
+            '--------------')
+    textVillagePresentationBook += ('\f\\\\s---------------\\\\n')
+    textVillagePresentationBook += (' There are '
+        f'{len(settlementData["villagerNames"])} villagers in this village\\\\n')
+    textVillagePresentationBook += ('---------------\\\\n\f')
+    textVillagePresentationBook += ('\f\\\\s---------------\\\\n'
+                      'There are '
+                      f'{settlementData["structuresNumberGoal"]} structures : \\\\n')
+    for i in range(len(settlementData["structures"])):
+        textVillagePresentationBook += (f'{settlementData["structures"][i]["name"]} ')
+    textVillagePresentationBook += ('---------------\\\\n\f')
         
-    villageNameBook = _bookGeneration.writeBook(textVillageName, title="Village Name", author="Yusuf", description="Presentation of the village")
-    villagersBook = _bookGeneration.writeBook(textVillagerNames, title="Villagers Names", author="Yusuf", description="Name and Job of all the villagers")
+    villageNameBook = _bookGeneration.writeBook(textVillagePresentationBook, title="Village Presentation", author="Yusuf", description="Presentation of the village")
     # deadVillagersBook = _utils.makeBookItem("List of all dead villagers : ", title="List of all dead villagers")
     print(settlementData)
     
     _bookGeneration.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2], villageNameBook, 'east')
-    _bookGeneration.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2] + 1, villagersBook, 'east')
     print("")
     structureMananager.printStructureChoose()
 
@@ -173,7 +171,7 @@ if len(sys.argv) <= 1 :
 
         # Add books replacements
         buildingCondition["replacements"]["villageBook"] = villageNameBook
-        buildingCondition["replacements"]["villagerRegistry"] = villagersBook
+        # buildingCondition["replacements"]["villagerRegistry"] = villagersBook
         # buildingCondition["replacements"]["deadVillagerRegistry"] = deadVillagersBook
 
         structure.build(worldModif, buildingCondition, chestGeneration)

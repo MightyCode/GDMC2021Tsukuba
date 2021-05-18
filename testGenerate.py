@@ -1,5 +1,6 @@
 import sys
 import lib.interfaceUtils as interfaceUtils
+import utils._utils as _utils
 from generation.structures.structures import *
 from generation.structures.generated.generatedQuarry import *
 from utils._worldModification import *
@@ -39,10 +40,9 @@ if len(sys.argv) <= 1:
     cx = int(area[0] + area[2]/2)
     cz = int(area[1] + area[3]/2)
 
-    ## Find highest non-air block
     cy = 255
-    while interfaceUtils.getBlock(cx, cy, cz) in transparentBlocks:
-        cy -= 1
+    ## Find highest non-air block
+    cy = _utils.getHighestNonAirBlock(cx, cy, cz)
 
     buildingConditions = Structures.BUILDING_CONDITIONS.copy()
     buildingConditions["position"] = [cx, cy, cz]
