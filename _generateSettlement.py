@@ -89,6 +89,7 @@ if len(sys.argv) <= 1 :
         result = floodFill.findPosHouse(corners, ws)
 
         settlementData["structures"][i]["position"] = result["position"]
+        settlementData["structures"][i]["position"][1] -= 1
         settlementData["structures"][i]["flip"] = result["flip"]
         settlementData["structures"][i]["rotation"] = result["rotation"]
 

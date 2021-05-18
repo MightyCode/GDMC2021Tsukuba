@@ -2,7 +2,7 @@ from generation.structures.generated.generatedQuarry import *
 
 def loadAllResources(resources) : 
     # Loads structures
-
+    print("Begin load ressources")
     resources.loadStructures("houses/haybale/haybalehouse1.nbt", "houses/haybale/haybalehouse1.json", "haybalehouse1")
     resources.loadStructures("houses/haybale/haybalehouse2.nbt", "houses/haybale/haybalehouse2.json", "haybalehouse2")
     resources.loadStructures("houses/haybale/haybalehouse3.nbt", "houses/haybale/haybalehouse3.json", "haybalehouse3")
@@ -36,7 +36,7 @@ def loadAllResources(resources) :
     resources.loadStructures("representatives/tavern/basictavern.nbt", "representatives/tavern/basictavern.json", "basictavern")
     resources.loadStructures("representatives/barrack/basicbarrack.nbt", "representatives/barrack/basicbarrack.json", "basicbarrack")
 
-    resources.addGeneratedStructures(GeneratedQuarry(), "functionals/quarry/basicgeneratedquarry.json", "basicGeneratedQuarry")
+    resources.addGeneratedStructures(GeneratedQuarry(), "functionals/quarry/basicgeneratedquarry.json", "basicgeneratedquarry")
 
     # Load lootTable
     resources.loadLootTable("functionals/windmill.json", "windmill")
@@ -50,3 +50,5 @@ def loadAllResources(resources) :
     resources.loadLootTable("representatives/jail.json", "jail")
     resources.loadLootTable("representatives/tavern.json", "tavern")
     resources.loadLootTable("representatives/barrack.json", "barrack")
+
+    print("End load ressources")
