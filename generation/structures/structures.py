@@ -47,6 +47,9 @@ class Structures(BaseStructure):
         self.file = nbtfile
         self.name = name
 
+        # Variable used on building
+        self.placeImmediately = False
+
         self.computedOrientation = {}
         # Indicate for each block in palette if it should change or not and to change to what
         for block in self.file["palette"]:
@@ -130,7 +133,7 @@ class Structures(BaseStructure):
         ## Computing : Modify from blocks
         for block in self.file["blocks"]:
             blockPalette = self.file["palette"][block["state"].value]
-            placeImmediately = False
+            self.placeImmediately = False
 
             # Check if the current block is in excluded zone
             takeOriginalBlock = False
@@ -154,8 +157,7 @@ class Structures(BaseStructure):
                 buildingCondition["flip"], buildingCondition["rotation"], 
                 buildingCondition["referencePoint"], buildingCondition["position"] )
             
-            if "chest" in blockName:
-                placeImmediately = True
+            self.checkBeforePlacing(blockName, chestGeneration)
 
             worldModif.setBlock(
                 blockPosition[0], blockPosition[1], blockPosition[2],
@@ -164,23 +166,31 @@ class Structures(BaseStructure):
                     buildingCondition["rotation"],
                     buildingCondition["flip"],
                     takeOriginalBlock
-                    ), placeImmediately=placeImmediately
+                    ), placeImmediately=self.placeImmediately
             )
 
-            # If structure has loot tables and chest encounter
-            if "chest" in blockName:
-                if self.lootTable :
-                    choosenLootTable = ""
-                    for lootTable in self.info["lootTables"] :
-                        if len(lootTable) == 1:
-                            choosenLootTable = lootTable[0]
-                        elif _math.isPointInSquare([ block["pos"][0].value, block["pos"][1].value, block["pos"][2].value ], lootTable[1]) :
-                            choosenLootTable = lootTable[0]
-                    
-                    if choosenLootTable  != "":
-                        chestGeneration.generate(blockPosition[0], blockPosition[1], blockPosition[2], choosenLootTable, buildingCondition["replacements"])
+
 
         print("Finish building : " + self.name)
+
+    def checkBeforePlacing(self, blockName):
+        if "chest" in blockName:
+            self.placeImmediately = True
+
+
+    def checkAfterPlacing(self, blockName, chestGeneration):
+        # If structure has loot tables and chest encounter
+        if "chest" in blockName:
+            if self.lootTable :
+                choosenLootTable = ""
+                for lootTable in self.info["lootTables"] :
+                    if len(lootTable) == 1:
+                        choosenLootTable = lootTable[0]
+                    elif _math.isPointInSquare([ block["pos"][0].value, block["pos"][1].value, block["pos"][2].value ], lootTable[1]) :
+                        choosenLootTable = lootTable[0]
+                    
+                if choosenLootTable  != "":
+                    chestGeneration.generate(blockPosition[0], blockPosition[1], blockPosition[2], choosenLootTable, buildingCondition["replacements"])
 
 
     def placeSupportUnderStructure(self, worldModif, buildingCondition):

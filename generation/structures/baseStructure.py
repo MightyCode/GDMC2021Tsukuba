@@ -128,7 +128,6 @@ class BaseStructure:
         for rotation in [0, 1, 2, 3]:
             for flip in [0, 1, 2, 3]:
                 corners.append(self.getCornersLocalPositions(referencePosition, flip, rotation))
-                print(corners[-1])
 
         return corners
 

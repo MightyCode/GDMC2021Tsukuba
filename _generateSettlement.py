@@ -81,7 +81,10 @@ if len(sys.argv) <= 1 :
         structure = resources.structures[settlementData["structures"][i]["name"]]
         corners = structure.getCornersLocalPositionsAllFlipRotation(structure.info["mainEntry"]["position"])
 
-        #settlementData["structures"][i]["position"] = [random.randint(0, 256), 0, random.randint(0, 256)]
+        """settlementData["structures"][i]["position"] = [random.randint(0, 256), 0, random.randint(0, 256)]
+        settlementData["structures"][i]["flip"] = 0
+        settlementData["structures"][i]["rotation"] = 0"""
+
         result = floodFill.findPosHouse(corners, ws)
 
         settlementData["structures"][i]["position"] = result["position"]
@@ -97,6 +100,7 @@ if len(sys.argv) <= 1 :
 
             settlementData["discoveredChunk"].append(chunk)
             _utils.addResourcesFromChunk(resources, settlementData, structureBiomeBlockId)
+            structureMananager.printStructureChoose()
 
         structureMananager.checkDependencies()
 
@@ -112,7 +116,7 @@ if len(sys.argv) <= 1 :
     deadVillagersBook = _utils.makeBookItem("List of all dead villagers : ", title="List of all dead villagers")
     print(settlementData)
     print("")
-    structureMananager.printStructureChoose()
+    #structureMananager.printStructureChoose()
 
     # Build after every computations
     for i in range(len(settlementData["structures"])) :
@@ -150,7 +154,7 @@ if len(sys.argv) <= 1 :
         structure.build(worldModif, buildingCondition, chestGeneration)
         
         #_utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
-        time.sleep
+        time.sleep(1)
     worldModif.saveToFile(file)  
     
 
