@@ -5,6 +5,38 @@ import lib.interfaceUtils as interfaceUtils
 import lookup
 
 
+
+"""
+Return the text of the book of the village presentation
+"""
+def createTextOfPresentationVillage(villageName, villagerNames, structuresNumber, structuresNames):
+    textVillagePresentationBook = (
+            '\f\\\\s--------------\\\\n'
+            '                      \\\\n'
+            '                      \\\\n'
+            '   Welcome to      \\\\n'
+           f' {villageName} \\\\n'
+            '                      \\\\n'
+            '                      \\\\n'
+            '                      \\\\n'
+            '                      \\\\n'
+            '                      \\\\n'
+            '                      \\\\n'
+            '                      \\\\n'
+            '--------------')
+    textVillagePresentationBook += ('\f\\\\s---------------\\\\n')
+    textVillagePresentationBook += ('There are '
+        f'{len(villagerNames)} villagers in this village\\\\n')
+    textVillagePresentationBook += ('---------------\\\\n\f')
+    textVillagePresentationBook += ('\f\\\\s---------------\\\\n'
+                      'There are '
+                      f'{structuresNumber} structures : \\\\n')
+    for i in range(len(structuresNames)):
+        textVillagePresentationBook += (f'{structuresNames[i]["name"]} ')
+    textVillagePresentationBook += ('---------------\\\\n\f')
+    
+    return textVillagePresentationBook
+
 def addResourcesFromChunk(resources, settlementData, biome):
     if biome == "-1":
         return

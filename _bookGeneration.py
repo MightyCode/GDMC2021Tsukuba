@@ -199,14 +199,9 @@ if len(sys.argv) <= 1:
     def placeLectern(x, y, z, bookData, facing="east"):
         """**Place a lectern with a book in the world**."""
         worldModif.setBlock(x, y, z, f"lectern[facing={facing}, has_book=true]")
-        _utils.addBookToLectern(x, y, z, bookData)
+        _utils.addBookToLectern(interface, x, y, z, bookData)
         
-<<<<<<< HEAD
-
     worldModif.saveToFile(file)
-=======
-    # worldModif.saveToFile(file)
->>>>>>> dev
     
 else : 
     if sys.argv[1] == "r" :   

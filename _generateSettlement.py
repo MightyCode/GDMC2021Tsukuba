@@ -55,7 +55,7 @@ if len(sys.argv) <= 1 :
                 "farmer", "fisherman", "shepherd", "fletcher", "librarian", "cartographer", 
                 "cleric", "armorer", "weaponsmith", "toolsmith", "butcher", "leatherworker", "mason", "nitwit"]
     
-    settlementData["structuresNumberGoal"] = random.randint(1, 10)
+    settlementData["structuresNumberGoal"] = random.randint(1, 3)
 
     #structures contains "position", "rotation", "flip" "name", "type", "group" ->, "villagersId"
     settlementData["structures"] = []
@@ -112,32 +112,7 @@ if len(sys.argv) <= 1 :
     listOfVillagers = strVillagers.split(";")
     print (listOfVillagers)
 
-    # Create some books
-    textVillagePresentationBook = (
-            '\f\\\\s--------------\\\\n'
-            '                      \\\\n'
-            '                      \\\\n'
-            '   Welcome to      \\\\n'
-           f' {settlementData["villageName"]} \\\\n'
-            '                      \\\\n'
-            '                      \\\\n'
-            '                      \\\\n'
-            '                      \\\\n'
-            '                      \\\\n'
-            '                      \\\\n'
-            '                      \\\\n'
-            '--------------')
-    textVillagePresentationBook += ('\f\\\\s---------------\\\\n')
-    textVillagePresentationBook += (' There are '
-        f'{len(settlementData["villagerNames"])} villagers in this village\\\\n')
-    textVillagePresentationBook += ('---------------\\\\n\f')
-    textVillagePresentationBook += ('\f\\\\s---------------\\\\n'
-                      'There are '
-                      f'{settlementData["structuresNumberGoal"]} structures : \\\\n')
-    for i in range(len(settlementData["structures"])):
-        textVillagePresentationBook += (f'{settlementData["structures"][i]["name"]} ')
-    textVillagePresentationBook += ('---------------\\\\n\f')
-        
+    textVillagePresentationBook = _utils.createTextOfPresentationVillage(settlementData["villageName"], settlementData["villagerNames"], settlementData["structuresNumberGoal"], settlementData["structures"])
     villageNameBook = _bookGeneration.writeBook(textVillagePresentationBook, title="Village Presentation", author="Yusuf", description="Presentation of the village")
     # deadVillagersBook = _utils.makeBookItem("List of all dead villagers : ", title="List of all dead villagers")
     print(settlementData)
