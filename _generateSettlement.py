@@ -3,6 +3,7 @@ from generation._chestGeneration import *
 from generation.structures.structures import *
 from generation._structureManager import *
 from generation._floodFill import *
+import _bookGeneration
 import generation._resourcesLoader as resLoader
 import utils._utils as _utils
 from utils._worldModification import *
@@ -12,7 +13,7 @@ import sys
 import time
 
 file = "temp.txt"
-interface = interfaceUtils.Interface()
+interface = interfaceUtils.Interface(True)
 worldModif = WorldModification(interface)
 interfaceUtils.runCommand("execute at @p run setbuildarea ~-150 0 ~-150 ~150 255 ~150")
 buildArea = interfaceUtils.requestBuildArea()
@@ -34,7 +35,7 @@ if len(sys.argv) <= 1 :
     floodFill = FloodFill()
     
     settlementData = {}
-    settlementData["center"] = [int((area[0] + area[2]) / 2) , 63, int((area[1] + area[3]) / 2)]
+    settlementData["center"] = [int((area[0] + area[2]) / 2) , 4, int((area[1] + area[3]) / 2)]
     settlementData["size"] = [area[0] - area[2], area[1] - area[3]]
     settlementData["discoveredChunk"] = []
 
@@ -100,17 +101,45 @@ if len(sys.argv) <= 1 :
 
         structureMananager.checkDependencies()
 
-    strVillagers = "List of all villagers: "
-
+    strVillagers = ""
     for i in range(len(settlementData["villagerNames"])):
-        strVillagers += settlementData["villagerNames"][i] + ":" + settlementData["villagerProfession"][i] + " "
-
+        strVillagers += settlementData["villagerNames"][i] + " : " + settlementData["villagerProfession"][i] + ";"
+    listOfVillagers = strVillagers.split(";")
+    print (listOfVillagers)
 
     # Create some books
-    villageNameBook = _utils.makeBookItem("Welcome to " + settlementData["villageName"], title="Village Name")
-    villagersBook = _utils.makeBookItem(strVillagers, title="List of all villagers")
-    deadVillagersBook = _utils.makeBookItem("List of all dead villagers : ", title="List of all dead villagers")
+    textVillageName = ('\f\\\\s--------------\\\\n'
+            '|                      |\\\\n'
+            '|                      |\\\\n'
+            '|   Welcome to      |\\\\n'
+           f'| {settlementData["villageName"]} |\\\\n'
+            '|                      |\\\\n'
+            '|                      |\\\\n'
+            '|                      |\\\\n'
+            '|                      |\\\\n'
+            '|                      |\\\\n'
+            '|                      |\\\\n'
+            '|                      |\\\\n'
+            '|                      |\\\\n'
+            '|--------------')
+    textVillagerNames = ('\f\\\\s-----------------\\\\n')
+    for i in range(len(listOfVillagers)):
+        if i <= 6: 
+            textVillagerNames += (f'{listOfVillagers[i]}       \\\\n')
+        if i == 6 or i == 12 or i == 18:
+            textVillagerNames += ('-----------------\\\\n\f')
+        if i > 6:
+            textVillagerNames += (f'{listOfVillagers[i]}       \\\\n')
+    textVillagerNames += ('-----------------\\\\n\f')
+
+        
+    villageNameBook = _bookGeneration.writeBook(textVillageName, title="Village Name", author="Yusuf", description="Presentation of the village")
+    villagersBook = _bookGeneration.writeBook(textVillagerNames, title="Villagers Names", author="Yusuf", description="Name and Job of all the villagers")
+    # deadVillagersBook = _utils.makeBookItem("List of all dead villagers : ", title="List of all dead villagers")
     print(settlementData)
+    
+    _bookGeneration.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2], villageNameBook, 'east')
+    _bookGeneration.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2] + 1, villagersBook, 'east')
     print("")
     structureMananager.printStructureChoose()
 
@@ -145,7 +174,7 @@ if len(sys.argv) <= 1 :
         # Add books replacements
         buildingCondition["replacements"]["villageBook"] = villageNameBook
         buildingCondition["replacements"]["villagerRegistry"] = villagersBook
-        buildingCondition["replacements"]["deadVillagerRegistry"] = deadVillagersBook
+        # buildingCondition["replacements"]["deadVillagerRegistry"] = deadVillagersBook
 
         structure.build(worldModif, buildingCondition, chestGeneration)
         
