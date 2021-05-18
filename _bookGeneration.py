@@ -7,6 +7,7 @@ from generation.structures.generated.generatedQuarry import *
 from utils._worldModification import *
 from generation._resources import *
 from generation._chestGeneration import *
+import utils._utils as _utils
 import lookup
 
 __version__ = 'v4.2_dev'
@@ -200,17 +201,8 @@ if len(sys.argv) <= 1:
     def placeLectern(x, y, z, bookData, facing="east"):
         """**Place a lectern with a book in the world**."""
         worldModif.setBlock(x, y, z, f"lectern[facing={facing}, has_book=true]")
-        command = (f'data merge block {x} {y} {z} '
-                f'{{Book: {{id: "minecraft:written_book", '
-                f'Count: 1b, tag: {bookData}'
-                '}, Page: 0}')
-        response = interfaceUtils.runCommand(command)
-        if not response.isnumeric():
-            print(f"{lookup.TCOLORS['orange']}Warning: Server returned error "
-                f"upon placing book in lectern:\n\t{lookup.TCOLORS['CLR']}"
-                f"{response}")
+        _utils.addBookToLectern(x, y, z, bookData)
         
-
     # worldModif.saveToFile(file)
     
 else : 

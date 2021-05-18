@@ -102,7 +102,6 @@ class Structures(BaseStructure):
 
     def build(self, worldModif, buildingCondition, chestGeneration):
         ## Pre computing :
-        print("Pre building : " + self.name)
         self.computeOrientation(buildingCondition["rotation"], buildingCondition["flip"])
 
         if buildingCondition["flip"] == 1 or buildingCondition["flip"] == 3:
@@ -111,7 +110,6 @@ class Structures(BaseStructure):
             buildingCondition["referencePoint"][2] = self.size[2] - 1 - buildingCondition["referencePoint"][2] 
 
         # Replace bloc by these given
-        print("Prebuilding Palette")
         for blockPalette in self.file["palette"]:
             if blockPalette[Structures.CHANGE].value:
                 changeState = blockPalette[Structures.CHANGE_STATE].value
@@ -128,8 +126,6 @@ class Structures(BaseStructure):
 
         # Air zone
         self.placeAirZones(worldModif, buildingCondition)
-
-        print("Building : " + self.name)
 
         ## Computing : Modify from blocks
         for block in self.file["blocks"]:
@@ -172,8 +168,6 @@ class Structures(BaseStructure):
 
             self.checkAfterPlacing(block, blockName, blockPosition, chestGeneration, buildingCondition)
 
-        print("Finish building : " + self.name)
-
     def checkBeforePlacing(self, blockName):
         if "chest" in blockName:
             self.placeImmediately = True
@@ -192,6 +186,18 @@ class Structures(BaseStructure):
                     
                 if choosenLootTable  != "":
                     chestGeneration.generate(blockPosition[0], blockPosition[1], blockPosition[2], choosenLootTable, buildingCondition["replacements"])
+
+        if "lectern" in blockName:
+            if "lectern" in self.info:
+                for key in self.info["lectern"].keys():
+                    position = self.info["lectern"][key]
+                    if block["pos"][0].value == position[0] and block["pos"][1].value == position[1] and block["pos"][2].value == position[2]:
+                        result = _utils.changeNameWithBalise(key, buildingCondition)
+                        if result[0] >= 0:
+                            _utils.addBookToLectern(blockPosition[0], blockPosition[1], blockPosition[2], result[1])
+                        else :
+                            print("Can't add a book to a lectern at pos : " + str(blockPosition))
+                        break
 
 
     def placeSupportUnderStructure(self, worldModif, buildingCondition):
@@ -220,8 +226,6 @@ class Structures(BaseStructure):
                         buildingCondition["replacements"]["ground2"])
 
     def placeAirZones(self, worldModif, buildingCondition):
-
-        print("Prebuilding air")
         if buildingCondition["replaceAllAir"] == 3:
             buildingCondition["replaceAllAir"] = self.info["air"]["preferedAirMode"]
 

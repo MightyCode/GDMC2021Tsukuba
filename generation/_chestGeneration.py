@@ -1,5 +1,6 @@
 import random
 import lib.interfaceUtils as interfaceUtils
+import utils._utils as _utils
 
 class ChestGeneration:
     def __init__(self, resources, interface):
@@ -7,7 +8,6 @@ class ChestGeneration:
         self.interface = interface
     
     def generate(self, x, y, z, lootTableName, changeItemName={}):
-        print(lootTableName)
         lootTable = self.resources.lootTables[lootTableName]["pools"][0]
 
         numberItem = 0
@@ -41,22 +41,13 @@ class ChestGeneration:
                                                             item["functions"][0]["count"]["max"])
                     
                     # Compute item's name if balise *, means that one word should change
-                    index = item["name"].find("*")
-                    if index != -1 :
-                        secondIndex = item["name"].find("*", index+1)
-                        word = item["name"][index +1 : secondIndex]
-                        added = False
-                        for key in changeItemName.keys():
-                            if key == word:
-                                added = True
-                                items.append([ item["name"].replace("*" + word + "*", changeItemName[key]), numberOfItem ])
-                                break
+                    result = _utils.changeNameWithBalise(item["name"], changeItemName)
+
+                    if result[0] >= 0:
+                        items.append([result[1], numberOfItem ])
+                    else:
+                        items.append(["", 0 ])
                         
-                         # If the balise can't be replace
-                        if not added:
-                            items.append([ "", 0 ])
-                    else :
-                        items.append([ item["name"], numberOfItem ])
                     break
         
         interfaceUtils.Interface.addItemChest(x, y, z, items, itemPlaces)

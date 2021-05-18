@@ -33,8 +33,8 @@ if len(sys.argv) <= 1 :
 
     info = structure.info
     buildingCondition = Structures.BUILDING_CONDITIONS.copy()
-    buildingCondition["flip"] = 2
-    buildingCondition["rotation"] = 3
+    buildingCondition["flip"] = 0
+    buildingCondition["rotation"] = 0
     buildingCondition["position"] = [-69, 63, -48]
     buildingCondition["replaceAllAir"] = 3
     buildingCondition["referencePoint"] = [info["mainEntry"]["position"][0], info["mainEntry"]["position"][1], info["mainEntry"]["position"][2]]
