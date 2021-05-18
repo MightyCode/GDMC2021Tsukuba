@@ -37,6 +37,21 @@ def createTextOfPresentationVillage(villageName, villagerNames, structuresNumber
     
     return textVillagePresentationBook
 
+"""
+Return the text of the book of the village presentation
+"""
+def createTextForVillagersNames(listOfVillagers):
+    textVillagerNames = ('\f\\\\s-----------------\\\\n')
+    for i in range(len(listOfVillagers)):
+        if i <= 6: 
+            textVillagerNames += (f'{listOfVillagers[i]}       \\\\n')
+        if i == 6 or i == 12 or i == 18:
+            textVillagerNames += ('-----------------\\\\n\f')
+        if i > 6:
+            textVillagerNames += (f'{listOfVillagers[i]}       \\\\n')
+    textVillagerNames += ('-----------------\\\\n\f')
+    return textVillagerNames
+
 def addResourcesFromChunk(resources, settlementData, biome):
     if biome == "-1":
         return

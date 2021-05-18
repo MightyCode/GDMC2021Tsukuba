@@ -114,13 +114,17 @@ if len(sys.argv) <= 1 :
     print (listOfVillagers)
 
 
-    textVillagePresentationBook = _utils.createTextOfPresentationVillage(settlementData["villageName"], settlementData["villagerNames"], settlementData["structuresNumberGoal"], settlementData["structures"])
+    textVillagePresentationBook = _utils.createTextOfPresentationVillage(settlementData["villageName"], settlementData["villagerNames"], 
+                settlementData["structuresNumberGoal"], settlementData["structures"])
+    textVillagersNames = _utils.createTextForVillagersNames(listOfVillagers)
     villageNameBook = _bookGeneration.writeBook(textVillagePresentationBook, title="Village Presentation", author="Yusuf", description="Presentation of the village")
-    villagersBook = _bookGeneration.writeBook(textVillagerNames, title="Villagers Names", author="Yusuf", description="Name and Job of all the villagers")
+    villagerNamesList = _bookGeneration.writeBook(textVillagersNames, title="List of all villagers", author="Yusuf", description="List of all villagers")
+
     deadVillagersBook = _utils.makeBookItem("List of all dead villagers : ", title="List of all dead villagers")
     print(settlementData)
     
-    _bookGeneration.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2], villageNameBook, 'east')
+    _bookGeneration.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2], villageNameBook, worldModif, 'east')
+    _bookGeneration.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2] + 1, villagerNamesList, worldModif,'east')
     print("")
     #structureMananager.printStructureChoose()
 
@@ -155,7 +159,7 @@ if len(sys.argv) <= 1 :
 
         # Add books replacements
         buildingCondition["replacements"]["villageBook"] = villageNameBook
-        buildingCondition["replacements"]["villagerRegistry"] = villagersBook
+        # buildingCondition["replacements"]["villagerRegistry"] = villagersBook
         buildingCondition["replacements"]["deadVillagerRegistry"] = deadVillagersBook
 
         #structure.build(worldModif, buildingCondition, chestGeneration)
@@ -163,7 +167,6 @@ if len(sys.argv) <= 1 :
         #_utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
         time.sleep(0)
     #worldModif.saveToFile(file)  
-    
 
 else : 
     if sys.argv[1] == "r" :   
