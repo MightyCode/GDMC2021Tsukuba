@@ -11,6 +11,9 @@ class FloodFill:
         'minecraft:grass', 'minecraft:snow',
         'minecraft:dead_bush', "minecraft:cactus"]
 
+    INITIAL_POSITION = 40
+    DISTANCE_STRUCTURE = 20
+
     def __init__(self):
         self.listHouse = []
         random.seed(a=None, version=2)
@@ -118,8 +121,8 @@ class FloodFill:
         verif2 = False
         while notfinded and debug and debugnohouse and verif1==False:
             if len(self.listHouse)==0:
-                xPos = (-1)**random.randint(0,1) * random.randint(0,90)
-                zPos = (-1)**random.randint(0,1) * random.randint(0,90)
+                xPos = (-1)**random.randint(0,1) * random.randint(0, FloodFill.INITIAL_POSITION)
+                zPos = (-1)**random.randint(0,1) * random.randint(0, FloodFill.INITIAL_POSITION)
                 print(xPos, zPos)
                 yPos = self.getHeight(xPos,zPos, ws)
                 print(yPos)
@@ -222,7 +225,7 @@ class FloodFill:
                                             if xPos > 120 or yPos > 120:
                                                 FloodFillValue = [xPos,yPos,zPos]
                                             else:
-                                                FloodFillValue = self.floodfill(xPos,yPos,zPos,ws,35)
+                                                FloodFillValue = self.floodfill(xPos,yPos,zPos,ws, FloodFill.DISTANCE_STRUCTURE)
                                         
                                     else:
                                         verif1 = False

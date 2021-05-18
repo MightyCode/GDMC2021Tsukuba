@@ -13,9 +13,10 @@ import sys
 import time
 
 file = "temp.txt"
-interface = interfaceUtils.Interface(True)
+interface = interfaceUtils.Interface()
 worldModif = WorldModification(interface)
-interfaceUtils.runCommand("execute at @p run setbuildarea ~-150 0 ~-150 ~150 255 ~150")
+size = str(150)
+interfaceUtils.runCommand("execute at @p run setbuildarea ~-" + size + " 0 ~-" + size +  "~" + size + " 255 ~" + size)
 buildArea = interfaceUtils.requestBuildArea()
 
 if buildArea == -1:
@@ -35,7 +36,7 @@ if len(sys.argv) <= 1 :
     floodFill = FloodFill()
     
     settlementData = {}
-    settlementData["center"] = [int((area[0] + area[2]) / 2) , 4, int((area[1] + area[3]) / 2)]
+    settlementData["center"] = [int((area[0] + area[2]) / 2) , 70, int((area[1] + area[3]) / 2)]
     settlementData["size"] = [area[0] - area[2], area[1] - area[3]]
     settlementData["discoveredChunk"] = []
 
@@ -140,11 +141,11 @@ if len(sys.argv) <= 1 :
         
     villageNameBook = _bookGeneration.writeBook(textVillageName, title="Village Name", author="Yusuf", description="Presentation of the village")
     villagersBook = _bookGeneration.writeBook(textVillagerNames, title="Villagers Names", author="Yusuf", description="Name and Job of all the villagers")
-    # deadVillagersBook = _utils.makeBookItem("List of all dead villagers : ", title="List of all dead villagers")
+    deadVillagersBook = _utils.makeBookItem("List of all dead villagers : ", title="List of all dead villagers")
     print(settlementData)
     
-    _bookGeneration.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2], villageNameBook, 'east')
-    _bookGeneration.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2] + 1, villagersBook, 'east')
+    _bookGeneration.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2], villageNameBook, worldModif, 'east')
+    _bookGeneration.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2] + 1, villagersBook, worldModif, 'east')
     print("")
     #structureMananager.printStructureChoose()
 
@@ -156,7 +157,7 @@ if len(sys.argv) <= 1 :
         buildingCondition["flip"] = settlementData["structures"][i]["flip"]
         buildingCondition["rotation"] = settlementData["structures"][i]["rotation"]
         buildingCondition["position"] = settlementData["structures"][i]["position"]
-        buildingCondition["replaceAllAir"] = 0
+        buildingCondition["replaceAllAir"] = 3
         buildingCondition["referencePoint"] = [info["mainEntry"]["position"][0], info["mainEntry"]["position"][1], info["mainEntry"]["position"][2]]
 
         structureBiomeId = interfaceUtils.getBiome(buildingCondition["position"][0], buildingCondition["position"][2], 1, 1)
@@ -179,7 +180,7 @@ if len(sys.argv) <= 1 :
         # Add books replacements
         buildingCondition["replacements"]["villageBook"] = villageNameBook
         buildingCondition["replacements"]["villagerRegistry"] = villagersBook
-        # buildingCondition["replacements"]["deadVillagerRegistry"] = deadVillagersBook
+        buildingCondition["replacements"]["deadVillagerRegistry"] = deadVillagersBook
 
         structure.build(worldModif, buildingCondition, chestGeneration)
         

@@ -46,7 +46,7 @@ def changeNameWithBalise(name, changementsWord):
         return  [0, name]
 
 
-def addBookToLectern(interface, x, y, z, bookData):
+def addBookToLectern(x, y, z, bookData):
     command = (f'data merge block {x} {y} {z} '
                     f'{{Book: {{id: "minecraft:written_book", '
                     f'Count: 1b, tag: {bookData}'
