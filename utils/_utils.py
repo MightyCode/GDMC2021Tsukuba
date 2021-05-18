@@ -5,6 +5,38 @@ import lib.interfaceUtils as interfaceUtils
 import lookup
 
 
+
+"""
+Return the text of the book of the village presentation
+"""
+def createTextOfPresentationVillage(villageName, villagerNames, structuresNumber, structuresNames):
+    textVillagePresentationBook = (
+            '\f\\\\s--------------\\\\n'
+            '                      \\\\n'
+            '                      \\\\n'
+            '   Welcome to      \\\\n'
+           f' {villageName} \\\\n'
+            '                      \\\\n'
+            '                      \\\\n'
+            '                      \\\\n'
+            '                      \\\\n'
+            '                      \\\\n'
+            '                      \\\\n'
+            '                      \\\\n'
+            '--------------')
+    textVillagePresentationBook += ('\f\\\\s---------------\\\\n')
+    textVillagePresentationBook += ('There are '
+        f'{len(villagerNames)} villagers in this village\\\\n')
+    textVillagePresentationBook += ('---------------\\\\n\f')
+    textVillagePresentationBook += ('\f\\\\s---------------\\\\n'
+                      'There are '
+                      f'{structuresNumber} structures : \\\\n')
+    for i in range(len(structuresNames)):
+        textVillagePresentationBook += (f'{structuresNames[i]["name"]} ')
+    textVillagePresentationBook += ('---------------\\\\n\f')
+    
+    return textVillagePresentationBook
+
 def addResourcesFromChunk(resources, settlementData, biome):
     if biome == "-1":
         return
@@ -333,7 +365,18 @@ def addItemChest(x, y, z, items):
                                                                v[1])
         interfaceUtils.runCommand(command)
 
-
+def getHighestNonAirBlock(cx, cy, cz):
+    cy = 255
+    IGNORED_BLOCKS = [
+        'minecraft:air', 'minecraft:cave_air', 'minecraft:water', 
+        'minecraft:oak_leaves',  'minecraft:leaves',  'minecraft:birch_leaves', 'minecraft:spruce_leaves'
+        'minecraft:oak_log',  'minecraft:spruce_log',  'minecraft:birch_log',  'minecraft:jungle_log', 'minecraft:acacia_log', 'minecraft:dark_oak_log',
+        'minecraft:grass', 'minecraft:snow',
+        'minecraft:dead_bush', "minecraft:cactus"]
+    ## Find highest non-air block
+    while interfaceUtils.getBlock(cx, cy, cz) in IGNORED_BLOCKS:
+        cy -= 1
+    return cy
 
 # Create a book item from a text
 def makeBookItem(text, title = "", author = "", desc = ""):
