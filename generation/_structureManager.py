@@ -33,6 +33,8 @@ class StructureManager:
         if len(self.allStructures) == 0:
             return 2
 
+        print(self.allStructures)
+
         sumWeight = 0
         for structure in self.allStructures :
             if "priority" in self.dependencies[structure["group"]] :
@@ -50,8 +52,13 @@ class StructureManager:
             randomValue -= structure["weight"]
             if randomValue <= 0:
                 self.choosedStructure(structure)
+                structure["weight"] -= 1
+                if structure["weight"] < 1 : 
+                    structure["weight"] = 1
+                    
                 # Normal exit
                 return 0
+
 
     def choosedStructure(self, structure):
         self.settlementData["structures"][-1]["name"] = structure["name"]

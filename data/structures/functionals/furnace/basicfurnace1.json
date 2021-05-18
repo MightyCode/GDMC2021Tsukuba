@@ -12,7 +12,6 @@
     ]
   },
   "lootTables" : [
-    ["basicfarm"]
   ],
   "villageInfo" : {
     "villager" : 2,

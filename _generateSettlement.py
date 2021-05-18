@@ -72,6 +72,7 @@ if len(sys.argv) <= 1 :
         settlementData["structures"].append({})
         # 0 -> normal, 1 -> replacement, 2 -> no more structure
         result = structureMananager.chooseOneStructure()
+        structureMananager.printStructureChoose()
         if result == 2 :
             settlementData["structuresNumberGoal"] = i
             break
@@ -83,9 +84,9 @@ if len(sys.argv) <= 1 :
         structure = resources.structures[settlementData["structures"][i]["name"]]
         corners = structure.getCornersLocalPositionsAllFlipRotation(structure.info["mainEntry"]["position"])
 
-        """settlementData["structures"][i]["position"] = [random.randint(0, 256), 0, random.randint(0, 256)]
+        settlementData["structures"][i]["position"] = [random.randint(0, 256), 0, random.randint(0, 256)]
         settlementData["structures"][i]["flip"] = 0
-        settlementData["structures"][i]["rotation"] = 0"""
+        settlementData["structures"][i]["rotation"] = 0 
 
         result = floodFill.findPosHouse(corners, ws)
 
@@ -103,7 +104,6 @@ if len(sys.argv) <= 1 :
 
             settlementData["discoveredChunk"].append(chunk)
             _utils.addResourcesFromChunk(resources, settlementData, structureBiomeBlockId)
-            structureMananager.printStructureChoose()
 
         structureMananager.checkDependencies()
 
@@ -144,13 +144,14 @@ if len(sys.argv) <= 1 :
     deadVillagersBook = _utils.makeBookItem("List of all dead villagers : ", title="List of all dead villagers")
     print(settlementData)
     
-    _bookGeneration.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2], villageNameBook, worldModif, 'east')
-    _bookGeneration.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2] + 1, villagersBook, worldModif, 'east')
+    #_bookGeneration.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2], villageNameBook, worldModif, 'east')
+    #_bookGeneration.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2] + 1, villagersBook, worldModif, 'east')
     print("")
     #structureMananager.printStructureChoose()
 
     # Build after every computations
     for i in range(len(settlementData["structures"])) :
+        print(settlementData["structures"][i]["name"])
         structure = resources.structures[settlementData["structures"][i]["name"]]
         info = structure.info
         buildingCondition = Structures.BUILDING_CONDITIONS.copy()
@@ -182,11 +183,11 @@ if len(sys.argv) <= 1 :
         buildingCondition["replacements"]["villagerRegistry"] = villagersBook
         buildingCondition["replacements"]["deadVillagerRegistry"] = deadVillagersBook
 
-        structure.build(worldModif, buildingCondition, chestGeneration)
+        #structure.build(worldModif, buildingCondition, chestGeneration)
         
         #_utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
-        time.sleep(1)
-    worldModif.saveToFile(file)  
+        time.sleep(0)
+    #worldModif.saveToFile(file)  
     
 
 else : 

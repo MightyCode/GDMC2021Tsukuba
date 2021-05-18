@@ -1,28 +1,27 @@
 {
   "mainEntry": {
     "facing" : "north",
-    "position" : [7, 1, 2]
+    "position" : [3, 1, 1]
   },
   "replacements" : {
     "oak" : { "type" : "woodType", "state" : 2 },
-    "spruce" : { "type" : "woodType2", "state" : 2 }  
+    "spruce" : { "type" : "woodType2", "state" : 2 }
   },
   "air" : {
     "preferedAirMode" : 2,
     "replacements" : [
-      [2, 1, 2, 8, 8, 11]
+      [0, 1, 0, 5, 6, 9]
     ]
   },
   "lootTables" : [
-    ["kitchenhouse", [8, 1, 6, 8, 2, 6]],
-    ["bedroomhouse", [5, 1, 10, 6, 1, 10]]  
+    ["bedroomhouse"]  
   ],
   "villageInfo" : {
     "villager" : 2
   },
   "ground" : {
     "zones" : [
-      [1, 1, 10, 12]
+      [0, 0, 5, 9]
     ]
   }
 }
