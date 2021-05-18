@@ -122,6 +122,7 @@ class Structures(BaseStructure):
                         blockPalette[Structures.CHANGE_REPLACEMENT_WORD].value, 
                         buildingCondition["replacements"][blockPalette[Structures.CHANGE_TO].value].split("[")[0] )
 
+
         # Place support underHouse
         self.placeSupportUnderStructure(worldModif, buildingCondition)
 
@@ -157,7 +158,7 @@ class Structures(BaseStructure):
                 buildingCondition["flip"], buildingCondition["rotation"], 
                 buildingCondition["referencePoint"], buildingCondition["position"] )
             
-            self.checkBeforePlacing(blockName, chestGeneration)
+            self.checkBeforePlacing(blockName)
 
             worldModif.setBlock(
                 blockPosition[0], blockPosition[1], blockPosition[2],
@@ -169,7 +170,7 @@ class Structures(BaseStructure):
                     ), placeImmediately=self.placeImmediately
             )
 
-
+            self.checkAfterPlacing(block, blockName, blockPosition, chestGeneration, buildingCondition)
 
         print("Finish building : " + self.name)
 
@@ -178,7 +179,7 @@ class Structures(BaseStructure):
             self.placeImmediately = True
 
 
-    def checkAfterPlacing(self, blockName, chestGeneration):
+    def checkAfterPlacing(self, block, blockName, blockPosition, chestGeneration, buildingCondition):
         # If structure has loot tables and chest encounter
         if "chest" in blockName:
             if self.lootTable :
