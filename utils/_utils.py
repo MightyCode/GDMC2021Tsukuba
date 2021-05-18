@@ -2,6 +2,7 @@ import random as rd
 import pandas as pd
 import numpy as np
 import lib.interfaceUtils as interfaceUtils
+import lookup
 
 
 def addResourcesFromChunk(resources, settlementData, biome):
@@ -15,6 +16,47 @@ def addResourcesFromChunk(resources, settlementData, biome):
         settlementData["dirtResources"] += dictResources["dirtResources"]
     if "stoneResources" in dictResources:
         settlementData["stoneResources"] += dictResources["stoneResources"]
+
+
+"""
+Return result and word
+result 0 -> No balise founded
+result 1 -> Balise founded and replacement succeful
+result -1 -> Error
+"""
+def changeNameWithBalise(name, changementsWord):
+    index = name.find("*")
+    if index != -1 :
+        secondIndex = name.find("*", index+1)
+        if secondIndex == -1:
+            return [-1, name]
+
+        word = name[index +1 : secondIndex]
+        added = False
+        for key in changementsWord.keys():
+            if key == word:
+                added = True
+                return [1, name.replace("*" + word + "*", changementsWord[key])]
+                        
+        # If the balise can't be replace
+        if not added:
+            return [-1, name]
+    
+    else:
+        return  [0, name]
+
+
+def addBookToLectern(interface, x, y, z, bookData):
+    command = (f'data merge block {x} {y} {z} '
+                    f'{{Book: {{id: "minecraft:written_book", '
+                    f'Count: 1b, tag: {bookData}'
+                    '}, Page: 0}')
+
+    response = interfaceUtils.runCommand(command)
+    if not response.isnumeric():
+        print(f"{lookup.TCOLORS['orange']}Warning: Server returned error "
+            f"upon placing book in lectern:\n\t{lookup.TCOLORS['CLR']}"
+            f"{response}")
 
 """
 Spawn a villager at his house if unemployed or at his building of work

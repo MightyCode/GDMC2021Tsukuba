@@ -86,8 +86,6 @@ class StructureManager:
             idFound = 0
             for i in range(numberToAttribute):
                 # Find unemployed villager
-                print(self.settlementData["freeVillager"])
-                print(structure["name"])
 
                 while idFound < len(self.settlementData["villagerProfession"]) :
                     if self.settlementData["villagerProfession"][idFound] == "Unemployed" :
@@ -172,7 +170,7 @@ class StructureManager:
         return True
 
     def printStructureChoose(self):
-        string = "["
+        string = "\n["
         for structure in self.settlementData["structures"]:
             string = string + structure["name"] + ", " 
         print(string + "]") 

@@ -55,7 +55,7 @@
     },
     "basicQuarry" : {
         "structures" : [
-            "basicGeneratedQuarry"
+            "basicgeneratedquarry"
         ],
         "type" : "functionals",
         "conditions" : {
@@ -147,6 +147,20 @@
             ]
         }
     },
+    "basicTownHall" : {
+        "structures" : [
+            "basictownhall"
+        ],
+        "type" : "representatives",
+        "conditions" : {
+            "villagerNeeded" : { "min" : 1 },
+            "previous" : [
+                { "name" : "basicSmeltery", "min" : 1 },
+                { "name" : "basicTownHall", "max" : 1 } 
+            ]
+        },
+        "priority" : "full"
+    },
     "basicWindmill" : {
         "structures" : [
             "basicwindmill"
@@ -160,23 +174,9 @@
             ]
         }
     },
-    "basicTownHall" : {
-        "structures" : [
-            "basictownhall"
-        ],
-        "type" : "representatives",
-        "conditions" : {
-            "villagerNeeded" : { "min" : 1 },
-            "previous" : [
-                { "name" : "basicWorkshop", "min" : 1 },
-                { "name" : "basicTownHall", "max" : 1 } 
-            ]
-        },
-        "priority" : "full"
-    },
     "basicBarrack" : {
         "structures" : [
-            "basicBarrack"
+            "basicbarrack"
         ],
         "type" : "representatives",
         "conditions" : {

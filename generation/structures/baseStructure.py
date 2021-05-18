@@ -67,15 +67,14 @@ class BaseStructure:
         if flip == 1 or flip == 3:
             self.computedOrientation["east"] = "west" 
             self.computedOrientation["west"] = "east"
-
-            if flip != 3:
-                self.computedOrientation["left"] = "right"
-                self.computedOrientation["right"] = "left"
             
         if flip == 2 or flip == 3:
             self.computedOrientation["south"] = "north"
             self.computedOrientation["north"] = "south"
 
+        if flip == 1 or flip == 2:
+            self.computedOrientation["left"] = "right"
+            self.computedOrientation["right"] = "left"
 
         # Apply rotation to orientation
         for orientation in self.computedOrientation.keys():
@@ -128,7 +127,6 @@ class BaseStructure:
         for rotation in [0, 1, 2, 3]:
             for flip in [0, 1, 2, 3]:
                 corners.append(self.getCornersLocalPositions(referencePosition, flip, rotation))
-                print(corners[-1])
 
         return corners
 

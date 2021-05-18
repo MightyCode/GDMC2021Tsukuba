@@ -15,6 +15,9 @@
     "lootTables" : [
       ["townhall"]
     ],
+    "lectern" : {
+      "*villageBook*" : [2, 1, 6]
+    },
     "villageInfo" : {
       "villager" : 1,
       "gameProfession" : "librarian",
