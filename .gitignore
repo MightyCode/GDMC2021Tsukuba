@@ -4,3 +4,4 @@ logs
 logs/*
 temp
 config/config.json
+config/*

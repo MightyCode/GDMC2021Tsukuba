@@ -1,7 +1,7 @@
 {
   "mainEntry": {
     "facing" : "north",
-    "position" : [1, 0, 0]
+    "position" : [1, 1, 0]
   },
   "replacements" : {
     "oak" : { "type" : "woodType", "state" : 2 },
@@ -15,5 +15,8 @@
   },
   "villageInfo" : {
     "villager" : 1
+  },
+  "ground" : {
+    "info" : "all"
   }
 }

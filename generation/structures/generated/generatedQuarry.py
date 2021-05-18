@@ -18,9 +18,9 @@ class GeneratedQuarry(BaseStructure):
         self.setSize([11, 13, 11])
         self.listOfBlocks = numpy.array([])
         ## Building the quarry.
-        for dy in range(self.size[1]):
-            for dx in range(self.size[0]):
-                for dz in range(self.size[2]):
+        for dy in range(self.size_y()):
+            for dx in range(self.size_x()):
+                for dz in range(self.size_z()):
                     # Get all the block we chunk
                     block = worldModif.interface.getBlock(cx + dx, cy - dy, cz + dz)
                     if block not in self.uselessBlocks:
@@ -68,8 +68,8 @@ class GeneratedQuarry(BaseStructure):
         worldModif.setBlock(cx-1, cy+1, cz-1, self.fenceType)
         
         # First line
-        for i in range(self.size[0] + 1):
-            for y in range(self.size[1]):
+        for i in range(self.size_x() + 1):
+            for y in range(self.size_y()):
                 block = worldModif.interface.getBlock(cx+i, cy-y, cz-1)
                 # print(block)
                 # Check if there is an useless block below so we can replace it with a fence
@@ -78,9 +78,9 @@ class GeneratedQuarry(BaseStructure):
             worldModif.setBlock(cx+i, cy+1, cz-1, self.fenceType)
             
         # Second line
-        for j in range(self.size[2] + 1):
-            for y in range(self.size[1]):
-                block = worldModif.interface.getBlock(cx+self.size[0], cy-y, cz+j)
+        for j in range(self.size_z() + 1):
+            for y in range(self.size_y()):
+                block = worldModif.interface.getBlock(cx+self.getSize()[0], cy-y, cz+j)
                 # print(block)
                 # Check if there is an useless block below so we can replace it with a fence
                 if block in self.uselessBlocks:
@@ -88,9 +88,9 @@ class GeneratedQuarry(BaseStructure):
             worldModif.setBlock(cx+self.size[0], cy+1, cz+j, self.fenceType)
             
         # Third line
-        for k in range(self.size[0] + 1):
-            for y in range(self.size[1]):
-                block = worldModif.interface.getBlock(cx-k+self.size[0], cy-y, cz+self.size[2])
+        for k in range(self.size_x() + 1):
+            for y in range(self.size_y()):
+                block = worldModif.interface.getBlock(cx-k+self.getSize()[0], cy-y, cz+self.getSize()[2])
                 # print(block)
                 # Check if there is an useless block below so we can replace it with a fence
                 if block in self.uselessBlocks:
@@ -98,8 +98,8 @@ class GeneratedQuarry(BaseStructure):
             worldModif.setBlock(cx-k+self.size[0], cy+1, cz+self.size[2], self.fenceType)
             
         # Fourth line
-        for l in range(self.size[2] + 1):
-            for y in range(self.size[1]):
+        for l in range(self.size_z() + 1):
+            for y in range(self.size_y()):
                 block = worldModif.interface.getBlock(cx-1, cy-y, cz+l)
                 # print(block)
                 # Check if there is an useless block below so we can replace it with a fence
@@ -109,8 +109,8 @@ class GeneratedQuarry(BaseStructure):
     
     def addFenceGateToQuarry(self, worldModif, cx, cy, cz):
         # Add the fence gate
-        z = math.floor(self.size[2]/2)
-        for y in range(self.size[1]):
+        z = math.floor(self.size_z()/2)
+        for y in range(self.size_y()):
             block = worldModif.interface.getBlock(cx-1, cy-y, cz+z)
             if block == "minecraft:oak_fence":
                 worldModif.setBlock(cx-1, cy-y, cz+z, "minecraft:oak_fence_gate[facing=east]")
@@ -122,10 +122,10 @@ class GeneratedQuarry(BaseStructure):
         worldModif.setBlock(cx-2, cy+2, cz+z, "minecraft:air")
         worldModif.setBlock(cx, cy+2, cz+z, "minecraft:air")
         
-        # Add the ladders
-        for ladder in range(self.size[1]):
-            worldModif.setBlock(cx, cy-ladder, cz+z, "minecraft:ladder[facing=east]")
-
         
-
+        # Add the ladders
+        for ladder in range(self.size_y()):
+            worldModif.setBlock(cx, cy-ladder, cz+z, "minecraft:ladder[facing=east]")
+        
+        print("Finish building : basicQuarry")
         

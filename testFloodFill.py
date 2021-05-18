@@ -9,6 +9,7 @@ from utils._worldModification import *
 from lib.worldLoader import WorldSlice
 import random
 import sys
+#seed testing : -2997648135289524795
 
 interface = interfaceUtils.Interface()
 area = (0, 0, 128, 128)
@@ -24,8 +25,9 @@ if buildArea != -1:
     area = (x1, z1, x2 - x1, z2 - z1)
 print(area)
 ws = WorldSlice(area)
-house1 = floodFill.findPosHouse([[-1, 63, -1], [-1, 63, 6], [3, 63, -1], [3, 63, 6]],ws)
-house2 = floodFill.findPosHouse([[-1, 63, -1], [-1, 63, 6], [3, 63, -1], [3, 63, 6]],ws)
-
-house3 = floodFill.findPosHouse([[-1, 63, -1], [-1, 63, 6], [3, 63, -1], [3, 63, 6]],ws)
-print(house1,house2,house3)
+xPos = -36
+zPos = -25
+yPos = floodFill.getHeight(xPos,zPos, ws)
+print(xPos,yPos,zPos)
+testing = floodFill.floodfill(xPos,yPos,zPos,ws,15)
+print(testing)

@@ -1,16 +1,14 @@
 {
   "mainEntry": {
-    "facing" : "north",
-    "position" : [4, 2, 0]
+    "facing" : "est",
+    "position" : [5, 1, 2]
   },
   "replacements" : {
-    "oak" : { "type" : "woodType", "state" : 2 }
   },
   "air" : {
     "preferedAirMode" : 2,
     "replacements" : [
-      [0, 2, 0, 8, 4, 8],
-      [3, 2, 9, 5, 2, 10]
+      [0, 1, 1, 2, 4, 3]
     ]
   },
   "lootTables" : [
@@ -18,12 +16,12 @@
   ],
   "villageInfo" : {
     "villager" : 2,
-    "gameProfession" : "farmer",
-    "profession" : "Farmer "
+    "gameProfession" : "butcher",
+    "profession" : "Cooker"
   },
   "ground" : {
     "zones" : [
-      [0, 0, 8, 8]
+      [0, 0, 3, 2]
     ]
   }
 }
