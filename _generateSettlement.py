@@ -69,7 +69,6 @@ if len(sys.argv) <= 1 :
     structureMananager = StructureManager(settlementData, resources)
 
     for i in range(settlementData["structuresNumberGoal"]) : 
-        settlementData["structures"].append({})
         # 0 -> normal, 1 -> replacement, 2 -> no more structure
         result = structureMananager.chooseOneStructure()
         structureMananager.printStructureChoose()
@@ -165,7 +164,7 @@ if len(sys.argv) <= 1 :
         structure.build(worldModif, buildingCondition, chestGeneration)
         
         #_utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
-        time.sleep(0)
+        time.sleep(1)
     worldModif.saveToFile(file)  
 
 else : 

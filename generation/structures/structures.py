@@ -217,12 +217,12 @@ class Structures(BaseStructure):
                         buildingCondition["referencePoint"], buildingCondition["position"] 
                     )
 
-                    if worldModif.interface.getBlock(position[0], position[1] - 1, position[2]) in floodFill.FloodFill.IGNORED_BLOCKS:
+                    if worldModif.interface.getBlock(position[0], position[1], position[2]) in floodFill.FloodFill.IGNORED_BLOCKS:
                         i = -2 
                         while worldModif.interface.getBlock(position[0], position[1] + i, position[2]) in floodFill.FloodFill.IGNORED_BLOCKS:
                             i -= 1
                         
-                        worldModif.fillBlocks(position[0], position[1]-1, position[2], position[0], position[1] + i, position[2], 
+                        worldModif.fillBlocks(position[0], position[1], position[2], position[0], position[1] + i, position[2], 
                         buildingCondition["replacements"]["ground2"])
 
     def placeAirZones(self, worldModif, buildingCondition):

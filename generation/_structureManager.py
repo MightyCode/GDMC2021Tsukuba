@@ -33,8 +33,7 @@ class StructureManager:
         if len(self.allStructures) == 0:
             return 2
 
-        print(self.allStructures)
-
+        self.settlementData["structures"].append({})
         sumWeight = 0
         for structure in self.allStructures :
             if "priority" in self.dependencies[structure["group"]] :
