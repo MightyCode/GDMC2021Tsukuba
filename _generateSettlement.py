@@ -164,7 +164,7 @@ if len(sys.argv) <= 1 :
         structure.build(worldModif, buildingCondition, chestGeneration)
         
         #_utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
-        time.sleep(1)
+        time.sleep(1.5)
     worldModif.saveToFile(file)  
 
 else : 

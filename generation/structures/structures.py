@@ -238,7 +238,7 @@ class Structures(BaseStructure):
                                                      buildingCondition["flip"], buildingCondition["rotation"], 
                                                      buildingCondition["referencePoint"], buildingCondition["position"])
                                                      
-                worldModif.fillBlocks(blockFrom[0], blockFrom[1], blockFrom[2], blockTo[0], blockTo[1], blockTo[2], "minecraft:air_block")
+                worldModif.fillBlocks(blockFrom[0], blockFrom[1], blockFrom[2], blockTo[0], blockTo[1], blockTo[2], "minecraft:air")
 
 
     def convertNbtBlockToStr(self, blockPalette, rotation, flip, takeOriginalBlockName=False):
