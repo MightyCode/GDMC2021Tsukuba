@@ -127,6 +127,7 @@ class Structures(BaseStructure):
         # Air zone
         self.placeAirZones(worldModif, buildingCondition)
 
+        
         ## Computing : Modify from blocks
         for block in self.file["blocks"]:
             blockPalette = self.file["palette"][block["state"].value]
@@ -167,6 +168,7 @@ class Structures(BaseStructure):
             )
 
             self.checkAfterPlacing(block, blockName, blockPosition, chestGeneration, buildingCondition)
+            
 
     def checkBeforePlacing(self, blockName):
         if "chest" in blockName:
@@ -225,20 +227,21 @@ class Structures(BaseStructure):
                         worldModif.fillBlocks(position[0], position[1], position[2], position[0], position[1] + i, position[2], 
                         buildingCondition["replacements"]["ground2"])
 
+
     def placeAirZones(self, worldModif, buildingCondition):
         if buildingCondition["replaceAllAir"] == 3:
             buildingCondition["replaceAllAir"] = self.info["air"]["preferedAirMode"]
 
         if buildingCondition["replaceAllAir"] == 2:
             for zones in self.info["air"]["replacements"]:
-                blockFrom = self.returnWorldPosition([ zones[0], zones[1], zones[2] ],
+                blockFrom = self.returnWorldPosition([ zones[0], zones[1] + 1, zones[2] ],
                                                      buildingCondition["flip"], buildingCondition["rotation"], 
                                                      buildingCondition["referencePoint"], buildingCondition["position"])
-                blockTo   = self.returnWorldPosition([ zones[3], zones[4], zones[5] ],
+                blockTo   = self.returnWorldPosition([ zones[3], zones[4] + 1, zones[5] ],
                                                      buildingCondition["flip"], buildingCondition["rotation"], 
                                                      buildingCondition["referencePoint"], buildingCondition["position"])
                                                      
-                worldModif.fillBlocks(blockFrom[0], blockFrom[1], blockFrom[2], blockTo[0], blockTo[1], blockTo[2], "minecraft:air")
+                worldModif.fillBlocks(blockFrom[0], blockFrom[1], blockFrom[2], blockTo[0], blockTo[1], blockTo[2], Structures.AIR_BLOCKS[0])
 
 
     def convertNbtBlockToStr(self, blockPalette, rotation, flip, takeOriginalBlockName=False):
