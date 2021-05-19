@@ -29,7 +29,9 @@
     },
     "basicHouses" : {
         "structures" : [
-            "basichouse1"
+            "basichouse1",
+            "basichouse2",
+            "basichouse3"
         ],
         "type" : "houses",
         "conditions" : {

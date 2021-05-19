@@ -56,7 +56,7 @@ if len(sys.argv) <= 1 :
                 "farmer", "fisherman", "shepherd", "fletcher", "librarian", "cartographer", 
                 "cleric", "armorer", "weaponsmith", "toolsmith", "butcher", "leatherworker", "mason", "nitwit"]
     
-    settlementData["structuresNumberGoal"] = random.randint(1, 3)
+    settlementData["structuresNumberGoal"] = random.randint(15, 70)
 
     #structures contains "position", "rotation", "flip" "name", "type", "group" ->, "villagersId"
     settlementData["structures"] = []
@@ -69,9 +69,9 @@ if len(sys.argv) <= 1 :
     structureMananager = StructureManager(settlementData, resources)
 
     for i in range(settlementData["structuresNumberGoal"]) : 
-        settlementData["structures"].append({})
         # 0 -> normal, 1 -> replacement, 2 -> no more structure
         result = structureMananager.chooseOneStructure()
+        structureMananager.printStructureChoose()
         if result == 2 :
             settlementData["structuresNumberGoal"] = i
             break
@@ -83,9 +83,9 @@ if len(sys.argv) <= 1 :
         structure = resources.structures[settlementData["structures"][i]["name"]]
         corners = structure.getCornersLocalPositionsAllFlipRotation(structure.info["mainEntry"]["position"])
 
-        """settlementData["structures"][i]["position"] = [random.randint(0, 256), 0, random.randint(0, 256)]
+        settlementData["structures"][i]["position"] = [random.randint(0, 256), 0, random.randint(0, 256)]
         settlementData["structures"][i]["flip"] = 0
-        settlementData["structures"][i]["rotation"] = 0"""
+        settlementData["structures"][i]["rotation"] = 0 
 
         result = floodFill.findPosHouse(corners, ws)
 
@@ -103,7 +103,6 @@ if len(sys.argv) <= 1 :
 
             settlementData["discoveredChunk"].append(chunk)
             _utils.addResourcesFromChunk(resources, settlementData, structureBiomeBlockId)
-            structureMananager.printStructureChoose()
 
         structureMananager.checkDependencies()
 
@@ -114,17 +113,23 @@ if len(sys.argv) <= 1 :
     print (listOfVillagers)
 
 
-    textVillagePresentationBook = _utils.createTextOfPresentationVillage(settlementData["villageName"], settlementData["villagerNames"], settlementData["structuresNumberGoal"], settlementData["structures"])
+    textVillagePresentationBook = _utils.createTextOfPresentationVillage(settlementData["villageName"], settlementData["villagerNames"], 
+                settlementData["structuresNumberGoal"], settlementData["structures"])
+    textVillagersNames = _utils.createTextForVillagersNames(listOfVillagers)
     villageNameBook = _bookGeneration.writeBook(textVillagePresentationBook, title="Village Presentation", author="Yusuf", description="Presentation of the village")
+    villagerNamesList = _bookGeneration.writeBook(textVillagersNames, title="List of all villagers", author="Yusuf", description="List of all villagers")
+
     deadVillagersBook = _utils.makeBookItem("List of all dead villagers : ", title="List of all dead villagers")
     print(settlementData)
     
-    _bookGeneration.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2], villageNameBook, 'east')
+    _bookGeneration.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2], villageNameBook, worldModif, 'east')
+    _bookGeneration.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2] + 1, villagerNamesList, worldModif,'east')
     print("")
     #structureMananager.printStructureChoose()
 
     # Build after every computations
     for i in range(len(settlementData["structures"])) :
+        print(settlementData["structures"][i]["name"])
         structure = resources.structures[settlementData["structures"][i]["name"]]
         info = structure.info
         buildingCondition = Structures.BUILDING_CONDITIONS.copy()
@@ -159,9 +164,8 @@ if len(sys.argv) <= 1 :
         structure.build(worldModif, buildingCondition, chestGeneration)
         
         #_utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
-        time.sleep(1)
+        time.sleep(1.5)
     worldModif.saveToFile(file)  
-    
 
 else : 
     if sys.argv[1] == "r" :   

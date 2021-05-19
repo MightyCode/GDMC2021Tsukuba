@@ -4,7 +4,7 @@
       {
         "rolls": {
           "min": 1,
-          "max": 10
+          "max": 20
         },
         "entries": [
           {
@@ -24,7 +24,7 @@
           {
             "type": "item",
             "name": "minecraft:cooked_porkshop",
-            "weight": 2,
+            "weight": 4,
             "functions": [
               {
                 "function": "set_count",
@@ -37,8 +37,22 @@
           },
           {
             "type": "item",
-            "name": "minecraft:cod",
-            "weight": 2,
+            "name": "minecraft:porkshop",
+            "weight": 8,
+            "functions": [
+              {
+                "function": "set_count",
+                "count": {
+                  "min": 1,
+                  "max": 6
+                }
+              }
+            ]
+          },
+          {
+            "type": "item",
+            "name": "minecraft:beef",
+            "weight": 8,
             "functions": [
               {
                 "function": "set_count",
@@ -52,41 +66,32 @@
           {
             "type": "item",
             "name": "minecraft:cooked_beef",
+            "weight": 4,
+            "functions": [
+              {
+                "function": "set_count",
+                "count": {
+                  "min": 1,
+                  "max": 6
+                }
+              }
+            ]
+          },
+          {
+            "type": "item",
+            "name": "minecraft:glass_bottle",
+            "weight": 8
+          },
+          {
+            "type": "item",
+            "name": "minecraft:coal",
             "weight": 2,
             "functions": [
               {
                 "function": "set_count",
                 "count": {
                   "min": 1,
-                  "max": 6
-                }
-              }
-            ]
-          },
-          {
-            "type": "item",
-            "name": "minecraft:cooked_rabbit",
-            "weight": 1,
-            "functions": [
-              {
-                "function": "set_count",
-                "count": {
-                  "min": 1,
-                  "max": 6
-                }
-              }
-            ]
-          },
-          {
-            "type": "item",
-            "name": "minecraft:cooked_mutton",
-            "weight": 1,
-            "functions": [
-              {
-                "function": "set_count",
-                "count": {
-                  "min": 1,
-                  "max": 6
+                  "max": 3
                 }
               }
             ]

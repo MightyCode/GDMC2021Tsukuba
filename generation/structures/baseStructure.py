@@ -124,8 +124,8 @@ class BaseStructure:
 
     def getCornersLocalPositionsAllFlipRotation(self, referencePosition):
         corners = []
-        for rotation in [0, 1, 2, 3]:
-            for flip in [0, 1, 2, 3]:
+        for flip in [0, 1, 2, 3]:
+            for rotation in [0, 1, 2, 3]:
                 corners.append(self.getCornersLocalPositions(referencePosition, flip, rotation))
 
         return corners

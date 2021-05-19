@@ -9,8 +9,13 @@ def loadAllResources(resources) :
     resources.loadStructures("houses/haybale/haybalehouse4.nbt", "houses/haybale/haybalehouse4.json", "haybalehouse4")
 
     resources.loadStructures("houses/basic/basichouse1.nbt", "houses/basic/basichouse1.json", "basichouse1")
+    resources.loadStructures("houses/basic/basichouse2.nbt", "houses/basic/basichouse2.json", "basichouse2")
+    resources.loadStructures("houses/basic/basichouse3.nbt", "houses/basic/basichouse3.json", "basichouse3")
+
+
     resources.loadStructures("houses/medium/mediumhouse1.nbt", "houses/medium/mediumhouse1.json", "mediumhouse1")
     resources.loadStructures("houses/medium/mediumhouse2.nbt", "houses/medium/mediumhouse2.json", "mediumhouse2")
+
     resources.loadStructures("houses/advanced/advancedhouse1.nbt", "houses/advanced/advancedhouse1.json", "advancedhouse1")
 
     resources.loadStructures("functionals/lumberjachut/basiclumberjachut.nbt", "functionals/lumberjachut/basiclumberjachut.json", "basiclumberjachut")
@@ -39,6 +44,9 @@ def loadAllResources(resources) :
     resources.addGeneratedStructures(GeneratedQuarry(), "functionals/quarry/basicgeneratedquarry.json", "basicgeneratedquarry")
 
     # Load lootTable
+    resources.loadLootTable("houses/kitchenhouse.json", "kitchenhouse")
+    resources.loadLootTable("houses/bedroomhouse.json", "bedroomhouse")
+
     resources.loadLootTable("functionals/windmill.json", "windmill")
     resources.loadLootTable("functionals/basiclumberjachut.json", "basiclumberjachut")
     resources.loadLootTable("functionals/basicfarm.json", "basicfarm")
