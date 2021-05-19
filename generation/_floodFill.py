@@ -1,5 +1,5 @@
 import random
-import math
+import utils._math as _math
 
 class FloodFill:
     
@@ -14,13 +14,16 @@ class FloodFill:
     def __init__(self):
         self.listHouse = []
         random.seed(a=None, version=2)
+        self.distanceFirstHouse = 40
+        self.distanceFirstHouseIncrease = 3
+
         self.taille = 150
         self.minDistanceHouse = 4
 
 
     def getHeight(self, x, z, ws): #to get the height of a x,z position
         y = 255
-        while self.is_air(x, y, z, ws):
+        while self.is_air(x, y, z, ws) and y > 0:
             #print(y)
             y -= 1
         #y-=1
@@ -55,7 +58,7 @@ class FloodFill:
 
 #a tester : dernier truc sur la derniere map : floodfill()
 
-    def floodfill(self, xi, yi, zi, ws,taille):
+    def floodfill(self, xi, yi, zi, ws, taille):
         print("initialising floodfill in", xi, yi, zi, "for", taille)
         print(xi, yi, zi)
         stack = []
@@ -95,31 +98,9 @@ class FloodFill:
                 
         return True
 
-    """
-    xPos = x position of reference block
-    zPos = z position of reference block
-    CornersPos = Corners of house related to referenceBlock
-    house = Corners of other house we want to check
-    """
-    def compareHouse(self, xPos, zPos, CornerPos, house):
-        if xPos + CornerPos[2] + self.minDistanceHouse < house[0] + house[3][0]:
-            return True
-
-        if xPos + CornerPos[0] - self.minDistanceHouse > house[0] + house[3][2]:
-            return True 
-
-        if zPos + CornerPos[3] + self.minDistanceHouse < house[2] + house[3][1]:
-            return True
-
-        if zPos + CornerPos[1] - self.minDistanceHouse > house[2] + house[3][3]:
-            return True
-
-        return False
-
-
 
     def findPosHouse(self, CornerPos, ws):
-        sizeStruct = max(abs(CornerPos[0][0]) + abs(CornerPos[0][2]),abs(CornerPos[0][1]) + abs(CornerPos[0][3]))
+        sizeStruct = max(abs(CornerPos[0][0]) + abs(CornerPos[0][2]), abs(CornerPos[0][1]) + abs(CornerPos[0][3]))
 
         notfinded = True
         debug = 25
@@ -141,15 +122,18 @@ class FloodFill:
                     fliptest = [0,1,2,3]
                     while fliptest and notfinded:
                         rand1 = fliptest[random.randint(0,len(fliptest)-1)]
+
                         fliptest.remove(rand1)
                         rotationtest = [0,1,2,3]
                         while rotationtest and notfinded: 
                             rand2 = rotationtest[random.randint(0,len(rotationtest)-1)]
                             rotationtest.remove(rand2)
 
-                            if self.verifHouse(xPos, yPos, zPos, CornerPos[rand1 * 4 + rand2],ws):
+                            choosenCorner = CornerPos[rand1 * 4 + rand2]
+
+                            if self.verifHouse(xPos, yPos, zPos, choosenCorner, ws):
                                 notfinded = False
-                                FloodFillValue=self.floodfill(xPos, yPos, zPos, ws, 40)   #to be sure the place is large enough to build the village
+                                FloodFillValue = self.floodfill(xPos, yPos, zPos, ws, self.distanceFirstHouse)   #to be sure the place is large enough to build the village
                                 if len(FloodFillValue) > 5000:
                                     FloodFillValue = self.floodfill(xPos, yPos, zPos, ws, sizeStruct + 10)
                                 else:
@@ -160,68 +144,66 @@ class FloodFill:
                 verifCorners = False
                 while not verifCorners and debug:
                     
-                    index = random.randint(0,len(self.listHouse)-1)
+                    index = random.randint(0, len(self.listHouse)-1)
                     #print(abs(self.listHouse[index][0]),abs(self.listHouse[index][2]))
                     if not(abs(self.listHouse[index][0]) > self.taille - (self.taille/5) or abs(self.listHouse[index][2]) > self.taille-(self.taille/5)):
-                        placeindex = random.randint(0,len(self.listHouse[index][4])-1)
+                        placeindex = random.randint(0, len(self.listHouse[index][4]) - 1)
                         xPos = self.listHouse[index][4][placeindex][0]
                         yPos = self.listHouse[index][4][placeindex][1]
                         zPos = self.listHouse[index][4][placeindex][2]
 
-                        if not(ws.getBlockAt((xPos,yPos,zPos))=='minecraft:water'):                 #to get a random flip and rotation and to test if one is possible
-                            fliptest = [0,1,2,3]
+                        #to get a random flip and rotation and to test if one is possible
+                        if not(ws.getBlockAt((xPos, yPos, zPos))=='minecraft:water'):  
+                            fliptest = [0, 1, 2, 3]
                             while fliptest and notfinded:
                                 rand1 = fliptest[random.randint(0,len(fliptest)-1)]
                                 fliptest.remove(rand1)
-                                rotationtest = [0,1,2,3]
+
+                                rotationtest = [0, 1, 2, 3]
                                 while rotationtest and notfinded: 
                                     rand2 = rotationtest[random.randint(0,len(rotationtest)-1)]
+                                    choosenCorner = CornerPos[rand1 * 4 + rand2]
+
                                     rotationtest.remove(rand2)
-                                    if self.verifHouse(xPos, yPos, zPos, CornerPos[rand1*4 + rand2], ws):
+                                    if self.verifHouse(xPos, yPos, zPos, choosenCorner, ws):
                                         verifCorners = True
                                         listverifhouse = self.listHouse.copy()
-                                        house = listverifhouse.pop()
 
                                         while listverifhouse and verifCorners:
-                                            if self.compareHouse(xPos,zPos,CornerPos[rand1*4 + rand2],house):
+                                            house = listverifhouse.pop()
+
+                                            if not _math.isTwoRectOverlapse([xPos, zPos], choosenCorner, [house[0], house[2]], house[3], self.minDistanceHouse):
                                                 verifOverlapseHouse = True
                                             else:
+                                                #print("N " + str(xPos) + " " + str(zPos) + " " + str(choosenCorner) +  " : flip " + str(rand1) + ", rot " + str(rand2) + " ::" + str(house[0]) + " " + str(house[2]))
                                                 verifOverlapseHouse = False
                                                 verifCorners = False
                                                 debug -= 1
-                                            house = listverifhouse.pop()
-                                            
-                                        if self.compareHouse(xPos,zPos,CornerPos[rand1*4 + rand2], house):
-                                            verifOverlapseHouse = True
-                                        else:
-                                            verifOverlapseHouse = False
-                                            verifCorners = False
-                                            debug -= 1
 
                                         if verifCorners and verifOverlapseHouse:
+                                            print("Y " + str(xPos) + " " + str(zPos) + " " + str(choosenCorner) + " : flip " + str(rand1) + ", rot " + str(rand2) + " ::" + str(house[0]) + " " + str(house[2]))
                                             notfinded = False
-                                            if xPos > self.taille-(self.taille/5) or yPos > self.taille-(self.taille/5):
-                                                FloodFillValue = [xPos,yPos,zPos]
+                                            if xPos > self.taille - (self.taille/5) or yPos > self.taille - (self.taille/5):
+                                                FloodFillValue = [xPos, yPos, zPos]
                                             else:
-                                                FloodFillValue = self.floodfill(xPos,yPos,zPos,ws, sizeStruct + 10)
+                                                FloodFillValue = self.floodfill(xPos, yPos, zPos, ws, sizeStruct + 10)
                                         
                                     else:
                                         verifCorners = False
-                                        debug-=1
-
+                                        debug -=1
 
                 
         if debug == 0:
-            xPos=self.listHouse[index][0]
-            yPos=self.listHouse[index][1]
-            zPos=self.listHouse[index][2]
-            dictionnary = {"position" : [xPos,yPos,zPos] , "validPosition" : False , "flip" : rand1 , "rotation" : rand2}
+            xPos = self.listHouse[index][0]
+            yPos = self.listHouse[index][1]
+            zPos = self.listHouse[index][2]
+            dictionnary = {"position" : [xPos, yPos, zPos] , "validPosition" : False , "flip" : rand1 , "rotation" : rand2}
             
-            FloodFillValue = [xPos,yPos,zPos]
+            FloodFillValue = [xPos, yPos, zPos]
             print("debug failed")
         else:
-            self.listHouse.append((xPos,yPos,zPos,CornerPos[rand1*4 + rand2],FloodFillValue))
-            dictionnary = {"position" : [xPos,yPos,zPos],"validPosition" : True , "flip" : rand1 , "rotation" : rand2}
+            self.listHouse.append((xPos, yPos, zPos, choosenCorner, FloodFillValue))
+            dictionnary = {"position" : [xPos, yPos, zPos],"validPosition" : True , "flip" : rand1 , "rotation" : rand2}
             print(dictionnary)
         return dictionnary
 

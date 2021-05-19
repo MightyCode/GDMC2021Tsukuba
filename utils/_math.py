@@ -8,7 +8,45 @@ def isPointInSquare(point, square):
                 return True
 
     return False
-    
+
+
+"""
+xPos = x position of reference block
+zPos = z position of reference block
+CornersPos = Corners of house related to referenceBlock
+house = Corners of other house we want to check
+"""
+def isTwoRectOverlapse(position1, size1, position2, size2):
+    if position1[0] + size1[2] < position2[0] + size2[0]:
+        return False
+
+    if position1[0] + size1[0] > position2[0] + size2[2]:
+        return False 
+
+    if position1[1] + size1[3] < position2[1] + size2[1]:
+        return False
+
+    if position1[1] + size1[1] > position2[1] + size2[3]:
+        return False
+
+    return True
+
+
+def isTwoRectOverlapse(position1, size1, position2, size2, moreSize):
+    if position1[0] + size1[2] + moreSize < position2[0] + size2[0]:
+        return False
+
+    if position1[0] + size1[0] - moreSize > position2[0] + size2[2]:
+        return False 
+
+    if position1[1] + size1[3] + moreSize < position2[1] + size2[1]:
+        return False
+
+    if position1[1] + size1[1] - moreSize > position2[1] + size2[3]:
+        return False
+
+    return True
+
 
 def rotatePointAround(origin, point, angle) :
     return [  

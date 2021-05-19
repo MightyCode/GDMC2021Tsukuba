@@ -9,7 +9,7 @@
         "type" : "houses",
         "conditions" : {
             "previous" : [
-                {  "name" : "haybaleHouses", "max" : 10 } 
+                {  "name" : "haybaleHouses", "max" : 5 } 
             ]
         },
         "upgrade" : [ "basicHouses" ]
@@ -37,7 +37,7 @@
         "conditions" : {
             "previous" : [
                 {  "name" : "basicLumberJackHut", "min" : 1 },
-                { "name" : "basicHouses", "max" : 20 } 
+                { "name" : "basicHouses", "max" : 15 } 
             ]
         }
     },

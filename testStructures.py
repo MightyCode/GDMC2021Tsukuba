@@ -4,10 +4,9 @@ from generation.structures.structures import *
 from generation._structureManager import *
 from generation._floodFill import *
 import generation._resourcesLoader as resLoader
-import utils._utils as _utils
+import utils._math as _math
 from utils._worldModification import *
 from lib.worldLoader import WorldSlice
-import random
 import sys
 
 file = "temp.txt"
@@ -28,20 +27,19 @@ if len(sys.argv) <= 1 :
     resources = Resources()
     resLoader.loadAllResources(resources)
     chestGeneration = ChestGeneration(resources, interface)
-    structure = resources.structures["basichouse3"]
+    structure = resources.structures["haybalehouse3"]
 
     info = structure.info
     buildingCondition = Structures.BUILDING_CONDITIONS.copy()
-    buildingCondition["flip"] = 3
-    buildingCondition["rotation"] = 0
+    buildingCondition["flip"] = 1
+    buildingCondition["rotation"] = 3
     buildingCondition["position"] = [-48, 63, 19]
-    corners = structure.getCornersLocalPositionsAllFlipRotation(structure.info["mainEntry"]["position"])
+    corners = structure.getCornersLocalPositions(structure.info["mainEntry"]["position"], buildingCondition["flip"], buildingCondition["rotation"])
     print(corners)
     floodFill = FloodFill()
-    print(floodFill.compareHouse(0, 0, [-3, -2, 3, 2], [0, 0, 0, [-3, -2, 3, 2]])) 
+    print(_math.isTwoRectOverlapse([-20, -25],[-2, -6, 1, 0], [-28, -24], [-2, -6, 1, 0], 4))
+    exit() 
 
-
-    exit()
     buildingCondition["replaceAllAir"] = 3
     buildingCondition["referencePoint"] = [info["mainEntry"]["position"][0], info["mainEntry"]["position"][1], info["mainEntry"]["position"][2]]
 
