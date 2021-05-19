@@ -83,12 +83,13 @@ if len(sys.argv) <= 1 :
         structure = resources.structures[settlementData["structures"][i]["name"]]
         corners = structure.getCornersLocalPositionsAllFlipRotation(structure.info["mainEntry"]["position"])
 
-        settlementData["structures"][i]["position"] = [random.randint(0, 256), 0, random.randint(0, 256)]
+        """settlementData["structures"][i]["position"] = [random.randint(0, 256), 0, random.randint(0, 256)]
         settlementData["structures"][i]["flip"] = 0
-        settlementData["structures"][i]["rotation"] = 0 
+        settlementData["structures"][i]["rotation"] = 0"""
 
         result = floodFill.findPosHouse(corners, ws)
 
+        settlementData["structures"][i]["validPosition"] = result["validPosition"]
         settlementData["structures"][i]["position"] = result["position"]
         settlementData["structures"][i]["position"][1] -= 1
         settlementData["structures"][i]["flip"] = result["flip"]
@@ -130,6 +131,8 @@ if len(sys.argv) <= 1 :
     # Build after every computations
     for i in range(len(settlementData["structures"])) :
         print(settlementData["structures"][i]["name"])
+        print(settlementData["structures"][i]["validPosition"])
+
         structure = resources.structures[settlementData["structures"][i]["name"]]
         info = structure.info
         buildingCondition = Structures.BUILDING_CONDITIONS.copy()

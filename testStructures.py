@@ -37,6 +37,10 @@ if len(sys.argv) <= 1 :
     buildingCondition["position"] = [-48, 63, 19]
     corners = structure.getCornersLocalPositionsAllFlipRotation(structure.info["mainEntry"]["position"])
     print(corners)
+    floodFill = FloodFill()
+    print(floodFill.compareHouse(0, 0, [-3, -2, 3, 2], [0, 0, 0, [-3, -2, 3, 2]])) 
+
+
     exit()
     buildingCondition["replaceAllAir"] = 3
     buildingCondition["referencePoint"] = [info["mainEntry"]["position"][0], info["mainEntry"]["position"][1], info["mainEntry"]["position"][2]]
