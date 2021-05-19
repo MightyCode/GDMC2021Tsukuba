@@ -32,10 +32,30 @@ def createTextOfPresentationVillage(villageName, villagerNames, structuresNumber
                       'There are '
                       f'{structuresNumber} structures : \\\\n')
     for i in range(len(structuresNames)):
-        textVillagePresentationBook += (f'{structuresNames[i]["name"]} ')
+        if i <= 10:
+            textVillagePresentationBook += (f'{structuresNames[i]["name"]} ')
+        if i == 10 or i == 20 or i == 30 or i == 40:
+            textVillagePresentationBook += ('-----------------\\\\n\f')
+        if i > 10:
+            textVillagePresentationBook += (f'{structuresNames[i]["name"]} ')
     textVillagePresentationBook += ('---------------\\\\n\f')
     
     return textVillagePresentationBook
+
+"""
+Return the text of the book of the villagers names and professions
+"""
+def createTextForVillagersNames(listOfVillagers):
+    textVillagerNames = ('\f\\\\s-----------------\\\\n')
+    for i in range(len(listOfVillagers)):
+        if i <= 6: 
+            textVillagerNames += (f'{listOfVillagers[i]}       \\\\n')
+        if i == 6 or i == 12 or i == 18:
+            textVillagerNames += ('-----------------\\\\n\f')
+        if i > 6:
+            textVillagerNames += (f'{listOfVillagers[i]}       \\\\n')
+    textVillagerNames += ('-----------------\\\\n\f')
+    return textVillagerNames
 
 def addResourcesFromChunk(resources, settlementData, biome):
     if biome == "-1":
