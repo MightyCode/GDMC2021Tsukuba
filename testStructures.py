@@ -29,13 +29,15 @@ if len(sys.argv) <= 1 :
     resLoader.loadAllResources(resources)
     chestGeneration = ChestGeneration(resources, interface)
     structure = resources.structures["basichouse3"]
-    corners = structure.getCornersLocalPositionsAllFlipRotation(structure.info["mainEntry"]["position"])
 
     info = structure.info
     buildingCondition = Structures.BUILDING_CONDITIONS.copy()
-    buildingCondition["flip"] = 0
+    buildingCondition["flip"] = 3
     buildingCondition["rotation"] = 0
     buildingCondition["position"] = [-48, 63, 19]
+    corners = structure.getCornersLocalPositionsAllFlipRotation(structure.info["mainEntry"]["position"])
+    print(corners)
+    exit()
     buildingCondition["replaceAllAir"] = 3
     buildingCondition["referencePoint"] = [info["mainEntry"]["position"][0], info["mainEntry"]["position"][1], info["mainEntry"]["position"][2]]
 

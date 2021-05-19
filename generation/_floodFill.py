@@ -15,6 +15,7 @@ class FloodFill:
         self.listHouse = []
         random.seed(a=None, version=2)
         self.taille = 150
+        self.minDistanceHouse = 4
 
 
     def getHeight(self, x, z, ws): #to get the height of a x,z position
@@ -36,16 +37,17 @@ class FloodFill:
             return False
 
 
-    def is_ground(self,x,y,z, ws):
-        y1 = y+1
-        y2 = y-1
+    def is_ground(self, x, y, z, ws):
+        y1 = y + 1
+        y2 = y - 1
         #print(is_air(x,y2+1,z,ws) and not(is_air(x,y2,z,ws)))
-        if self.is_air(x, y2 + 1, z, ws) and not(self.is_air(x, y2, z, ws)) and not(ws.getBlockAt((x, y2, z))=='minecraft:water'):
+        """ and not(ws.getBlockAt((x, y2, z))=='minecraft:water') """
+        if self.is_air(x, y2 + 1, z, ws) and not(self.is_air(x, y2, z, ws)) :
             return y2 
 
-        elif self.is_air(x, y1+1, z, ws) and not(self.is_air(x, y1, z, ws)) and not(ws.getBlockAt((x, y1, z))=='minecraft:water'):
+        elif self.is_air(x, y1 + 1, z, ws) and not(self.is_air(x, y1, z, ws)):
             return y1
-        elif self.is_air(x, y+1, z, ws) and not(self.is_air(x, y, z, ws)) and not(ws.getBlockAt((x, y, z))=='minecraft:water'):
+        elif self.is_air(x, y + 1, z, ws) and not(self.is_air(x, y, z, ws)):
             return y 
         else:
             return 0
@@ -54,8 +56,8 @@ class FloodFill:
 #a tester : dernier truc sur la derniere map : floodfill()
 
     def floodfill(self, xi, yi, zi, ws,taille):
-        print("initialising floodfill in",xi,yi,zi, "for",taille)
-        print(xi,yi,zi)
+        print("initialising floodfill in", xi, yi, zi, "for", taille)
+        print(xi, yi, zi)
         stack = []
         valide = []
         stack.append((xi, yi, zi))
@@ -76,36 +78,49 @@ class FloodFill:
                 stack.append((x,y2,z+1))
             #---------------
             y3 = self.is_ground(x-1,y,z,ws)
-            if y3 and (x-1,y3,z) not in valide and x>xi-taille:
+            if y3 and (x-1,y3,z) not in valide and x > xi - taille:
                 stack.append((x-1,y3,z))
             #---------------
             y4 = self.is_ground(x,y,z-1,ws)
-            if y4 and (x,y4,z-1) not in valide and z>zi-taille:
+            if y4 and (x,y4,z-1) not in valide and z > zi - taille:
                 stack.append((x,y4,z-1))
         return valide
  
 
 
-    def verifHouse(self, xPos, yPos, zPos, CornerPos,ws):
-        ok=[0,0,0,0]
-        for i in [0,1,2,3]:
-            if self.is_ground(xPos + CornerPos[i][0],yPos,zPos + CornerPos[i][2],ws):
-                ok[i] = 1
-        if ok[0] == 1 and ok[1] == 1 and ok[2] == 1 and ok[3] == 1:
-            return True
-        else:
-            return False
+    def verifHouse(self, xPos, yPos, zPos, CornerPos, ws):
+        for i,j in [[0, 1], [2, 1], [0, 3], [2, 3]]:
+            if not self.is_ground(xPos + CornerPos[i], yPos, zPos + CornerPos[j], ws):
+                return False
+                
+        return True
 
-    def compareHouse(self,xPos,zPos,CornerPos,house):
-        if xPos + CornerPos[3][0] +4 < house[0]+house[3][0][0] or xPos + CornerPos[0][0] -4 > house[0]+house[3][3][0] or zPos + CornerPos[0][2] -4 > house[2]+house[3][3][2] or zPos + CornerPos[2][2] +4 < house[2]+house[3][0][2] :
+    """
+    xPos = x position of reference block
+    zPos = z position of reference block
+    CornersPos = Corners of house related to referenceBlock
+    house = Corners of other house we want to check
+    """
+    def compareHouse(self, xPos, zPos, CornerPos, house):
+        if xPos + CornerPos[2] + self.minDistanceHouse < house[0] + house[3][0]:
             return True
-        else:
-            return False
+
+        if xPos + CornerPos[0] - self.minDistanceHouse > house[0] + house[3][2]:
+            return True 
+
+        if zPos + CornerPos[3] + self.minDistanceHouse < house[2] + house[3][1]:
+            return True
+
+        if zPos + CornerPos[1] - self.minDistanceHouse > house[2] + house[3][3]:
+            return True
+
+        return False
 
 
 
     def findPosHouse(self, CornerPos, ws):
-        taillestructure = max(abs(CornerPos[0][0][0]) + abs(CornerPos[0][1][0]),abs(CornerPos[0][0][2]) + abs(CornerPos[0][2][2]))
+        sizeStruct = max(abs(CornerPos[0][0]) + abs(CornerPos[0][2]),abs(CornerPos[0][1]) + abs(CornerPos[0][3]))
+
         notfinded = True
         debug = 25
         debugnohouse = 5
@@ -130,11 +145,11 @@ class FloodFill:
                             rand2 = rotationtest[random.randint(0,len(rotationtest)-1)]
                             rotationtest.remove(rand2)
 
-                            if self.verifHouse(xPos,yPos,zPos,CornerPos[rand1*4 + rand2],ws):
+                            if self.verifHouse(xPos, yPos, zPos, CornerPos[rand1 * 4 + rand2],ws):
                                 notfinded = False
-                                FloodFillValue=self.floodfill(xPos,yPos,zPos,ws,40)                 #to be sure the place is large enough to build the village
+                                FloodFillValue=self.floodfill(xPos, yPos, zPos, ws, 40)   #to be sure the place is large enough to build the village
                                 if len(FloodFillValue) > 5000:
-                                    FloodFillValue=self.floodfill(xPos,yPos,zPos,ws,taillestructure + 10)
+                                    FloodFillValue = self.floodfill(xPos, yPos, zPos, ws, sizeStruct + 10)
                                 else:
                                     notfinded = True
                                     debugnohouse-=1
@@ -183,7 +198,7 @@ class FloodFill:
                                             if xPos > self.taille-(self.taille/5) or yPos > self.taille-(self.taille/5):
                                                 FloodFillValue = [xPos,yPos,zPos]
                                             else:
-                                                FloodFillValue = self.floodfill(xPos,yPos,zPos,ws, taillestructure + 10)
+                                                FloodFillValue = self.floodfill(xPos,yPos,zPos,ws, sizeStruct + 10)
                                         
                                     else:
                                         verif1 = False
@@ -191,7 +206,6 @@ class FloodFill:
 
 
                 
-
         if debug == 0:
             xPos=self.listHouse[index][0]
             yPos=self.listHouse[index][1]
