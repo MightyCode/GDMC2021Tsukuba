@@ -19,6 +19,7 @@ class FloodFill:
 
         self.taille = 150
         self.minDistanceHouse = 4
+        self.floodfillHouseSpace = 10
 
 
     def getHeight(self, x, z, ws): #to get the height of a x,z position
@@ -59,8 +60,8 @@ class FloodFill:
 #a tester : dernier truc sur la derniere map : floodfill()
 
     def floodfill(self, xi, yi, zi, ws, taille):
-        print("initialising floodfill in", xi, yi, zi, "for", taille)
-        print(xi, yi, zi)
+        #print("initialising floodfill in", xi, yi, zi, "for", taille)
+        #print(xi, yi, zi)
         stack = []
         valide = []
         stack.append((xi, yi, zi))
@@ -103,7 +104,7 @@ class FloodFill:
         sizeStruct = max(abs(CornerPos[0][0]) + abs(CornerPos[0][2]) + 1, abs(CornerPos[0][1]) + abs(CornerPos[0][3]) + 1)
 
         notfinded = True
-        debug = 25
+        debug = 25 * 12
         debugnohouse = 5
         verifCorners = False
         verifOverlapseHouse = False
@@ -114,9 +115,9 @@ class FloodFill:
             if len(self.listHouse) == 0:
                 xPos = (-1)**random.randint(0,1) * random.randint(0, int(self.taille/5))       #To get starting position of the village
                 zPos = (-1)**random.randint(0,1) * random.randint(0, int(self.taille/5))
-                print("starting position :" ,xPos, zPos)
+                #print("starting position :" ,xPos, zPos)
                 yPos = self.getHeight(xPos, zPos, ws)
-                print(yPos)
+                #print(yPos)
                 if not(ws.getBlockAt((xPos, yPos, zPos)) == 'minecraft:water'):
 
                     fliptest = [0,1,2,3]
@@ -135,7 +136,7 @@ class FloodFill:
                                 notfinded = False
                                 FloodFillValue = self.floodfill(xPos, yPos, zPos, ws, self.distanceFirstHouse)   #to be sure the place is large enough to build the village
                                 if len(FloodFillValue) > 5000:
-                                    FloodFillValue = self.floodfill(xPos, yPos, zPos, ws, sizeStruct + 10)
+                                    FloodFillValue = self.floodfill(xPos, yPos, zPos, ws, sizeStruct + self.floodfillHouseSpace)
                                 else:
                                     notfinded = True
                                     debugnohouse -= 1
@@ -175,36 +176,37 @@ class FloodFill:
                                             if not _math.isTwoRectOverlapse([xPos, zPos], choosenCorner, [house[0], house[2]], house[3], self.minDistanceHouse):
                                                 verifOverlapseHouse = True
                                             else:
-                                                #print("N " + str(xPos) + " " + str(zPos) + " " + str(choosenCorner) +  " : flip " + str(rand1) + ", rot " + str(rand2) + " ::" + str(house[0]) + " " + str(house[2]))
+                                                """print("N " + str(xPos) + " " + str(zPos) + " " + str(choosenCorner) +  " : flip " + str(rand1) + 
+                                                     ", rot " + str(rand2) + " ::" + str(house[0]) + " " + str(house[2]))"""
                                                 verifOverlapseHouse = False
                                                 verifCorners = False
                                                 debug -= 1
 
                                         if verifCorners and verifOverlapseHouse:
-                                            print("Y " + str(xPos) + " " + str(zPos) + " " + str(choosenCorner) + " : flip " + str(rand1) + ", rot " + str(rand2) + " ::" + str(house[0]) + " " + str(house[2]))
+                                            print("Y " + str(xPos) + " " + str(zPos) + " " + str(choosenCorner) + " : flip " + str(rand1) + 
+                                                ", rot " + str(rand2) + " ::" + str(house[0]) + " " + str(house[2]))
                                             notfinded = False
                                             if xPos > self.taille - (self.taille/5) or yPos > self.taille - (self.taille/5):
                                                 FloodFillValue = [xPos, yPos, zPos]
                                             else:
-                                                FloodFillValue = self.floodfill(xPos, yPos, zPos, ws, sizeStruct + 10)
+                                                FloodFillValue = self.floodfill(xPos, yPos, zPos, ws, sizeStruct + self.floodfillHouseSpace)
                                         
                                     else:
                                         verifCorners = False
                                         debug -=1
 
                 
-        if debug == 0:
+        if debug <= 0:
             xPos = self.listHouse[index][0]
             yPos = self.listHouse[index][1]
             zPos = self.listHouse[index][2]
-            dictionnary = {"position" : [xPos, yPos, zPos] , "validPosition" : False , "flip" : rand1 , "rotation" : rand2}
+            dictionnary = {"position" : [xPos, yPos, zPos] , "validPosition" : False , "flip" : rand1 , "rotation" : rand2, "corner" : choosenCorner }
             
             FloodFillValue = [xPos, yPos, zPos]
             print("debug failed")
         else:
             self.listHouse.append((xPos, yPos, zPos, choosenCorner, FloodFillValue))
-            dictionnary = {"position" : [xPos, yPos, zPos],"validPosition" : True , "flip" : rand1 , "rotation" : rand2}
-            print(dictionnary)
+            dictionnary = {"position" : [xPos, yPos, zPos],"validPosition" : True , "flip" : rand1 , "rotation" : rand2, "corner" : choosenCorner }
         return dictionnary
 
                       

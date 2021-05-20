@@ -103,7 +103,7 @@ class Structures(BaseStructure):
     def getNextBuildingInformation(self):
         info = {}
         info["corners"] = self.getCornersLocalPositionsAllFlipRotation(self.info["mainEntry"]["position"])
-        info["entry"] = { "position" : self.info["mainEntry"]["position"], "facing" : self.info["mainEntry"]["facing"] }
+        info["entry"] = { "position" : self.info["mainEntry"]["position"].copy(), "facing" : self.info["mainEntry"]["facing"] }
         info["size"] = self.size
 
         return info

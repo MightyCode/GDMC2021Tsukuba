@@ -89,7 +89,6 @@ if len(sys.argv) <= 1 :
         settlementData["structures"][i]["flip"] = 0
         settlementData["structures"][i]["rotation"] = 0"""
 
-        print(settlementData["structures"][i]["prebuildingInfo"])
         result = floodFill.findPosHouse(settlementData["structures"][i]["prebuildingInfo"]["corners"], ws)
 
         settlementData["structures"][i]["validPosition"] = result["validPosition"]
@@ -99,6 +98,7 @@ if len(sys.argv) <= 1 :
 
         settlementData["structures"][i]["flip"] = result["flip"]
         settlementData["structures"][i]["rotation"] = result["rotation"]
+
 
         # If new chunck discovererd, add new ressources
         chunk = [int(settlementData["structures"][i]["position"][0] / 16), int(settlementData["structures"][i]["position"][2] / 16)] 
@@ -116,7 +116,6 @@ if len(sys.argv) <= 1 :
     for i in range(len(settlementData["villagerNames"])):
         strVillagers += settlementData["villagerNames"][i] + " : " + settlementData["villagerProfession"][i] + ";"
     listOfVillagers = strVillagers.split(";")
-    print (listOfVillagers)
 
 
     textVillagePresentationBook = _utils.createTextOfPresentationVillage(settlementData["villageName"], settlementData["villagerNames"], 
@@ -126,7 +125,7 @@ if len(sys.argv) <= 1 :
     villagerNamesList = _bookGeneration.writeBook(textVillagersNames, title="List of all villagers", author="Yusuf", description="List of all villagers")
 
     deadVillagersBook = _utils.makeBookItem("List of all dead villagers : ", title="List of all dead villagers")
-    print(settlementData)
+    #print(settlementData)
     
     _bookGeneration.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2], villageNameBook, worldModif, 'east')
     _bookGeneration.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2] + 1, villagerNamesList, worldModif,'east')

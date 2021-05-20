@@ -92,15 +92,16 @@ class BaseStructure:
     Return position where reference position is the center of the local space
     """
     def getCornersLocalPositions(self, referencePosition, flip, rotation):
+        refPos = referencePosition.copy()
         if flip == 1 or flip == 3 :
-            referencePosition[0] = self.size[0] - 1 - referencePosition[0]
+            refPos[0] = self.size[0] - 1 - refPos[0]
 
         if flip == 2 or flip == 3 :
-            referencePosition[2] = self.size[2] - 1 - referencePosition[2]
+            refPos[2] = self.size[2] - 1 - refPos[2]
 
-        temp = _math.rotatePointAround([0, 0], [- referencePosition[0], - referencePosition[2]] , math.pi / 2 * rotation)
+        temp = _math.rotatePointAround([0, 0], [- refPos[0], - refPos[2]] , math.pi / 2 * rotation)
 
-        temp1 = _math.rotatePointAround([0, 0], [self.size[0] - 1 - referencePosition[0], self.size[2] - 1 - referencePosition[2]] , math.pi / 2 * rotation)
+        temp1 = _math.rotatePointAround([0, 0], [self.size[0] - 1 - refPos[0], self.size[2] - 1 - refPos[2]] , math.pi / 2 * rotation)
         
         return [int(min(temp[0], temp1[0])), 
                 int(min(temp[1], temp1[1])), 
