@@ -158,7 +158,7 @@ if len(sys.argv) <= 1 :
 
         # Add books replacements
         buildingCondition["replacements"]["villageBook"] = villageNameBook
-        # buildingCondition["replacements"]["villagerRegistry"] = villagersBook
+        buildingCondition["replacements"]["villagerRegistry"] = villagerNamesList
         buildingCondition["replacements"]["deadVillagerRegistry"] = deadVillagersBook
 
         structure.build(worldModif, buildingCondition, chestGeneration)
