@@ -27,21 +27,19 @@ if len(sys.argv) <= 1 :
     resources = Resources()
     resLoader.loadAllResources(resources)
     chestGeneration = ChestGeneration(resources, interface)
-    structure = resources.structures["haybalehouse3"]
+    structure = resources.structures["basicgeneratedquarry"]
 
     info = structure.info
     buildingCondition = Structures.BUILDING_CONDITIONS.copy()
-    buildingCondition["flip"] = 1
+    buildingInfo = structure.getNextBuildingInformation()
+    buildingCondition["flip"] = 3
     buildingCondition["rotation"] = 3
-    buildingCondition["position"] = [-48, 63, 19]
-    corners = structure.getCornersLocalPositions(structure.info["mainEntry"]["position"], buildingCondition["flip"], buildingCondition["rotation"])
-    print(corners)
-    floodFill = FloodFill()
-    print(_math.isTwoRectOverlapse([-20, -25],[-2, -6, 1, 0], [-28, -24], [-2, -6, 1, 0], 4))
-    exit() 
+    buildingCondition["position"] = [82, 63, -3]
+    buildingCondition["referencePoint"] = buildingInfo["entry"]["position"]
+    buildingCondition["size"] = buildingInfo["size"]
+
 
     buildingCondition["replaceAllAir"] = 3
-    buildingCondition["referencePoint"] = [info["mainEntry"]["position"][0], info["mainEntry"]["position"][1], info["mainEntry"]["position"][2]]
 
     structureBiomeId = interfaceUtils.getBiome(buildingCondition["position"][0], buildingCondition["position"][2], 1, 1)
     structureBiomeName = resources.biomeMinecraftId[int(structureBiomeId)]
@@ -60,7 +58,6 @@ if len(sys.argv) <= 1 :
     for aProperty in resources.biomesBlocks[structureBiomeBlockId]:
         if aProperty in resources.biomesBlocks["rules"]["structure"]:
             buildingCondition["replacements"][aProperty] = resources.biomesBlocks[structureBiomeBlockId][aProperty]
-
 
     structure.build(worldModif, buildingCondition, chestGeneration)
     worldModif.saveToFile(file)

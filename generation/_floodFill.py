@@ -100,7 +100,7 @@ class FloodFill:
 
 
     def findPosHouse(self, CornerPos, ws):
-        sizeStruct = max(abs(CornerPos[0][0]) + abs(CornerPos[0][2]), abs(CornerPos[0][1]) + abs(CornerPos[0][3]))
+        sizeStruct = max(abs(CornerPos[0][0]) + abs(CornerPos[0][2]) + 1, abs(CornerPos[0][1]) + abs(CornerPos[0][3]) + 1)
 
         notfinded = True
         debug = 25

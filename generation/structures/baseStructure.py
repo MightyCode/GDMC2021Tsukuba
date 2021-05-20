@@ -43,7 +43,7 @@ class BaseStructure:
         return worldPosition 
 
 
-    def convertProperty(self, propertyName, propertyValue, rotation, flip):
+    def convertProperty(self, propertyName, propertyValue):
         if propertyValue in self.computedOrientation.keys():
             propertyValue = self.computedOrientation[propertyValue]
 
@@ -116,6 +116,9 @@ class BaseStructure:
 
         return corners
 
+
+    def getNextBuildingInformation(self):
+        return
 
     def setSize(self, size):
         self.size = size

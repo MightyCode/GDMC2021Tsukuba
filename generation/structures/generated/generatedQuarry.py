@@ -1,4 +1,5 @@
 import collections, numpy
+import random
 import utils._utils as utils
 import math
 from generation.structures.baseStructure import * 
@@ -7,15 +8,39 @@ class GeneratedQuarry(BaseStructure):
     def __init__(self) :
         super(BaseStructure, self).__init__()
         self.listOfBlocks = numpy.array([])
-        self.setSize([11, 13, 11])
+        self.computedOrientation = {}
+
         self.uselessBlocks = [
         'minecraft:air', 'minecraft:cave_air', 'minecraft:water', 'minecraft:lava'
         'minecraft:oak_leaves',  'minecraft:leaves',  'minecraft:birch_leaves', 'minecraft:spruce_leaves'
         'minecraft:oak_log',  'minecraft:spruce_log',  'minecraft:birch_log',  'minecraft:jungle_log', 'minecraft:acacia_log', 'minecraft:dark_oak_log',
         'minecraft:grass', 'minecraft:snow', 'minecraft:poppy'
         'minecraft:dead_bush', "minecraft:cactus", "minecraft:sugar_cane"]
-        
+
+    
+    def getNextBuildingInformation(self):
+        info = {}
+        self.setSize([random.randint(7, 14), random.randint(9, 21), random.randint(7, 14)])
+        info["size"] = self.size
+        self.info["mainEntry"]["position"] = [int(self.size[0] / 2), self.size[1] - 5, 0]
+        self.info["mainEntry"]["facing"] = "north"
+        info["entry"] = { "position" : self.info["mainEntry"]["position"], "facing" : "north" }
+
+        info["corners"] = self.getCornersLocalPositionsAllFlipRotation(self.info["mainEntry"]["position"])
+
+        return info
+
+
     def build(self, worldModif, buildingCondition, chestGeneration):
+        self.setSize(buildingCondition["size"])
+        self.entry = buildingCondition["referencePoint"].copy()
+        self.computeOrientation(buildingCondition["rotation"], buildingCondition["flip"])
+
+        if buildingCondition["flip"] == 1 or buildingCondition["flip"] == 3:
+            buildingCondition["referencePoint"][0] = self.size[0] - 1 - buildingCondition["referencePoint"][0] 
+        if buildingCondition["flip"] == 2 or buildingCondition["flip"] == 3:
+            buildingCondition["referencePoint"][2] = self.size[2] - 1 - buildingCondition["referencePoint"][2] 
+
         woodType = "*woodType*"
         result = utils.changeNameWithBalise(woodType, buildingCondition["replacements"])
         if result[0] >= 0:
@@ -26,51 +51,63 @@ class GeneratedQuarry(BaseStructure):
         self.fenceType = "minecraft:" + woodType + "_fence"
         self.fenceGateType = self.fenceType + "_gate"
         self.strippedWoodType = "minecraft:stripped_" + woodType + "_wood"
-        
-        cx = buildingCondition["position"][0]
-        cy = buildingCondition["position"][1]
-        cz = buildingCondition["position"][2]
 
-
-        self.setSize([11, 13, 11])
         self.listOfBlocks = numpy.array([])
         ## Building the quarry.
         for dy in range(self.size_y()):
-            for dx in range(self.size_x()):
-                for dz in range(self.size_z()):
+            for dx in range(1, self.size_x() - 1):
+                for dz in range(1, self.size_z() -1):
                     # Get all the block we chunk
-                    block = worldModif.interface.getBlock(cx + dx, cy - dy, cz + dz)
+                    position = self.returnWorldPosition([dx, dy, dz], buildingCondition["flip"], 
+                        buildingCondition["rotation"], buildingCondition["referencePoint"], buildingCondition["position"])
+
+                    block = worldModif.interface.getBlock(position[0], position[1], position[2])
                     if block not in self.uselessBlocks:
                         self.listOfBlocks = numpy.append(self.listOfBlocks, block) 
-                        
-        # Fill the area with air block  
-        worldModif.fillBlocks(cx, cy, cz, cx + dx, cy - dy, cz + dz, "minecraft:air")
-        # Add the fences
-        GeneratedQuarry.addFencesToQuarry(self, worldModif, cx, cy, cz)
-        # Add the fence gate and the ladders
-        GeneratedQuarry.addFenceGateToQuarry(self, worldModif, cx, cy, cz)   
-        # Add the items to the chests
-        GeneratedQuarry.addChestToQuarry(self, worldModif, cx, cy, cz, self.listOfBlocks)
-        # Add torches
-        x = self.size_x()/2
-        y = self.size_y()/2
-        z = self.size_z()/2
-        worldModif.setBlock(cx+math.floor(x), cy-math.floor(y), cz, "minecraft:wall_torch[facing=south]")
-        worldModif.setBlock(cx+self.size_x()-1, cy-math.floor(y), cz+math.floor(z), "minecraft:wall_torch[facing=west]")
-        worldModif.setBlock(cx+math.floor(x), cy-math.floor(y), cz+self.size_z()-1, "minecraft:wall_torch[facing=north]")
-                      
-        print("Done")
         
-    def addChestToQuarry(self, worldModif, cx ,cy, cz, list):   
+
+        # Fill the area with air block
+        
+        fromBlock = self.returnWorldPosition([1, 0, 1], buildingCondition["flip"], 
+                        buildingCondition["rotation"], buildingCondition["referencePoint"], buildingCondition["position"])
+        toBlock = self.returnWorldPosition([self.size_x() - 2, self.size_y() - 1 , self.size_z() - 2], buildingCondition["flip"], 
+                        buildingCondition["rotation"], buildingCondition["referencePoint"], buildingCondition["position"])
+
+        worldModif.fillBlocks(fromBlock[0], fromBlock[1], fromBlock[2], toBlock[0], toBlock[1], toBlock[2], "minecraft:air")
+
+        # Add the fences
+        self.addFencesToQuarry(worldModif, buildingCondition)
+        # Add the fence gate and the ladders
+        self.addFenceGateToQuarry(worldModif, buildingCondition)   
+        # Add the items to the chests
+        self.addChestToQuarry(worldModif, buildingCondition, self.listOfBlocks)
+
+        torchPositions = [[1, int(self.size_z() / 2)], [int(self.size_x() / 2), self.size_z() - 2], [self.size_x() - 2, int(self.size_z()/2)]]
+        orientations = ["east", "north", "west"]
+
+        for i in range(len(torchPositions)):
+            position = self.returnWorldPosition(
+                        [torchPositions[i][0], int(self.size_y() / 3), torchPositions[i][1]], 
+                        buildingCondition["flip"], buildingCondition["rotation"], 
+                        buildingCondition["referencePoint"], buildingCondition["position"])
+            # Set a chest
+            worldModif.setBlock(position[0], position[1], position[2], "minecraft:wall_torch[" +  self.convertProperty("facing", orientations[i])  +"]")
+
+
+    def addChestToQuarry(self, worldModif, buildingCondition, list):  
+        position = self.returnWorldPosition(
+                        [1, 0, 1], buildingCondition["flip"], 
+                        buildingCondition["rotation"], buildingCondition["referencePoint"], buildingCondition["position"])
         # Set a chest
-        worldModif.setBlock(cx+5, cy + 1, cz - 2, "minecraft:chest[facing=north]")
+        worldModif.setBlock(position[0], position[1], position[2], "minecraft:chest[" +  self.convertProperty("facing", "south")  +"]")
+
         counter = collections.Counter(list)
         items = counter.items()
         itemsList = []
         for i in items:
             # If there is more than one stack of block (64)
             if i[1] > 64:
-                x = i[1]/64
+                x = i[1] / 64
                 y = math.floor(x)
                 for z in range(0, y):
                     newList = []
@@ -82,90 +119,77 @@ class GeneratedQuarry(BaseStructure):
                 sublist.append(i[0])
                 sublist.append(i[1])
                 itemsList.append(sublist)
-        utils.addItemChest(cx+5, cy+1, cz-2, itemsList)
-        print(itemsList)
+        utils.addItemChest(position[0], position[1], position[2], itemsList)
         
-        
-    def addFencesToQuarry(self, worldModif, cx, cy, cz):
-        # Add the fences for the quarry
-        worldModif.setBlock(cx-1, cy+1, cz-1, self.fenceType)
-        
-        # First line
-        for i in range(self.size_x() + 1):
-            for y in range(self.size_y()):
-                block = worldModif.interface.getBlock(cx+i, cy-y, cz-1)
-                # print(block)
-                # Check if there is an useless block below so we can replace it with a fence
-                if  block in self.uselessBlocks:
-                    worldModif.setBlock(cx+i, cy-y, cz-1, self.fenceType)
-            worldModif.setBlock(cx+i, cy+1, cz-1, self.fenceType)
-            
-        # Second line
-        for j in range(self.size_z() + 1):
-            for y in range(self.size_y()):
-                block = worldModif.interface.getBlock(cx+self.getSize()[0], cy-y, cz+j)
-                # print(block)
-                # Check if there is an useless block below so we can replace it with a fence
-                if block in self.uselessBlocks:
-                    worldModif.setBlock(cx+self.size_x(), cy-y, cz+j, self.fenceType)
-            worldModif.setBlock(cx+self.size_x(), cy+1, cz+j, self.fenceType)
-            
-        # Third line
-        for k in range(self.size_x() + 1):
-            for y in range(self.size_y()):
-                block = worldModif.interface.getBlock(cx-k+self.size_x(), cy-y, cz+self.size_z())
-                # print(block)
-                # Check if there is an useless block below so we can replace it with a fence
-                if block in self.uselessBlocks:
-                    worldModif.setBlock(cx-k+self.size_x(), cy-y, cz+self.size_z(), self.fenceType)
-            worldModif.setBlock(cx-k+self.size_x(), cy+1, cz+self.size_z(), self.fenceType)
-            
-        # Fourth line
-        for l in range(self.size_z() + 1):
-            for y in range(self.size_y()):
-                block = worldModif.interface.getBlock(cx-1, cy-y, cz+l)
-                # print(block)
-                # Check if there is an useless block below so we can replace it with a fence
-                if block in self.uselessBlocks:
-                    worldModif.setBlock(cx-1, cy-y, cz+l, self.fenceType)
-            worldModif.setBlock(cx-1, cy+1, cz+l, self.fenceType)
-    
-    
-    def addFenceGateToQuarry(self, worldModif, cx, cy, cz):
-        # Add the fence gate
-        z = math.floor(self.size_z()/2)
-        for y in range(self.size_y()):
-            block = worldModif.interface.getBlock(cx-1, cy-y, cz+z)
-            if block ==  self.fenceType:
-                worldModif.setBlock(cx-1, cy-y, cz+z,  self.fenceGateType + "[facing=east]")
-        worldModif.setBlock(cx-1, cy+1, cz+z, self.fenceGateType + "[facing=east]")
-        
-        # Add fences to determine the entry of the quarry
-        worldModif.setBlock(cx-1, cy+3, cz+z, self.fenceType)
-        worldModif.setBlock(cx-1, cy+3, cz+z+1, self.fenceType)
-        worldModif.setBlock(cx-1, cy+3, cz+z-1, self.fenceType)
-        worldModif.setBlock(cx-1, cy+2, cz+z-1, self.fenceType)
-        worldModif.setBlock(cx-1, cy+2, cz+z-2, self.fenceType)
-        worldModif.setBlock(cx-1, cy+2, cz+z, self.fenceType)
-        worldModif.setBlock(cx-1, cy+2, cz+z, self.fenceGateType + "[facing=east]")
-        worldModif.setBlock(cx-1, cy+2, cz+z+1, self.fenceType)
-        worldModif.setBlock(cx-1, cy+2, cz+z+2, self.fenceType)
-        worldModif.setBlock(cx-1, cy+4, cz+z, "minecraft:torch")
-        worldModif.setBlock(cx-1, cy+4, cz+z+1, "minecraft:torch")
-        worldModif.setBlock(cx-1, cy+4, cz+z-1, "minecraft:torch")
-        
-        
-        # Set air around the fence gate
-        worldModif.setBlock(cx, cy+1, cz+z, "minecraft:air")
-        worldModif.setBlock(cx-2, cy+2, cz+z, "minecraft:air")
-        
-        # Add the ladders
-        for wood in range(self.size_y()):
-            worldModif.setBlock(cx-1, cy-wood, cz+z, self.strippedWoodType)
-        for ladder in range(self.size_y()):
-            worldModif.setBlock(cx, cy-ladder, cz+z, "minecraft:ladder[facing=east]")
-            
 
+    def addFencesToQuarry(self, worldModif, buildingCondition):
+        # Add the fences for the quarry
+
+        fenceSideUpperPosition = self.size_y() - 3
+        lengths = [self.size_x(), self.size_z(), self.size_x(), self.size_z()]
+        multiplier = [[1, 0], [0, 1], [1, 0], [0, 1]]
+        positions = [[0, 0], [0, 0], [0, self.size_z() - 1], [self.size_x() - 1, 0]]
+
+        for i in [0, 1, 2, 3]:
+            for j in range(lengths[i]):
+                for y in range(fenceSideUpperPosition):
+                    localPosition = [positions[i][0] + j * multiplier[i][0], y , positions[i][1] + j * multiplier[i][1]] 
+                    position = self.returnWorldPosition(
+                        localPosition, buildingCondition["flip"], 
+                        buildingCondition["rotation"], buildingCondition["referencePoint"], buildingCondition["position"])
+                    
+                    block = worldModif.interface.getBlock(position[0], position[1], position[2])
+                    if  block in self.uselessBlocks or y == fenceSideUpperPosition - 1:
+                        worldModif.setBlock(position[0], position[1], position[2], self.fenceType)
+
+    
+    def addFenceGateToQuarry(self, worldModif, buildingCondition):
+        # Add the fence gate
+        position = self.returnWorldPosition(
+                        [self.entry[0], self.entry[1] + 2, self.entry[2]],
+                        buildingCondition["flip"], buildingCondition["rotation"], buildingCondition["referencePoint"],
+                        buildingCondition["position"])
+        
+        worldModif.setBlock(position[0], position[1], position[2],  "minecraft:air")
+
+        worldModif.setBlock(position[0], position[1] - 1, position[2], self.fenceGateType + "[" + self.convertProperty("facing", "north") + "]")
+
+        positions = [[-2, 2], [-1, 2], [-1, 3], [0, 3], [1, 3], [1, 2], [2, 2]]
+        for pos in positions:
+            position = self.returnWorldPosition(
+                        [   self.entry[0] + pos[0], 
+                            self.entry[1] + pos[1], 
+                            self.entry[2]],
+                        buildingCondition["flip"], buildingCondition["rotation"], buildingCondition["referencePoint"],
+                        buildingCondition["position"])
+            worldModif.setBlock(position[0], position[1], position[2], self.fenceType)
+        
+        positions = [ [-1, 4], [0, 4], [1, 4]]
+        for pos in positions:
+            position = self.returnWorldPosition(
+                        [   self.entry[0] + pos[0], 
+                            self.entry[1] + pos[1], 
+                            self.entry[2]],
+                        buildingCondition["flip"], buildingCondition["rotation"], buildingCondition["referencePoint"],
+                        buildingCondition["position"])
+            worldModif.setBlock(position[0], position[1], position[2], "minecraft:torch")
+        
+
+        # Add the ladders
+        for wood in range(self.entry[1] + 1):
+            position = self.returnWorldPosition(
+                [self.entry[0], wood, self.entry[2]],
+                buildingCondition["flip"], buildingCondition["rotation"], buildingCondition["referencePoint"],
+                buildingCondition["position"])
+
+            worldModif.setBlock(position[0], position[1], position[2], self.strippedWoodType)
+
+            position = self.returnWorldPosition(
+                [self.entry[0], wood, self.entry[2] + 1],
+                buildingCondition["flip"], buildingCondition["rotation"], buildingCondition["referencePoint"],
+                buildingCondition["position"])
+       
+            worldModif.setBlock(position[0], position[1], position[2], "minecraft:ladder[" + self.convertProperty("facing", "south")  + "]")
     
         print("Finish building : basicQuarry")
         
