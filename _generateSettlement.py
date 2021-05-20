@@ -72,6 +72,7 @@ if len(sys.argv) <= 1 :
         # 0 -> normal, 1 -> replacement, 2 -> no more structure
         result = structureMananager.chooseOneStructure()
         structureMananager.printStructureChoose()
+
         if result == 2 :
             settlementData["structuresNumberGoal"] = i
             break
@@ -81,16 +82,21 @@ if len(sys.argv) <= 1 :
             continue
 
         structure = resources.structures[settlementData["structures"][i]["name"]]
-        corners = structure.getCornersLocalPositionsAllFlipRotation(structure.info["mainEntry"]["position"])
+                
+        settlementData["structures"][i]["prebuildingInfo"] = structure.getNextBuildingInformation()
 
-        settlementData["structures"][i]["position"] = [random.randint(0, 256), 0, random.randint(0, 256)]
+        """settlementData["structures"][i]["position"] = [random.randint(0, 256), 0, random.randint(0, 256)]
         settlementData["structures"][i]["flip"] = 0
-        settlementData["structures"][i]["rotation"] = 0 
+        settlementData["structures"][i]["rotation"] = 0"""
 
-        result = floodFill.findPosHouse(corners, ws)
+        print(settlementData["structures"][i]["prebuildingInfo"])
+        result = floodFill.findPosHouse(settlementData["structures"][i]["prebuildingInfo"]["corners"], ws)
+
+        settlementData["structures"][i]["validPosition"] = result["validPosition"]
 
         settlementData["structures"][i]["position"] = result["position"]
         settlementData["structures"][i]["position"][1] -= 1
+
         settlementData["structures"][i]["flip"] = result["flip"]
         settlementData["structures"][i]["rotation"] = result["rotation"]
 
@@ -127,17 +133,24 @@ if len(sys.argv) <= 1 :
     print("")
     #structureMananager.printStructureChoose()
 
-    # Build after every computations
+    # Build after every computationsr
     for i in range(len(settlementData["structures"])) :
         print(settlementData["structures"][i]["name"])
+        print(settlementData["structures"][i]["validPosition"])
+
         structure = resources.structures[settlementData["structures"][i]["name"]]
         info = structure.info
+
         buildingCondition = Structures.BUILDING_CONDITIONS.copy()
         buildingCondition["flip"] = settlementData["structures"][i]["flip"]
         buildingCondition["rotation"] = settlementData["structures"][i]["rotation"]
         buildingCondition["position"] = settlementData["structures"][i]["position"]
+
         buildingCondition["replaceAllAir"] = 3
-        buildingCondition["referencePoint"] = [info["mainEntry"]["position"][0], info["mainEntry"]["position"][1], info["mainEntry"]["position"][2]]
+        buildingCondition["referencePoint"] = settlementData["structures"][i]["prebuildingInfo"]["entry"]["position"]
+        buildingCondition["size"] = settlementData["structures"][i]["prebuildingInfo"]["size"]
+
+        buildingCondition["prebuildingInfo"] = settlementData["structures"][i]["prebuildingInfo"]
 
         structureBiomeId = interfaceUtils.getBiome(buildingCondition["position"][0], buildingCondition["position"][2], 1, 1)
         structureBiomeName = resources.biomeMinecraftId[int(structureBiomeId)]

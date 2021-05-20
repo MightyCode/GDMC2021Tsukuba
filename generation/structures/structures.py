@@ -100,6 +100,15 @@ class Structures(BaseStructure):
             self.lootTable = len(self.info["lootTables"]) > 0
 
 
+    def getNextBuildingInformation(self):
+        info = {}
+        info["corners"] = self.getCornersLocalPositionsAllFlipRotation(self.info["mainEntry"]["position"])
+        info["entry"] = { "position" : self.info["mainEntry"]["position"], "facing" : self.info["mainEntry"]["facing"] }
+        info["size"] = self.size
+
+        return info
+
+
     def build(self, worldModif, buildingCondition, chestGeneration):
         ## Pre computing :
         self.computeOrientation(buildingCondition["rotation"], buildingCondition["flip"])
@@ -120,7 +129,7 @@ class Structures(BaseStructure):
                         blockPalette[Structures.CHANGE_REPLACEMENT_WORD].value, 
                         buildingCondition["replacements"][blockPalette[Structures.CHANGE_TO].value].split("[")[0] )
 
-
+        
         # Place support underHouse
         self.placeSupportUnderStructure(worldModif, buildingCondition)
 
@@ -161,8 +170,6 @@ class Structures(BaseStructure):
                 blockPosition[0], blockPosition[1], blockPosition[2],
                 self.convertNbtBlockToStr(
                     self.file["palette"][block["state"].value],
-                    buildingCondition["rotation"],
-                    buildingCondition["flip"],
                     takeOriginalBlock
                     ), placeImmediately=self.placeImmediately
             )
@@ -244,7 +251,7 @@ class Structures(BaseStructure):
                 worldModif.fillBlocks(blockFrom[0], blockFrom[1], blockFrom[2], blockTo[0], blockTo[1], blockTo[2], Structures.AIR_BLOCKS[0])
 
 
-    def convertNbtBlockToStr(self, blockPalette, rotation, flip, takeOriginalBlockName=False):
+    def convertNbtBlockToStr(self, blockPalette, takeOriginalBlockName=False):
         block = "["
         if takeOriginalBlockName:
             block = blockPalette[Structures.CHANGE_ORIGINAL_BLOCK].value + block
@@ -253,7 +260,7 @@ class Structures(BaseStructure):
 
         if "Properties" in blockPalette.keys():
             for key in blockPalette["Properties"].keys():
-                block += self.convertProperty(key, blockPalette["Properties"][key].value, rotation, flip) + ","
+                block += self.convertProperty(key, blockPalette["Properties"][key].value) + ","
   
             block = block[:-1] 
         block += "]"

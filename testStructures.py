@@ -4,10 +4,9 @@ from generation.structures.structures import *
 from generation._structureManager import *
 from generation._floodFill import *
 import generation._resourcesLoader as resLoader
-import utils._utils as _utils
+import utils._math as _math
 from utils._worldModification import *
 from lib.worldLoader import WorldSlice
-import random
 import sys
 
 file = "temp.txt"
@@ -28,16 +27,19 @@ if len(sys.argv) <= 1 :
     resources = Resources()
     resLoader.loadAllResources(resources)
     chestGeneration = ChestGeneration(resources, interface)
-    structure = resources.structures["basichouse3"]
-    corners = structure.getCornersLocalPositionsAllFlipRotation(structure.info["mainEntry"]["position"])
+    structure = resources.structures["basicgeneratedquarry"]
 
     info = structure.info
     buildingCondition = Structures.BUILDING_CONDITIONS.copy()
-    buildingCondition["flip"] = 0
-    buildingCondition["rotation"] = 0
-    buildingCondition["position"] = [-48, 63, 19]
+    buildingInfo = structure.getNextBuildingInformation()
+    buildingCondition["flip"] = 3
+    buildingCondition["rotation"] = 3
+    buildingCondition["position"] = [82, 63, -3]
+    buildingCondition["referencePoint"] = buildingInfo["entry"]["position"]
+    buildingCondition["size"] = buildingInfo["size"]
+
+
     buildingCondition["replaceAllAir"] = 3
-    buildingCondition["referencePoint"] = [info["mainEntry"]["position"][0], info["mainEntry"]["position"][1], info["mainEntry"]["position"][2]]
 
     structureBiomeId = interfaceUtils.getBiome(buildingCondition["position"][0], buildingCondition["position"][2], 1, 1)
     structureBiomeName = resources.biomeMinecraftId[int(structureBiomeId)]
@@ -56,7 +58,6 @@ if len(sys.argv) <= 1 :
     for aProperty in resources.biomesBlocks[structureBiomeBlockId]:
         if aProperty in resources.biomesBlocks["rules"]["structure"]:
             buildingCondition["replacements"][aProperty] = resources.biomesBlocks[structureBiomeBlockId][aProperty]
-
 
     structure.build(worldModif, buildingCondition, chestGeneration)
     worldModif.saveToFile(file)
