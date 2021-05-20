@@ -157,5 +157,6 @@ def writeBook(text, title="Chronicle", author='' ,
 def placeLectern(x, y, z, bookData, worldModif, facing="east"):
     """**Place a lectern with a book in the world**."""
     worldModif.setBlock(x, y, z, f"lectern[facing={facing}, has_book=true]")
-    
     _utils.addBookToLectern(x, y, z, bookData)
+
+    

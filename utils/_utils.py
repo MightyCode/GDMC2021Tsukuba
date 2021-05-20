@@ -32,20 +32,25 @@ def createTextOfPresentationVillage(villageName, villagerNames, structuresNumber
                       'There are '
                       f'{structuresNumber} structures : \\\\n')
     for i in range(len(structuresNames)):
-        textVillagePresentationBook += (f'{structuresNames[i]["name"]} ')
+        if i <= 10:
+            textVillagePresentationBook += (f'{structuresNames[i]["name"]} ')
+        if i % 10 == 0:
+            textVillagePresentationBook += ('-----------------\\\\n\f')
+        if i > 10:
+            textVillagePresentationBook += (f'{structuresNames[i]["name"]} ')
     textVillagePresentationBook += ('---------------\\\\n\f')
     
     return textVillagePresentationBook
 
 """
-Return the text of the book of the village presentation
+Return the text of the book of the villagers names and professions
 """
 def createTextForVillagersNames(listOfVillagers):
     textVillagerNames = ('\f\\\\s-----------------\\\\n')
     for i in range(len(listOfVillagers)):
         if i <= 6: 
             textVillagerNames += (f'{listOfVillagers[i]}       \\\\n')
-        if i == 6 or i == 12 or i == 18:
+        if i % 6 == 0:
             textVillagerNames += ('-----------------\\\\n\f')
         if i > 6:
             textVillagerNames += (f'{listOfVillagers[i]}       \\\\n')
@@ -383,11 +388,13 @@ def addItemChest(x, y, z, items):
 def getHighestNonAirBlock(cx, cy, cz):
     cy = 255
     IGNORED_BLOCKS = [
-        'minecraft:air', 'minecraft:cave_air', 'minecraft:water', 
-        'minecraft:oak_leaves',  'minecraft:leaves',  'minecraft:birch_leaves', 'minecraft:spruce_leaves'
+        'minecraft:air', 'minecraft:cave_air', 'minecraft:water', 'minecraft:lava',
+        'minecraft:oak_leaves',  'minecraft:leaves',  'minecraft:birch_leaves', 'minecraft:spruce_leaves', 'minecraft:dark_oak_leaves'
         'minecraft:oak_log',  'minecraft:spruce_log',  'minecraft:birch_log',  'minecraft:jungle_log', 'minecraft:acacia_log', 'minecraft:dark_oak_log',
-        'minecraft:grass', 'minecraft:snow',
-        'minecraft:dead_bush', "minecraft:cactus"]
+        'minecraft:grass', 'minecraft:snow', 'minecraft:poppy', 'minecraft:pissenlit', 'minecraft:seagrass' , 'minecraft:dandelion' ,'minecraft:blue_orchid',
+        'minecraft:allium', 'minecraft:azure_bluet', 'minecraft:red_tulip', 'minecraft:orange_tulip', 'minecraft:white_tulip', 'minecraft:pink_tulip',
+        'minecraft:oxeye_daisy', 'minecraft:cornflower', 'minecraft:lily_of_the_valley', 'minecraft:brown_mushroom', 'minecraft:red_mushroom',
+        'minecraft:sunflower', 'minecraft:peony', 'minecraft:dead_bush', "minecraft:cactus", "minecraft:sugar_cane", 'minecraft:fern']
     ## Find highest non-air block
     while interfaceUtils.getBlock(cx, cy, cz) in IGNORED_BLOCKS:
         cy -= 1
