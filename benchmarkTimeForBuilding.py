@@ -13,7 +13,7 @@ from utils._worldModification import *
 from lib.worldLoader import WorldSlice
 import sys
 
-interface = interfaceUtils.Interface()
+interface = interfaceUtils.Interface(buffering=True)
 worldModif = WorldModification(interface)
 interfaceUtils.runCommand("execute at @p run setbuildarea ~-150 0 ~-150 ~150 255 ~150")
 buildArea = interfaceUtils.requestBuildArea()
@@ -60,7 +60,6 @@ for i in range(70):
     buildingCondition["position"] = [ - 100 + 20 * (int(i / 10)), 71, - 100 + 20 * (int(i % 10))]
     print(str(i) + " : " + str(buildingCondition["position"]))
     structure.build(worldModif, buildingCondition, chestGeneration)
-    time.sleep(1.5)
 
 
 milliseconds2 = int(round(time.time() * 1000))

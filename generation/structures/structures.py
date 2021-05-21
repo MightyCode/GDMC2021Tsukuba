@@ -179,7 +179,7 @@ class Structures(BaseStructure):
             
 
     def checkBeforePlacing(self, blockName):
-        if "chest" in blockName:
+        if "chest" in blockName or "shulker" in blockName or "lectern" in blockName:
             self.placeImmediately = True
 
 

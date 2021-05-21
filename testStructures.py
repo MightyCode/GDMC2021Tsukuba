@@ -10,7 +10,7 @@ from lib.worldLoader import WorldSlice
 import sys
 
 file = "temp.txt"
-interface = interfaceUtils.Interface()
+interface = interfaceUtils.Interface(buffering=True)
 worldModif = WorldModification(interface)
 interfaceUtils.runCommand("execute at @p run setbuildarea ~-150 0 ~-150 ~150 255 ~150")
 buildArea = interfaceUtils.requestBuildArea()

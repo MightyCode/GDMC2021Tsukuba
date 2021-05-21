@@ -13,7 +13,7 @@ import sys
 import time
 
 file = "temp.txt"
-interface = interfaceUtils.Interface()
+interface = interfaceUtils.Interface(buffering=True)
 worldModif = WorldModification(interface)
 size = str(150)
 interfaceUtils.runCommand("execute at @p run setbuildarea ~-" + size + " 0 ~-" + size +  "~" + size + " 255 ~" + size)
@@ -176,7 +176,6 @@ if len(sys.argv) <= 1 :
         structure.build(worldModif, buildingCondition, chestGeneration)
         
         #_utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
-        time.sleep(1.5)
     worldModif.saveToFile(file)  
 
 else : 
