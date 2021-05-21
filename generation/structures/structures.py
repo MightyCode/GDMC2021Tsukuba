@@ -111,6 +111,7 @@ class Structures(BaseStructure):
 
     def build(self, worldModif, buildingCondition, chestGeneration):
         ## Pre computing :
+        buildingCondition["referencePoint"] = buildingCondition["referencePoint"].copy()
         self.computeOrientation(buildingCondition["rotation"], buildingCondition["flip"])
 
         if buildingCondition["flip"] == 1 or buildingCondition["flip"] == 3:

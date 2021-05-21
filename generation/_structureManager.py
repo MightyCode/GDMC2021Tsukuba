@@ -136,6 +136,18 @@ class StructureManager:
                 elif self.dependencies[group]["type"] == StructureManager.REPRESENTATIVES:
                     weight = 15
 
+                #Reduce weight of structure
+                if len(self.settlementData["structures"]) >= 1 :
+                    print(self.settlementData["structures"][-1]["name"])
+                    print(structure)
+                    if structure == self.settlementData["structures"][-1]["name"]:
+                        weight = weight / 1.5
+
+                if len(self.settlementData["structures"]) >= 2 :
+                    if structure == self.settlementData["structures"][-2]["name"]:
+                        weight = weight / 1.3
+                weight = int(weight)
+
                 data = { "name" : structure, "group" : group, "type" : self.dependencies[group]["type"], "weight" : weight }
 
                 if data["type"] == StructureManager.HOUSES :

@@ -27,21 +27,18 @@ if len(sys.argv) <= 1 :
     resources = Resources()
     resLoader.loadAllResources(resources)
     chestGeneration = ChestGeneration(resources, interface)
-    structure = resources.structures["haybalehouse1"]
+    structure = resources.structures["mediumhouse2"]
 
     info = structure.info
     buildingCondition = Structures.BUILDING_CONDITIONS.copy()
     buildingInfo = structure.getNextBuildingInformation()
     buildingCondition["flip"] = 3
     buildingCondition["rotation"] = 3
-    buildingCondition["position"] = [82, 63, -3]
+    buildingCondition["position"] = [897, 71, 1111]
     buildingCondition["referencePoint"] = buildingInfo["entry"]["position"]
     buildingCondition["size"] = buildingInfo["size"]
     print(structure.getCornersLocalPositions(info["mainEntry"]["position"], 3, 1))
     corners = structure.getCornersLocalPositionsAllFlipRotation(info["mainEntry"]["position"])
-    print(_math.isTwoRectOverlapse([-30, 64, 0], [-1, -2, 4, 2], [-22, 65, 2], [-2, -1, 1, 5], 4))
-    
-    exit()
 
     buildingCondition["replaceAllAir"] = 3
 

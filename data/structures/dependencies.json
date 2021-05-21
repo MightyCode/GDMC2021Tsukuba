@@ -37,7 +37,7 @@
         "conditions" : {
             "previous" : [
                 {  "name" : "basicLumberJackHut", "min" : 1 },
-                { "name" : "basicHouses", "max" : 15 } 
+                { "name" : "basicHouses", "max" : 10 } 
             ]
         }
     },
@@ -128,13 +128,25 @@
         ],
         "type" : "representatives",
         "conditions" : {
-            "villagerNeeded" : { "min" : 0 },
             "previous" : [
                 { "name" : "basicFurnace", "min" : 1 },
                 { "name" : "basicGraveyard", "max" : 1 } 
             ]
         },
         "priority" : "full"
+    },
+    "mediumHouses" : {
+        "structures" : [
+            "mediumhouse1", 
+            "mediumhouse2"
+        ],
+        "type" : "houses",
+        "conditions" : {
+            "previous" : [
+                { "name" : "basicStoneCutter", "min" : 1 },
+                { "name" : "mediumHouses", "max" : 13 } 
+            ]
+        }
     },
     "basicJail" : {
         "structures" : [
