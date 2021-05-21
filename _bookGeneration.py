@@ -1,14 +1,11 @@
-import sys
-
 from functools import lru_cache
-import lib.interfaceUtils as interfaceUtils
 from generation.structures.structures import *
 from generation.structures.generated.generatedQuarry import *
 from utils._worldModification import *
 from generation._resources import *
 from generation._chestGeneration import *
 import utils._utils as _utils
-import lookup
+import lib.lookup as lookup
 
 __version__ = 'v4.2_dev'
 __year__ = '2021'

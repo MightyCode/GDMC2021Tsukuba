@@ -1,10 +1,10 @@
 #! /usr/bin/python
 
-import interfaceUtils as iU
+import lib.interfaceUtils as iU
 import numpy as np
 import random
 
-from worldLoader import WorldSlice
+from lib.worldLoader import WorldSlice
 
 # Load the map in a numpy array, check for areas above a certain high.
 # Floodfill those to find different peaks

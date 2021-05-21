@@ -1,10 +1,55 @@
+import lib.interfaceUtils as interfaceUtils
+import lib.worldLoader as worldLoader
+import lib.lookup as lookup
 import random as rd
 import pandas as pd
 import numpy as np
-import lib.interfaceUtils as interfaceUtils
-import lookup
+import math
+import requests
+from io import BytesIO
+import nbt
 
-
+def getBiome(x, z, dx, dz):
+    """**Returns the chunk data.**"""
+    x = math.floor(x / 16)
+    z = math.floor(z / 16)
+    url = f'http://localhost:9000/chunks?x={x}&z={z}&dx={dx}&dz={dz}'
+    try:
+        response = requests.get(url)
+    except ConnectionError:
+        return "minecraft:plains"
+    biomeId = response.text.split(":")
+    biomeinfo = biomeId[6].split(";")
+    biome = biomeinfo[1].split(",")
+    return biome[0]
+    
+def getAllBiome():
+    bytes = worldLoader.getChunks(-4, -4, 9, 9, 'bytes')
+    file_like = BytesIO(bytes)
+    nbtfile = nbt.nbt.NBTFile(buffer=file_like)
+    dicochunk = {}
+    for y in range(81):
+        for x in range(1024):
+            if f"{nbtfile['Chunks'][y]['Level']['Biomes'].value[x]}" in dicochunk:
+                dicochunk[f"{nbtfile['Chunks'][y]['Level']['Biomes'].value[x]}"] = int(dicochunk[f"{nbtfile['Chunks'][y]['Level']['Biomes'].value[x]}"]) + 1 
+            else:
+                dicochunk[f"{nbtfile['Chunks'][y]['Level']['Biomes'].value[x]}"] = "1"
+    max = 0
+    savedbiome = 0
+    for x,y in dicochunk.items():
+        if y > max:
+            savedbiome = x
+            max = y
+    value = getNameBiome(savedbiome)
+    return value
+        
+def getNameBiome(self, biome):
+    filin = open("data/biome.txt")
+    lignes = filin.readlines()
+    biomename = lignes[int(biome)].split(":")[0]
+    print(biomename)
+    value = int(lignes[int(biome)].split(":")[1])
+    return value
 
 """
 Return the text of the book of the village presentation

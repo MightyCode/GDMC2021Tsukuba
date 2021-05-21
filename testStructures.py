@@ -6,24 +6,18 @@ from generation._floodFill import *
 import generation._resourcesLoader as resLoader
 import utils._math as _math
 from utils._worldModification import *
-from lib.worldLoader import WorldSlice
-import sys
+import utils.argumentParser as argParser
 
 file = "temp.txt"
 interface = interfaceUtils.Interface(buffering=True)
 worldModif = WorldModification(interface)
-interfaceUtils.runCommand("execute at @p run setbuildarea ~-150 0 ~-150 ~150 255 ~150")
-buildArea = interfaceUtils.requestBuildArea()
+args, parser = argParser.giveArgsAndParser()
+area = argParser.getBuildArea(interface, args)
 
-if buildArea == -1:
+if area == -1:
     exit()
-x1 = buildArea[0]
-z1 = buildArea[2]
-x2 = buildArea[3]
-z2 = buildArea[5]
-area = (x1, z1, x2 - x1, z2 - z1)
 
-if len(sys.argv) <= 1 :
+if not args.remove:
     resources = Resources()
     resLoader.loadAllResources(resources)
     chestGeneration = ChestGeneration(resources, interface)
@@ -64,8 +58,8 @@ if len(sys.argv) <= 1 :
     worldModif.saveToFile(file)
 
 else : 
-    if sys.argv[1] == "r" :   
+    if args.remove == "r" :   
         worldModif.loadFromFile(file)
     else :
-        worldModif.loadFromFile(sys.argv[1])
+        worldModif.loadFromFile(args.remove)
     worldModif.undoAllModification()

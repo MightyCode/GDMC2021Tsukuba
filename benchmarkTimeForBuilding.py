@@ -8,23 +8,16 @@ from generation.structures.structures import *
 from generation._structureManager import *
 from generation._floodFill import *
 import generation._resourcesLoader as resLoader
-import utils._math as _math
 from utils._worldModification import *
-from lib.worldLoader import WorldSlice
-import sys
+import utils.argumentParser as argParser
 
 interface = interfaceUtils.Interface(buffering=True)
 worldModif = WorldModification(interface)
-interfaceUtils.runCommand("execute at @p run setbuildarea ~-150 0 ~-150 ~150 255 ~150")
-buildArea = interfaceUtils.requestBuildArea()
+args, parser = argParser.giveArgsAndParser()
+area = argParser.getBuildArea(interface, args)
 
-if buildArea == -1:
+if area == -1:
     exit()
-x1 = buildArea[0]
-z1 = buildArea[2]
-x2 = buildArea[3]
-z2 = buildArea[5]
-area = (x1, z1, x2 - x1, z2 - z1)
 
 resources = Resources()
 resLoader.loadAllResources(resources)

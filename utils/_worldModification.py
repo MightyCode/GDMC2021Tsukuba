@@ -72,6 +72,7 @@ class WorldModification:
                         self.before_modification.append([x, y, z, previousBlock])
                         self.after_modificaton.append([x, y, z, block])
         
+        
         interfaceUtils.runCommand("fill " +  
             str(from_x) + " " + 
             str(from_y) + " " +

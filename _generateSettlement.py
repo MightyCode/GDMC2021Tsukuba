@@ -8,39 +8,32 @@ import generation._resourcesLoader as resLoader
 import utils._utils as _utils
 from utils._worldModification import *
 from lib.worldLoader import WorldSlice
+import utils.argumentParser as argParser
 import random
-import sys
-import time
 
 file = "temp.txt"
 interface = interfaceUtils.Interface(buffering=True)
 worldModif = WorldModification(interface)
-size = str(150)
-interfaceUtils.runCommand("execute at @p run setbuildarea ~-" + size + " 0 ~-" + size +  "~" + size + " 255 ~" + size)
-buildArea = interfaceUtils.requestBuildArea()
+args, parser = argParser.giveArgsAndParser()
+area = argParser.getBuildArea(interface, args)
 
-if buildArea == -1:
+if area == -1:
     exit()
-x1 = buildArea[0]
-z1 = buildArea[2]
-x2 = buildArea[3]
-z2 = buildArea[5]
-area = (x1, z1, x2 - x1, z2 - z1)
 
-if len(sys.argv) <= 1 :
+if not args.remove:
     resources = Resources()
     resLoader.loadAllResources(resources)
 
     chestGeneration = ChestGeneration(resources, interface)
-    ws = WorldSlice(area)
-    floodFill = FloodFill()
+    ws = WorldSlice(area[0], area[2], area[3], area[5])
+    floodFill = FloodFill(area)
     
     settlementData = {}
     settlementData["center"] = [int((area[0] + area[2]) / 2) , 120, int((area[1] + area[3]) / 2)]
     settlementData["size"] = [area[0] - area[2], area[1] - area[3]]
     settlementData["discoveredChunk"] = []
 
-    settlementData["biomeId"] = interface.getBiome(settlementData["center"][0], settlementData["center"][2], 1, 1) # TODO get mean
+    settlementData["biomeId"] = _utils.getBiome(settlementData["center"][0], settlementData["center"][2], 1, 1) # TODO get mean
     settlementData["biomeName"] = resources.biomeMinecraftId[int(settlementData["biomeId"])]
     settlementData["biomeBlockId"] = str(resources.biomesBlockId[settlementData["biomeName"]])
     if settlementData["biomeBlockId"] == "-1": 
@@ -129,7 +122,7 @@ if len(sys.argv) <= 1 :
     
     _bookGeneration.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2], villageNameBook, worldModif, 'east')
     _bookGeneration.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2] + 1, villagerNamesList, worldModif,'east')
-    print("")
+    
     #structureMananager.printStructureChoose()
 
     # Build after every computationsr
@@ -151,7 +144,7 @@ if len(sys.argv) <= 1 :
 
         buildingCondition["prebuildingInfo"] = settlementData["structures"][i]["prebuildingInfo"]
 
-        structureBiomeId = interfaceUtils.getBiome(buildingCondition["position"][0], buildingCondition["position"][2], 1, 1)
+        structureBiomeId = _utils.getBiome(buildingCondition["position"][0], buildingCondition["position"][2], 1, 1)
         structureBiomeName = resources.biomeMinecraftId[int(structureBiomeId)]
         structureBiomeBlockId = str(resources.biomesBlockId[structureBiomeName])
 
@@ -179,9 +172,9 @@ if len(sys.argv) <= 1 :
     worldModif.saveToFile(file)  
 
 else : 
-    if sys.argv[1] == "r" :   
+    if args.remove == "r" :   
         worldModif.loadFromFile(file)
     else :
-        worldModif.loadFromFile(sys.argv[1])
+        worldModif.loadFromFile(args.remove)
     worldModif.undoAllModification()
 
