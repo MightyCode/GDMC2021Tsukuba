@@ -43,7 +43,7 @@ class BaseStructure:
         return worldPosition 
 
 
-    def convertProperty(self, propertyName, propertyValue, rotation, flip):
+    def convertProperty(self, propertyName, propertyValue):
         if propertyValue in self.computedOrientation.keys():
             propertyValue = self.computedOrientation[propertyValue]
 
@@ -67,15 +67,14 @@ class BaseStructure:
         if flip == 1 or flip == 3:
             self.computedOrientation["east"] = "west" 
             self.computedOrientation["west"] = "east"
-
-            if flip != 3:
-                self.computedOrientation["left"] = "right"
-                self.computedOrientation["right"] = "left"
             
         if flip == 2 or flip == 3:
             self.computedOrientation["south"] = "north"
             self.computedOrientation["north"] = "south"
 
+        if flip == 1 or flip == 2:
+            self.computedOrientation["left"] = "right"
+            self.computedOrientation["right"] = "left"
 
         # Apply rotation to orientation
         for orientation in self.computedOrientation.keys():
@@ -93,37 +92,34 @@ class BaseStructure:
     Return position where reference position is the center of the local space
     """
     def getCornersLocalPositions(self, referencePosition, flip, rotation):
-        print(referencePosition)
-        print(self.size)
+        refPos = referencePosition.copy()
         if flip == 1 or flip == 3 :
-            referencePosition[0] = self.size[0] - 1 - referencePosition[0]
+            refPos[0] = self.size[0] - 1 - refPos[0]
 
         if flip == 2 or flip == 3 :
-            referencePosition[2] = self.size[2] - 1 - referencePosition[2]
+            refPos[2] = self.size[2] - 1 - refPos[2]
 
-        positions = [[- referencePosition[0],                        - referencePosition[2]], 
-                     [self.size[0] - 1 - referencePosition[0],       - referencePosition[2]], 
-                     [- referencePosition[0],                       self.size[2] - 1 - referencePosition[2]], 
-                     [self.size[0] - 1 - referencePosition[0],       self.size[2] - 1 - referencePosition[2]]]
-        toReturn = []
+        temp = _math.rotatePointAround([0, 0], [- refPos[0], - refPos[2]] , math.pi / 2 * rotation)
 
-        for position in positions :
-            temp = _math.rotatePointAround([0, 0], 
-                position , math.pi / 2 * rotation)
-            
-            toReturn.append([int(temp[0]), referencePosition[1], int(temp[1])])
+        temp1 = _math.rotatePointAround([0, 0], [self.size[0] - 1 - refPos[0], self.size[2] - 1 - refPos[2]] , math.pi / 2 * rotation)
         
-        # Sort corner
-        for dimension in (0, 2):
-            for i in range(1):
-                for j in range(3):
-                    if toReturn[3 - j][dimension] < toReturn[2 - j][dimension]:
-                        temp = toReturn[3 - j]
-                        toReturn[3 - j] = toReturn[2 - j]
-                        toReturn[2 - j] = temp
-        
-        return toReturn
+        return [int(min(temp[0], temp1[0])), 
+                int(min(temp[1], temp1[1])), 
+                int(max(temp[0], temp1[0])), 
+                int(max(temp[1], temp1[1]))]
 
+
+    def getCornersLocalPositionsAllFlipRotation(self, referencePosition):
+        corners = []
+        for flip in [0, 1, 2, 3]:
+            for rotation in [0, 1, 2, 3]:
+                corners.append(self.getCornersLocalPositions(referencePosition, flip, rotation))
+
+        return corners
+
+
+    def getNextBuildingInformation(self):
+        return
 
     def setSize(self, size):
         self.size = size

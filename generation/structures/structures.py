@@ -13,7 +13,7 @@ class Structures(BaseStructure):
     CHANGE_REPLACEMENT_WORD = "ReplacementWord"
     CHANGE_EXCLUDED_ZONES = "ExcludedZone"
 
-    AIR_BLOCK = "minecraft:air"
+    AIR_BLOCKS = ["minecraft:air", "minecraft:void_air", "minecraft:cave_air"]
 
     REPLACEMENTS_EXCLUSIF = {
         "oak" : "dark_oak"
@@ -46,6 +46,9 @@ class Structures(BaseStructure):
         self.setSize([nbtfile["size"][0].value, nbtfile["size"][1].value, nbtfile["size"][2].value])
         self.file = nbtfile
         self.name = name
+
+        # Variable used on building
+        self.placeImmediately = False
 
         self.computedOrientation = {}
         # Indicate for each block in palette if it should change or not and to change to what
@@ -97,9 +100,18 @@ class Structures(BaseStructure):
             self.lootTable = len(self.info["lootTables"]) > 0
 
 
+    def getNextBuildingInformation(self):
+        info = {}
+        info["corners"] = self.getCornersLocalPositionsAllFlipRotation(self.info["mainEntry"]["position"])
+        info["entry"] = { "position" : self.info["mainEntry"]["position"].copy(), "facing" : self.info["mainEntry"]["facing"] }
+        info["size"] = self.size
+
+        return info
+
+
     def build(self, worldModif, buildingCondition, chestGeneration):
         ## Pre computing :
-        print("Pre building : " + self.name)
+        buildingCondition["referencePoint"] = buildingCondition["referencePoint"].copy()
         self.computeOrientation(buildingCondition["rotation"], buildingCondition["flip"])
 
         if buildingCondition["flip"] == 1 or buildingCondition["flip"] == 3:
@@ -108,7 +120,6 @@ class Structures(BaseStructure):
             buildingCondition["referencePoint"][2] = self.size[2] - 1 - buildingCondition["referencePoint"][2] 
 
         # Replace bloc by these given
-        print("Prebuilding Palette")
         for blockPalette in self.file["palette"]:
             if blockPalette[Structures.CHANGE].value:
                 changeState = blockPalette[Structures.CHANGE_STATE].value
@@ -116,19 +127,21 @@ class Structures(BaseStructure):
                     blockPalette["Name"].value = buildingCondition["replacements"][blockPalette[Structures.CHANGE_TO].value].split("[")[0]
                 elif changeState == 2:
                     blockPalette["Name"].value = blockPalette[Structures.CHANGE_ORIGINAL_BLOCK].value.replace(
-                        blockPalette[Structures.CHANGE_REPLACEMENT_WORD].value, buildingCondition["replacements"][blockPalette[Structures.CHANGE_TO].value].split("[")[0] )
+                        blockPalette[Structures.CHANGE_REPLACEMENT_WORD].value, 
+                        buildingCondition["replacements"][blockPalette[Structures.CHANGE_TO].value].split("[")[0] )
 
+        
         # Place support underHouse
         self.placeSupportUnderStructure(worldModif, buildingCondition)
 
         # Air zone
         self.placeAirZones(worldModif, buildingCondition)
 
-        print("Building : " + self.name)
-
+        
         ## Computing : Modify from blocks
         for block in self.file["blocks"]:
             blockPalette = self.file["palette"][block["state"].value]
+            self.placeImmediately = False
 
             # Check if the current block is in excluded zone
             takeOriginalBlock = False
@@ -137,45 +150,64 @@ class Structures(BaseStructure):
                 if (blockPalette[Structures.CHANGE_EXCLUDED_ZONES].value):
                     for zone in self.info["replacements"][blockPalette[Structures.CHANGE_REPLACEMENT_WORD].value]["excluded"] :
                         if _math.isPointInSquare([ block["pos"][0].value, block["pos"][1].value, block["pos"][2].value], zone) :
-                            print(blockPalette[Structures.CHANGE_ORIGINAL_BLOCK].value)
                             takeOriginalBlock = True
                             blockName = blockPalette[Structures.CHANGE_ORIGINAL_BLOCK].value
                             break
 
+
             # Check for block air replacement
-            if blockName == Structures.AIR_BLOCK and buildingCondition["replaceAllAir"] == 1:
+            if blockName in Structures.AIR_BLOCKS and buildingCondition["replaceAllAir"] != 1:
                 continue
             
             # Compute position of block from local space to world space
             blockPosition = self.returnWorldPosition(
-                [ block["pos"][0].value, block["pos"][1].value, block["pos"][2].value ],
+                [ block["pos"][0].value, block["pos"][1].value + 1, block["pos"][2].value ],
                 buildingCondition["flip"], buildingCondition["rotation"], 
                 buildingCondition["referencePoint"], buildingCondition["position"] )
             
+            self.checkBeforePlacing(blockName)
+
             worldModif.setBlock(
                 blockPosition[0], blockPosition[1], blockPosition[2],
                 self.convertNbtBlockToStr(
                     self.file["palette"][block["state"].value],
-                    buildingCondition["rotation"],
-                    buildingCondition["flip"],
                     takeOriginalBlock
-                    ), 
+                    ), placeImmediately=self.placeImmediately
             )
 
-            # If structure has loot tables and chest encounter
-            if "chest" in blockName:
-                if self.lootTable :
-                    choosenLootTable = ""
-                    for lootTable in self.info["lootTables"] :
-                        if len(lootTable) == 1:
-                            choosenLootTable = lootTable[0]
-                        elif _math.isPointInSquare([ block["pos"][0].value, block["pos"][1].value, block["pos"][2].value ], lootTable[1]) :
-                            choosenLootTable = lootTable[0]
-                    
-                    if choosenLootTable  != "":
-                        chestGeneration.generate(blockPosition[0], blockPosition[1], blockPosition[2], choosenLootTable, buildingCondition["replacements"])
+            self.checkAfterPlacing(block, blockName, blockPosition, chestGeneration, buildingCondition)
+            
 
-        print("Finish building : " + self.name)
+    def checkBeforePlacing(self, blockName):
+        if "chest" in blockName or "shulker" in blockName or "lectern" in blockName:
+            self.placeImmediately = True
+
+
+    def checkAfterPlacing(self, block, blockName, blockPosition, chestGeneration, buildingCondition):
+        # If structure has loot tables and chest encounter
+        if "chest" in blockName:
+            if self.lootTable :
+                choosenLootTable = ""
+                for lootTable in self.info["lootTables"] :
+                    if len(lootTable) == 1:
+                        choosenLootTable = lootTable[0]
+                    elif _math.isPointInSquare([ block["pos"][0].value, block["pos"][1].value, block["pos"][2].value ], lootTable[1]) :
+                        choosenLootTable = lootTable[0]
+                    
+                if choosenLootTable  != "":
+                    chestGeneration.generate(blockPosition[0], blockPosition[1], blockPosition[2], choosenLootTable, buildingCondition["replacements"])
+
+        if "lectern" in blockName:
+            if "lectern" in self.info:
+                for key in self.info["lectern"].keys():
+                    position = self.info["lectern"][key]
+                    if block["pos"][0].value == position[0] and block["pos"][1].value == position[1] and block["pos"][2].value == position[2]:
+                        result = _utils.changeNameWithBalise(key, buildingCondition)
+                        if result[0] >= 0:
+                            _utils.addBookToLectern(blockPosition[0], blockPosition[1], blockPosition[2], result[1])
+                        else :
+                            print("Can't add a book to a lectern at pos : " + str(blockPosition))
+                        break
 
 
     def placeSupportUnderStructure(self, worldModif, buildingCondition):
@@ -195,33 +227,32 @@ class Structures(BaseStructure):
                         buildingCondition["referencePoint"], buildingCondition["position"] 
                     )
 
-                    if worldModif.interface.getBlock(position[0], position[1] - 1, position[2]) in floodFill.FloodFill.IGNORED_BLOCKS:
+                    if worldModif.interface.getBlock(position[0], position[1], position[2]) in floodFill.FloodFill.IGNORED_BLOCKS:
                         i = -2 
                         while worldModif.interface.getBlock(position[0], position[1] + i, position[2]) in floodFill.FloodFill.IGNORED_BLOCKS:
                             i -= 1
                         
-                        worldModif.fillBlocks(position[0], position[1]-1, position[2], position[0], position[1] + i, position[2], 
+                        worldModif.fillBlocks(position[0], position[1], position[2], position[0], position[1] + i, position[2], 
                         buildingCondition["replacements"]["ground2"])
 
-    def placeAirZones(self, worldModif, buildingCondition):
 
-        print("Prebuilding air")
+    def placeAirZones(self, worldModif, buildingCondition):
         if buildingCondition["replaceAllAir"] == 3:
             buildingCondition["replaceAllAir"] = self.info["air"]["preferedAirMode"]
 
         if buildingCondition["replaceAllAir"] == 2:
             for zones in self.info["air"]["replacements"]:
-                blockFrom = self.returnWorldPosition([ zones[0], zones[1], zones[2] ],
+                blockFrom = self.returnWorldPosition([ zones[0], zones[1] + 1, zones[2] ],
                                                      buildingCondition["flip"], buildingCondition["rotation"], 
                                                      buildingCondition["referencePoint"], buildingCondition["position"])
-                blockTo   = self.returnWorldPosition([ zones[3], zones[4], zones[5] ],
+                blockTo   = self.returnWorldPosition([ zones[3], zones[4] + 1, zones[5] ],
                                                      buildingCondition["flip"], buildingCondition["rotation"], 
                                                      buildingCondition["referencePoint"], buildingCondition["position"])
                                                      
-                worldModif.fillBlocks(blockFrom[0], blockFrom[1], blockFrom[2], blockTo[0], blockTo[1], blockTo[2], Structures.AIR_BLOCK)
+                worldModif.fillBlocks(blockFrom[0], blockFrom[1], blockFrom[2], blockTo[0], blockTo[1], blockTo[2], Structures.AIR_BLOCKS[0])
 
 
-    def convertNbtBlockToStr(self, blockPalette, rotation, flip, takeOriginalBlockName=False):
+    def convertNbtBlockToStr(self, blockPalette, takeOriginalBlockName=False):
         block = "["
         if takeOriginalBlockName:
             block = blockPalette[Structures.CHANGE_ORIGINAL_BLOCK].value + block
@@ -230,7 +261,7 @@ class Structures(BaseStructure):
 
         if "Properties" in blockPalette.keys():
             for key in blockPalette["Properties"].keys():
-                block += self.convertProperty(key, blockPalette["Properties"][key].value, rotation, flip) + ","
+                block += self.convertProperty(key, blockPalette["Properties"][key].value) + ","
   
             block = block[:-1] 
         block += "]"

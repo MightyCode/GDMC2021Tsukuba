@@ -23,6 +23,7 @@ if buildArea != -1:
     z2 = buildArea[5]
     print(buildArea)
     area = (x1, z1, x2 - x1, z2 - z1)
+
 print(area)
 ws = WorldSlice(area)
 xPos = -36

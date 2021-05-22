@@ -1,7 +1,7 @@
 {
   "mainEntry": {
     "facing" : "north",
-    "position" : [4, 1, 0]
+    "position" : [4, 2, 0]
   },
   "replacements" : {
     "oak" : { "type" : "woodType", "state" : 2 }
@@ -9,7 +9,8 @@
   "air" : {
     "preferedAirMode" : 2,
     "replacements" : [
-      [0, 2, 0, 8, 4, 10]
+      [0, 2, 0, 8, 4, 8],
+      [3, 2, 9, 5, 2, 10]
     ]
   },
   "lootTables" : [

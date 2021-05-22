@@ -7,7 +7,7 @@ class StructureManager:
     PATH = "data/structures/dependencies.json"
     HOUSES = "houses"
     FUNCTIONALS = "functionals"
-    REPRESENATIVES = "representatives"
+    REPRESENTATIVES = "representatives"
 
     def __init__(self, settlementData, resources):
         with open(StructureManager.PATH) as json_file:
@@ -24,12 +24,25 @@ class StructureManager:
 
         self.checkDependencies()
 
+
     """
     Set the name of the last append structure in the table, attribute villager to it too if needed
     """
     def chooseOneStructure(self):
+        # No more structures placeable
+        if len(self.allStructures) == 0:
+            return 2
+
+        self.settlementData["structures"].append({})
         sumWeight = 0
         for structure in self.allStructures :
+            if "priority" in self.dependencies[structure["group"]] :
+                if self.dependencies[structure["group"]]["priority"] == "full":
+                    print("priority to " + structure["name"])
+                    self.choosedStructure(structure)
+                    # Normal exit
+                    return 0
+
             sumWeight += structure["weight"]
 
         randomValue = random.randint(0, sumWeight)
@@ -38,7 +51,12 @@ class StructureManager:
             randomValue -= structure["weight"]
             if randomValue <= 0:
                 self.choosedStructure(structure)
-                break
+                structure["weight"] -= 1
+                if structure["weight"] < 1 : 
+                    structure["weight"] = 1
+                    
+                # Normal exit
+                return 0
 
 
     def choosedStructure(self, structure):
@@ -66,15 +84,15 @@ class StructureManager:
                 self.settlementData["structures"][-1]["villagersId"].append(size + i)
             self.settlementData["freeVillager"] += numberToAdd
         
-        # Functionnals structure
-        elif structure["type"] == StructureManager.FUNCTIONALS:
+        # Functionnals or representatives structure
+        elif structure["type"] == StructureManager.FUNCTIONALS or structure["type"] == StructureManager.REPRESENTATIVES:
             numberToAttribute = struct.info["villageInfo"]["villager"]
             self.settlementData["structures"][-1]["villagersId"] = []
             size = len(self.settlementData["villagerNames"])
-            
             idFound = 0
             for i in range(numberToAttribute):
                 # Find unemployed villager
+
                 while idFound < len(self.settlementData["villagerProfession"]) :
                     if self.settlementData["villagerProfession"][idFound] == "Unemployed" :
                         break
@@ -87,7 +105,7 @@ class StructureManager:
                 self.settlementData["structures"][-1]["villagersId"].append(idFound)
 
             self.settlementData["freeVillager"] -= numberToAttribute
-
+    
 
     def checkDependencies(self):
         # Make arrays empty
@@ -115,13 +133,28 @@ class StructureManager:
                 weight = 1
                 if self.dependencies[group]["type"] == StructureManager.FUNCTIONALS:
                     weight = 10
+                elif self.dependencies[group]["type"] == StructureManager.REPRESENTATIVES:
+                    weight = 15
+
+                #Reduce weight of structure
+                if len(self.settlementData["structures"]) >= 1 :
+                    print(self.settlementData["structures"][-1]["name"])
+                    print(structure)
+                    if structure == self.settlementData["structures"][-1]["name"]:
+                        weight = weight / 1.5
+
+                if len(self.settlementData["structures"]) >= 2 :
+                    if structure == self.settlementData["structures"][-2]["name"]:
+                        weight = weight / 1.3
+                weight = int(weight)
+
                 data = { "name" : structure, "group" : group, "type" : self.dependencies[group]["type"], "weight" : weight }
 
                 if data["type"] == StructureManager.HOUSES :
                     self.houses.append(data)
                 elif data["type"] == StructureManager.FUNCTIONALS : 
                     self.functionals.append(data)
-                elif data["type"] == StructureManager.REPRESENATIVES : 
+                elif data["type"] == StructureManager.REPRESENTATIVES : 
                     self.reprentatives.append(data)
                 self.allStructures.append(data)
 
@@ -131,6 +164,7 @@ class StructureManager:
 
         if name == "villagerNeeded" :
             valueToCheck =  self.settlementData["freeVillager"]
+
         # Ex : dirtResources, woordResources
         elif "Resources" in name:
             valueToCheck =  self.settlementData[name]
@@ -139,6 +173,7 @@ class StructureManager:
                 if not self.checkOneCondition("previousItem", previous):
                     return False
             return True
+
         elif name == "previousItem":
             valueToCheck = self.numberOfStructuresForEachGroup[conditionValues["name"]]
 
@@ -147,8 +182,13 @@ class StructureManager:
                 return False
         
         if "max" in conditionValues : 
-            if valueToCheck > conditionValues["max"] :
+            if valueToCheck >= conditionValues["max"] :
                 return False
 
         return True
 
+    def printStructureChoose(self):
+        string = "\n["
+        for structure in self.settlementData["structures"]:
+            string = string + structure["name"] + ", " 
+        print(string + "]") 

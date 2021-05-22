@@ -26,7 +26,7 @@ class WorldModification:
                 WorldModification.DEBUG_MODE = config["debugMode"]
 
 
-    def setBlock(self, x, y, z, block, compareBlockState=False):
+    def setBlock(self, x, y, z, block, compareBlockState=False, placeImmediately=False):
         if WorldModification.DEBUG_MODE:
             previousBlock = self.interface.getBlock(x, y, z, True)
 
@@ -42,7 +42,10 @@ class WorldModification:
             self.before_modification.append([x, y, z, previousBlock])
             self.after_modificaton.append([x, y, z, block])
 
-        self.interface.setBlock(x, y, z, block)
+        if placeImmediately : 
+            self.interface.placeBlock(x, y, z, block)
+        else :
+            self.interface.setBlock(x, y, z, block)
 
     def fillBlocks(self, from_x, from_y, from_z, to_x, to_y, to_z, block, compareBlockState=False):
         if WorldModification.DEBUG_MODE :
@@ -53,9 +56,9 @@ class WorldModification:
             if from_z > to_z : 
                 to_z, from_z = from_z, to_z
             
-            for x in range(from_x, to_x + 1):
-                for y in range(from_y, to_y + 1):
-                    for z in range(from_z, to_z + 1):
+            for z in range(from_z, to_z + 1):
+                for x in range(from_x, to_x + 1):
+                    for y in range(from_y, to_y + 1):
                         # We won't replace block by same one, 
                         # option to compare or not the state of both blocks -> [...]
                         previousBlock = self.interface.getBlock(x, y, z, True)
@@ -69,7 +72,15 @@ class WorldModification:
                         self.before_modification.append([x, y, z, previousBlock])
                         self.after_modificaton.append([x, y, z, block])
         
-        self.interface.fill(from_x, from_y, from_z, to_x, to_y, to_z, block)
+        
+        interfaceUtils.runCommand("fill " +  
+            str(from_x) + " " + 
+            str(from_y) + " " +
+            str(from_z) + " " + 
+            str(to_x) + " " + 
+            str(to_y) + " " + 
+            str(to_z) + " " +  
+            block + " replace")
 
     def undoLastModification(self):
         if not WorldModification.DEBUG_MODE:

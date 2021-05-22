@@ -1,80 +1,71 @@
 # ! /usr/bin/python3
-"""### Provides tools for reading chunk data
+"""### Provides tools for reading chunk data.
 
 This module contains functions to:
 * Calculate a heightmap ideal for building
 * Visualise numpy arrays
 """
 __all__ = ['WorldSlice']
-# __version__
+__version__ = 'v4.2_dev'
 
 from io import BytesIO
 from math import ceil, log2
 
+import lib.direct_interface as di
+from lib.bitarray import BitArray
+from lib.lookup import BIOMES
 import nbt
 import numpy as np
-import requests
-
-from lib.bitarray import BitArray
-
-
-def getChunks(x, z, dx, dz, rtype='text'):
-    """**Get raw chunk data.**"""
-    print(f"getting chunks {x} {z} {dx} {dz} ")
-
-    url = f'http://localhost:9000/chunks?x={x}&z={z}&dx={dx}&dz={dz}'
-    print(f"request url: {url}")
-    acceptType = 'application/octet-stream' if rtype == 'bytes' else 'text/raw'
-    response = requests.get(url, headers={"Accept": acceptType})
-    #print(f"result: {response.status_code}")
-    if response.status_code >= 400:
-        print(f"error: {response.text}")
-
-    if rtype == 'text':
-        return response.text
-    elif rtype == 'bytes':
-        return response.content
 
 
 class CachedSection:
-    """**Represents a cached chunk section (16x16x16).**"""
+    """**Represents a cached chunk section (16x16x16)**."""
 
     def __init__(self, palette, blockStatesBitArray):
         self.palette = palette
         self.blockStatesBitArray = blockStatesBitArray
 
+    # __repr__ displays the class well enough so __str__ is omitted
+    def __repr__(self):
+        return f"CachedSection({repr(self.palette)}, " \
+            f"{repr(self.blockStatesBitArray)})"
+
 
 class WorldSlice:
-    """**Contains information on a slice of the world.**"""
-    # TODO format this to blocks
+    """**Contains information on a slice of the world**."""
 
-    def __init__(self, rect, heightmapTypes=["MOTION_BLOCKING", "MOTION_BLOCKING_NO_LEAVES", "OCEAN_FLOOR", "WORLD_SURFACE"]):
-        self.rect = rect
-        self.chunkRect = (rect[0] >> 4, rect[1] >> 4, ((rect[0] + rect[2] - 1) >> 4) - (
-            rect[0] >> 4) + 1, ((rect[1] + rect[3] - 1) >> 4) - (rect[1] >> 4) + 1)
+    def __init__(self, x1, z1, x2, z2,
+                 heightmapTypes=["MOTION_BLOCKING",
+                                 "MOTION_BLOCKING_NO_LEAVES",
+                                 "OCEAN_FLOOR",
+                                 "WORLD_SURFACE"]):
+        """**Initialise WorldSlice with region and heightmaps**."""
+        self.rect = x1, z1, x2 - x1, z2 - z1
+        self.chunkRect = (self.rect[0] >> 4, self.rect[1] >> 4,
+                          ((self.rect[0] + self.rect[2] - 1) >> 4)
+                          - (self.rect[0] >> 4) + 1,
+                          ((self.rect[1] + self.rect[3] - 1) >> 4)
+                          - (self.rect[1] >> 4) + 1)
         self.heightmapTypes = heightmapTypes
 
-        bytes = getChunks(*self.chunkRect, rtype='bytes')
+        bytes = di.getChunks(*self.chunkRect, rtype='bytes')
         file_like = BytesIO(bytes)
 
-        print("parsing NBT")
         self.nbtfile = nbt.nbt.NBTFile(buffer=file_like)
 
-        rectOffset = [rect[0] % 16, rect[1] % 16]
+        rectOffset = [self.rect[0] % 16, self.rect[1] % 16]
 
         # heightmaps
         self.heightmaps = {}
         for hmName in self.heightmapTypes:
             self.heightmaps[hmName] = np.zeros(
-                (rect[2], rect[3]), dtype=np.int)
+                (self.rect[2] + 1, self.rect[3] + 1), dtype=int)
 
         # Sections are in x,z,y order!!! (reverse minecraft order :p)
         self.sections = [[[None for i in range(16)] for z in range(
             self.chunkRect[3])] for x in range(self.chunkRect[2])]
 
         # heightmaps
-        print("extracting heightmaps")
-
         for x in range(self.chunkRect[2]):
             for z in range(self.chunkRect[3]):
                 chunkID = x + z * self.chunkRect[2]
@@ -88,69 +79,93 @@ class WorldSlice:
                     for cz in range(16):
                         for cx in range(16):
                             try:
-                                heightmap[-rectOffset[0] + x * 16 + cx, -rectOffset[1] +
-                                          z * 16 + cz] = heightmapBitArray.getAt(cz * 16 + cx)
+                                heightmap[-rectOffset[0] + x * 16 + cx,
+                                          -rectOffset[1] + z * 16 + cz] \
+                                    = heightmapBitArray.getAt(cz * 16 + cx)
                             except IndexError:
                                 pass
 
         # sections
-        print("extracting chunk sections")
-
         for x in range(self.chunkRect[2]):
             for z in range(self.chunkRect[3]):
                 chunkID = x + z * self.chunkRect[2]
-                chunkSections = self.nbtfile['Chunks'][chunkID]['Level']['Sections']
+                chunk = self.nbtfile['Chunks'][chunkID]
+                chunkSections = chunk['Level']['Sections']
 
                 for section in chunkSections:
                     y = section['Y'].value
 
-                    if not ('BlockStates' in section) or len(section['BlockStates']) == 0:
+                    if (not ('BlockStates' in section)
+                            or len(section['BlockStates']) == 0):
                         continue
 
                     palette = section['Palette']
                     rawBlockStates = section['BlockStates']
                     bitsPerEntry = max(4, ceil(log2(len(palette))))
-                    blockStatesBitArray = BitArray(
-                        bitsPerEntry, 16 * 16 * 16, rawBlockStates)
+                    blockStatesBitArray = BitArray(bitsPerEntry, 16 * 16 * 16,
+                                                   rawBlockStates)
 
-                    self.sections[x][z][y] = CachedSection(
-                        palette, blockStatesBitArray)
+                    self.sections[x][z][y] = CachedSection(palette,
+                                                           blockStatesBitArray)
 
-        print("done")
+    # __repr__ displays the class well enough so __str__ is omitted
+    def __repr__(self):
+        """**Represent the WorldSlice as a constructor**."""
+        x1, z1 = self.rect[:2]
+        x2, z2 = self.rect[0] + self.rect[2], self.rect[1] + self.rect[3]
+        return f"WorldSlice{(x1, z1, x2, z2)}"
 
-    def getBlockCompoundAt(self, blockPos):
-        """**Returns block data.**"""
-        # chunkID = relativeChunkPos[0] + relativeChunkPos[1] * self.chunkRect[2]
+    def getBlockCompoundAt(self, x, y, z):
+        """**Return block data**."""
+        chunkX = (x >> 4) - self.chunkRect[0]
+        chunkZ = (z >> 4) - self.chunkRect[1]
+        chunkY = y - 1 >> 4
 
-        # section = self.nbtfile['Chunks'][chunkID]['Level']['Sections'][(blockPos[1] >> 4)+1]
-
-        # if not ('BlockStates' in section) or len(section['BlockStates']) == 0:
-        #     return -1 # TODO return air compound
-
-        # palette = section['Palette']
-        # blockStates = section['BlockStates']
-        # bitsPerEntry = max(4, ceil(log2(len(palette))))
-        chunkX = (blockPos[0] >> 4) - self.chunkRect[0]
-        chunkZ = (blockPos[2] >> 4) - self.chunkRect[1]
-        chunkY = blockPos[1] >> 4
-        # bitarray = BitArray(bitsPerEntry, 16*16*16, blockStates) # TODO this needs to be 'cached' somewhere
         cachedSection = self.sections[chunkX][chunkZ][chunkY]
 
-        if cachedSection == None:
+        if cachedSection is None:
             return None  # TODO return air compound instead
 
         bitarray = cachedSection.blockStatesBitArray
         palette = cachedSection.palette
 
-        blockIndex = (blockPos[1] % 16) * 16 * 16 + \
-            (blockPos[2] % 16) * 16 + blockPos[0] % 16
+        blockIndex = (y % 16) * 16 * 16 + \
+            (z % 16) * 16 + x % 16
         return palette[bitarray.getAt(blockIndex)]
 
-    def getBlockAt(self, blockPos):
-        """**Returns the block's namespaced id at blockPos.**"""
-        #print(blockPos)
-        blockCompound = self.getBlockCompoundAt(blockPos)
-        if blockCompound == None:
-            return "minecraft:air"
+    def getBlockAt(self, x, y, z):
+        """**Return the block's namespaced id at blockPos**."""
+        blockCompound = self.getBlockCompoundAt(x, y, z)
+        if blockCompound is None:
+            return "minecraft:void_air"
         else:
             return blockCompound["Name"].value
+
+    def getBiomeAt(self, x, y, z):
+        """**Return biome at given coordinates**.
+
+        Due to the noise around chunk borders,
+            there is an inacurracy of +/-2 blocks.
+        """
+        chunkID = x // 16 + z // 16 * self.chunkRect[2]
+        data = self.nbtfile['Chunks'][chunkID]['Level']['Biomes']
+        x = (x % 16) // 4
+        z = (z % 16) // 4
+        y = y // 4
+        index = x + 4 * z + 16 * y
+        return(BIOMES[data[index]])
+
+    def getBiomesNear(self, x, y, z):
+        """**Return a list of biomes in the same chunk**."""
+        chunkID = x // 16 + z // 16 * self.chunkRect[2]
+        data = self.nbtfile['Chunks'][chunkID]['Level']['Biomes']
+        # "sorted(list(set(data)))" is used to remove duplicates from data
+        return [BIOMES[i] for i in sorted(list(set(data)))]
+
+    def getPrimaryBiomeNear(self, x, y, z):
+        """**Return the most prevelant biome in the same chunk**."""
+        chunkID = x // 16 + z // 16 * self.chunkRect[2]
+        data = self.nbtfile['Chunks'][chunkID]['Level']['Biomes']
+        # "max(set(data), key=data.count)" is used to find the most common item
+        data = max(set(data), key=data.count)
+        return [BIOMES[i] for i in sorted(list(set(data)))]

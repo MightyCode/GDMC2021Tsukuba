@@ -1,8 +1,106 @@
+import lib.interfaceUtils as interfaceUtils
+import lib.worldLoader as worldLoader
+import lib.lookup as lookup
 import random as rd
 import pandas as pd
 import numpy as np
-import lib.interfaceUtils as interfaceUtils
+import math
+import requests
+from io import BytesIO
+import nbt
 
+def getBiome(x, z, dx, dz):
+    """**Returns the chunk data.**"""
+    x = math.floor(x / 16)
+    z = math.floor(z / 16)
+    url = f'http://localhost:9000/chunks?x={x}&z={z}&dx={dx}&dz={dz}'
+    try:
+        response = requests.get(url)
+    except ConnectionError:
+        return "minecraft:plains"
+    biomeId = response.text.split(":")
+    biomeinfo = biomeId[6].split(";")
+    biome = biomeinfo[1].split(",")
+    return biome[0]
+    
+def getAllBiome():
+    bytes = worldLoader.getChunks(-4, -4, 9, 9, 'bytes')
+    file_like = BytesIO(bytes)
+    nbtfile = nbt.nbt.NBTFile(buffer=file_like)
+    dicochunk = {}
+    for y in range(81):
+        for x in range(1024):
+            if f"{nbtfile['Chunks'][y]['Level']['Biomes'].value[x]}" in dicochunk:
+                dicochunk[f"{nbtfile['Chunks'][y]['Level']['Biomes'].value[x]}"] = int(dicochunk[f"{nbtfile['Chunks'][y]['Level']['Biomes'].value[x]}"]) + 1 
+            else:
+                dicochunk[f"{nbtfile['Chunks'][y]['Level']['Biomes'].value[x]}"] = "1"
+    max = 0
+    savedbiome = 0
+    for x,y in dicochunk.items():
+        if y > max:
+            savedbiome = x
+            max = y
+    value = getNameBiome(savedbiome)
+    return value
+        
+def getNameBiome(self, biome):
+    filin = open("data/biome.txt")
+    lignes = filin.readlines()
+    biomename = lignes[int(biome)].split(":")[0]
+    print(biomename)
+    value = int(lignes[int(biome)].split(":")[1])
+    return value
+
+"""
+Return the text of the book of the village presentation
+"""
+def createTextOfPresentationVillage(villageName, villagerNames, structuresNumber, structuresNames):
+    textVillagePresentationBook = (
+            '\f\\\\s--------------\\\\n'
+            '                      \\\\n'
+            '                      \\\\n'
+            '   Welcome to      \\\\n'
+           f' {villageName} \\\\n'
+            '                      \\\\n'
+            '                      \\\\n'
+            '                      \\\\n'
+            '                      \\\\n'
+            '                      \\\\n'
+            '                      \\\\n'
+            '                      \\\\n'
+            '--------------')
+    textVillagePresentationBook += ('\f\\\\s---------------\\\\n')
+    textVillagePresentationBook += ('There are '
+        f'{len(villagerNames)} villagers in this village\\\\n')
+    textVillagePresentationBook += ('---------------\\\\n\f')
+    textVillagePresentationBook += ('\f\\\\s---------------\\\\n'
+                      'There are '
+                      f'{structuresNumber} structures : \\\\n')
+    for i in range(len(structuresNames)):
+        if i <= 10:
+            textVillagePresentationBook += (f'{structuresNames[i]["name"]} ')
+        if i % 10 == 0:
+            textVillagePresentationBook += ('-----------------\\\\n\f')
+        if i > 10:
+            textVillagePresentationBook += (f'{structuresNames[i]["name"]} ')
+    textVillagePresentationBook += ('---------------\\\\n\f')
+    
+    return textVillagePresentationBook
+
+"""
+Return the text of the book of the villagers names and professions
+"""
+def createTextForVillagersNames(listOfVillagers):
+    textVillagerNames = ('\f\\\\s-----------------\\\\n')
+    for i in range(len(listOfVillagers)):
+        if i <= 6: 
+            textVillagerNames += (f'{listOfVillagers[i]}       \\\\n')
+        if i % 6 == 0:
+            textVillagerNames += ('-----------------\\\\n\f')
+        if i > 6:
+            textVillagerNames += (f'{listOfVillagers[i]}       \\\\n')
+    textVillagerNames += ('-----------------\\\\n\f')
+    return textVillagerNames
 
 def addResourcesFromChunk(resources, settlementData, biome):
     if biome == "-1":
@@ -15,6 +113,47 @@ def addResourcesFromChunk(resources, settlementData, biome):
         settlementData["dirtResources"] += dictResources["dirtResources"]
     if "stoneResources" in dictResources:
         settlementData["stoneResources"] += dictResources["stoneResources"]
+
+
+"""
+Return result and word
+result 0 -> No balise founded
+result 1 -> Balise founded and replacement succeful
+result -1 -> Error
+"""
+def changeNameWithBalise(name, changementsWord):
+    index = name.find("*")
+    if index != -1 :
+        secondIndex = name.find("*", index+1)
+        if secondIndex == -1:
+            return [-1, name]
+
+        word = name[index +1 : secondIndex]
+        added = False
+        for key in changementsWord.keys():
+            if key == word:
+                added = True
+                return [1, name.replace("*" + word + "*", changementsWord[key])]
+                        
+        # If the balise can't be replace
+        if not added:
+            return [-1, name]
+    
+    else:
+        return  [0, name]
+
+
+def addBookToLectern(x, y, z, bookData):
+    command = (f'data merge block {x} {y} {z} '
+                    f'{{Book: {{id: "minecraft:written_book", '
+                    f'Count: 1b, tag: {bookData}'
+                    '}, Page: 0}')
+
+    response = interfaceUtils.runCommand(command)
+    if not response.isnumeric():
+        print(f"{lookup.TCOLORS['orange']}Warning: Server returned error "
+            f"upon placing book in lectern:\n\t{lookup.TCOLORS['CLR']}"
+            f"{response}")
 
 """
 Spawn a villager at his house if unemployed or at his building of work
@@ -291,7 +430,20 @@ def addItemChest(x, y, z, items):
                                                                v[1])
         interfaceUtils.runCommand(command)
 
-
+def getHighestNonAirBlock(cx, cy, cz):
+    cy = 255
+    IGNORED_BLOCKS = [
+        'minecraft:air', 'minecraft:cave_air', 'minecraft:water', 'minecraft:lava',
+        'minecraft:oak_leaves',  'minecraft:leaves',  'minecraft:birch_leaves', 'minecraft:spruce_leaves', 'minecraft:dark_oak_leaves'
+        'minecraft:oak_log',  'minecraft:spruce_log',  'minecraft:birch_log',  'minecraft:jungle_log', 'minecraft:acacia_log', 'minecraft:dark_oak_log',
+        'minecraft:grass', 'minecraft:snow', 'minecraft:poppy', 'minecraft:pissenlit', 'minecraft:seagrass' , 'minecraft:dandelion' ,'minecraft:blue_orchid',
+        'minecraft:allium', 'minecraft:azure_bluet', 'minecraft:red_tulip', 'minecraft:orange_tulip', 'minecraft:white_tulip', 'minecraft:pink_tulip',
+        'minecraft:oxeye_daisy', 'minecraft:cornflower', 'minecraft:lily_of_the_valley', 'minecraft:brown_mushroom', 'minecraft:red_mushroom',
+        'minecraft:sunflower', 'minecraft:peony', 'minecraft:dead_bush', "minecraft:cactus", "minecraft:sugar_cane", 'minecraft:fern']
+    ## Find highest non-air block
+    while interfaceUtils.getBlock(cx, cy, cz) in IGNORED_BLOCKS:
+        cy -= 1
+    return cy
 
 # Create a book item from a text
 def makeBookItem(text, title = "", author = "", desc = ""):

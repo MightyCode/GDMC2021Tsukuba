@@ -1,0 +1,32 @@
+{
+    "mainEntry": {
+      "facing" : "north",
+      "position" : [4, 0, 0]
+    },
+    "replacements" : {
+      "oak" : { "type" : "woodType", "state" : 2 },
+      "spruce" : { "type" : "woodType2", "state" : 2 }
+    },
+    "air" : {
+      "preferedAirMode" : 1,
+      "replacements" : [
+      ]
+    },
+    "lootTables" : [
+      ["townhall"]
+    ],
+    "lectern" : {
+      "*villageBook*" : [2, 1, 6]
+    },
+    "villageInfo" : {
+      "villager" : 1,
+      "gameProfession" : "librarian",
+      "profession" : "Mayor"
+    },
+    "ground" : {
+      "zones" : [
+        [3, 0, 6, 1],
+        [1, 2, 9, 7]
+      ]
+    }
+  }

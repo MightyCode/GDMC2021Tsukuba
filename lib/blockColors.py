@@ -4,7 +4,7 @@ __all__ = ['VERSION', 'TRANSPARENT', 'PALETTE']
 
 # __version__
 
-import interfaceUtils
+import lib.interfaceUtils as interfaceUtils
 
 # block visualization
 # based on https://minecraft.gamepedia.com/Map_item_format#Base_colors
