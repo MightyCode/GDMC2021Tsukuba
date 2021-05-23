@@ -4,7 +4,7 @@ from generation.structures.structures import *
 from generation._structureManager import *
 from generation._floodFill import *
 import generation._resourcesLoader as resLoader
-import utils._math as _math
+import utils._utils as _utils
 from utils._worldModification import *
 import utils.argumentParser as argParser
 
@@ -21,14 +21,14 @@ if not args.remove:
     resources = Resources()
     resLoader.loadAllResources(resources)
     chestGeneration = ChestGeneration(resources, interface)
-    structure = resources.structures["mediumhouse2"]
+    structure = resources.structures["haybalehouse1"]
 
     info = structure.info
     buildingCondition = Structures.BUILDING_CONDITIONS.copy()
     buildingInfo = structure.getNextBuildingInformation()
     buildingCondition["flip"] = 3
     buildingCondition["rotation"] = 3
-    buildingCondition["position"] = [897, 71, 1111]
+    buildingCondition["position"] = [-248, 68, 348]
     buildingCondition["referencePoint"] = buildingInfo["entry"]["position"]
     buildingCondition["size"] = buildingInfo["size"]
     print(structure.getCornersLocalPositions(info["mainEntry"]["position"], 3, 1))
@@ -36,7 +36,7 @@ if not args.remove:
 
     buildingCondition["replaceAllAir"] = 3
 
-    structureBiomeId = interfaceUtils.getBiome(buildingCondition["position"][0], buildingCondition["position"][2], 1, 1)
+    structureBiomeId = _utils.getBiome(buildingCondition["position"][0], buildingCondition["position"][2], 1, 1)
     structureBiomeName = resources.biomeMinecraftId[int(structureBiomeId)]
     
     structureBiomeBlockId = str(resources.biomesBlockId[structureBiomeName])

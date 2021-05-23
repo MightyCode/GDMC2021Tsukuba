@@ -22,7 +22,6 @@ from lib.lookup import TCOLORS
 from lib.worldLoader import WorldSlice
 
 
-
 class OrderedByLookupDict(OrderedDict):
     """Limit size, evicting the least recently looked-up key when full.
 
@@ -315,8 +314,7 @@ class Interface():
         bookdesc = "display:{Lore:[\""+desc+"\"]}"
 
         return "written_book{"+booktext+booktitle+bookauthor+bookdesc+"}"
-
-
+        
 
 def runCommand(command):
     """**Run a Minecraft command in the world**."""

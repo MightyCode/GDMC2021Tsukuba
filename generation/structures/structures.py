@@ -58,7 +58,7 @@ class Structures(BaseStructure):
 
                 for replacementWord in self.info[Structures.REPLACEMENTS].keys():
                     # Checking for block replacement
-                    if blockName == replacementWord:
+                    if replacementWord == blockName:
                         block.tags.append(nbt.TAG_Int(name=Structures.CHANGE_STATE, value=self.info[Structures.REPLACEMENTS][blockName]["state"]))
                                                                         #  """AND states equals"""
                         if block[Structures.CHANGE_STATE].value == 1 or (block[Structures.CHANGE_STATE].value == 0):
@@ -80,6 +80,7 @@ class Structures(BaseStructure):
 
                         if replacementWord in self.info[Structures.REPLACEMENTS].keys():
                             if self.info[Structures.REPLACEMENTS][replacementWord]["state"] == 2:
+
                                 block.tags.append(nbt.TAG_Byte(name=Structures.CHANGE, value=True))
                                 block.tags.append(nbt.TAG_String(name=Structures.CHANGE_TO, value=self.info[Structures.REPLACEMENTS][replacementWord]["type"]))  
                                 block.tags.append(nbt.TAG_Int(name=Structures.CHANGE_STATE, value=2))
@@ -91,7 +92,7 @@ class Structures(BaseStructure):
                                     value=("excluded" in self.info[Structures.REPLACEMENTS][replacementWord].keys())))
                                 break
                                 
-
+            
             block.tags.append(nbt.TAG_Byte(name=Structures.CHANGE, value=False))
         
         # Looting table
@@ -123,6 +124,8 @@ class Structures(BaseStructure):
         for blockPalette in self.file["palette"]:
             if blockPalette[Structures.CHANGE].value:
                 changeState = blockPalette[Structures.CHANGE_STATE].value
+                if blockPalette["Name"].value == "minecraft:grass_block":
+                    print(changeState)
                 if changeState == 0 or changeState == 1:
                     blockPalette["Name"].value = buildingCondition["replacements"][blockPalette[Structures.CHANGE_TO].value].split("[")[0]
                 elif changeState == 2:

@@ -43,7 +43,8 @@ def getAllBiome():
     value = getNameBiome(savedbiome)
     return value
         
-def getNameBiome(self, biome):
+        
+def getNameBiome(biome):
     filin = open("data/biome.txt")
     lignes = filin.readlines()
     biomename = lignes[int(biome)].split(":")[0]
