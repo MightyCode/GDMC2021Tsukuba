@@ -10,6 +10,7 @@ from generation._floodFill import *
 import generation._resourcesLoader as resLoader
 from utils._worldModification import *
 import utils.argumentParser as argParser
+import utils._utils as _utils
 
 interface = interfaceUtils.Interface(buffering=True)
 worldModif = WorldModification(interface)
@@ -32,7 +33,7 @@ buildingCondition["size"] = buildingInfo["size"]
 
 buildingCondition["replaceAllAir"] = 3
 buildingCondition["position"] = [0, 71, 0]
-structureBiomeId = interfaceUtils.getBiome(buildingCondition["position"][0], buildingCondition["position"][2], 1, 1)
+structureBiomeId = _utils.getBiome(buildingCondition["position"][0], buildingCondition["position"][2], 1, 1)
 structureBiomeName = resources.biomeMinecraftId[int(structureBiomeId)]
 
 structureBiomeBlockId = str(resources.biomesBlockId[structureBiomeName])
@@ -48,9 +49,9 @@ for aProperty in resources.biomesBlocks[structureBiomeBlockId]:
     if aProperty in resources.biomesBlocks["rules"]["structure"]:
         buildingCondition["replacements"][aProperty] = resources.biomesBlocks[structureBiomeBlockId][aProperty]
 
-for i in range(70):
+for i in range(200):
     buildingCondition["referencePoint"] = buildingInfo["entry"]["position"]
-    buildingCondition["position"] = [ - 100 + 20 * (int(i / 10)), 71, - 100 + 20 * (int(i % 10))]
+    buildingCondition["position"] = [ - 150 + 20 * (int(i / 10)), 71, - 150 + 20 * (int(i % 10))]
     print(str(i) + " : " + str(buildingCondition["position"]))
     structure.build(worldModif, buildingCondition, chestGeneration)
 

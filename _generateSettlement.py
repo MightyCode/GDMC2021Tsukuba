@@ -10,6 +10,7 @@ from utils._worldModification import *
 from lib.worldLoader import WorldSlice
 import utils.argumentParser as argParser
 import random
+import time
 
 file = "temp.txt"
 interface = interfaceUtils.Interface(buffering=True)
@@ -167,7 +168,7 @@ if not args.remove:
         buildingCondition["replacements"]["deadVillagerRegistry"] = deadVillagersBook
 
         structure.build(worldModif, buildingCondition, chestGeneration)
-        
+        time.sleep(0.3)
         #_utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
     worldModif.saveToFile(file)  
 
