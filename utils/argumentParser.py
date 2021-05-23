@@ -32,9 +32,9 @@ def getBuildArea(interfaceUtils, args):
         area = iu.requestPlayerArea(size * 2 , size * 2)
     elif (args.coordinates):
         x0, y0, z0, x1, y1, z1 = args.coordinates
-        area = interfaceUtils.setBuildArea(x0, y0, z0, x1, y1, z1)
+        area = iu.setBuildArea(x0, y0, z0, x1, y1, z1)
     else :
-        area = interfaceUtils.setBuildArea(-size, 0, -size, size, 255, -size)
+        area = iu.setBuildArea(-size, 0, -size, size, 255, size)
 
     print("AREA :" + str(area))
     return area

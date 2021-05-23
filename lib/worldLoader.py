@@ -121,6 +121,15 @@ class WorldSlice:
         chunkZ = (z >> 4) - self.chunkRect[1]
         chunkY = y - 1 >> 4
 
+        if chunkX >= len(self.sections):
+            print("chunckX ", x, " ", chunkX)
+
+        if chunkZ >= len(self.sections[chunkX]):
+            print("chunckZ ", z, " ", chunkZ)
+
+        if chunkY >= len(self.sections[chunkX][chunkZ]):
+            print("chunckY ", y, " ", chunkY)
+
         cachedSection = self.sections[chunkX][chunkZ][chunkY]
 
         if cachedSection is None:

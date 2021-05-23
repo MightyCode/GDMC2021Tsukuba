@@ -29,7 +29,7 @@ if not args.remove:
     floodFill = FloodFill(area)
     
     settlementData = {}
-    settlementData["center"] = [int((area[0] + area[2]) / 2) , 120, int((area[1] + area[3]) / 2)]
+    settlementData["center"] = [int((area[0] + area[2]) / 2) , 60, int((area[1] + area[3]) / 2)]
     settlementData["size"] = [area[0] - area[2], area[1] - area[3]]
     settlementData["discoveredChunk"] = []
 
@@ -96,7 +96,7 @@ if not args.remove:
         # If new chunck discovererd, add new ressources
         chunk = [int(settlementData["structures"][i]["position"][0] / 16), int(settlementData["structures"][i]["position"][2] / 16)] 
         if not chunk in settlementData["discoveredChunk"] :
-            structureBiomeId = interfaceUtils.getBiome(settlementData["structures"][i]["position"][0], settlementData["structures"][i]["position"][2], 1, 1)
+            structureBiomeId = _utils.getBiome(settlementData["structures"][i]["position"][0], settlementData["structures"][i]["position"][2], 1, 1)
             structureBiomeName = resources.biomeMinecraftId[int(structureBiomeId)]
             structureBiomeBlockId = str(resources.biomesBlockId[structureBiomeName])
 

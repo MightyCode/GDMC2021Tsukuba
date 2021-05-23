@@ -138,8 +138,6 @@ class StructureManager:
 
                 #Reduce weight of structure
                 if len(self.settlementData["structures"]) >= 1 :
-                    print(self.settlementData["structures"][-1]["name"])
-                    print(structure)
                     if structure == self.settlementData["structures"][-1]["name"]:
                         weight = weight / 1.5
 
