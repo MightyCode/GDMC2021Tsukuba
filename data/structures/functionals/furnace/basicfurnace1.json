@@ -22,5 +22,11 @@
     "zones" : [
       [0, 0, 3, 2]
     ]
+  },
+  "sign" : {
+    "position" : [4, 2, 2],
+    "facing" : "east",
+    "tier" : 1,
+    "name" : "Furnace"
   }
 }

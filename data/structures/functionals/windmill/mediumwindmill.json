@@ -21,5 +21,11 @@
     "zones" : [
       [1, 1, 7, 14]
     ]
+  },
+  "sign" : {
+    "position" : [4, 2, 0],
+    "facing" : "north",
+    "tier" : 2,
+    "name" : "Windmill"
   }
 }

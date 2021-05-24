@@ -1,9 +1,15 @@
 import math
 import utils._math as _math
+import lib.interfaceUtils as interfaceUtils
 
 class BaseStructure:
 
     ORIENTATIONS = ["west", "north" , "east", "south"]
+    LIST_ALL_FACING = ["south", "south-southwest", "southwest",
+                    "west-southwest",  "west", "west-northwest", 
+                    "northwest", "north-northwest", "north",
+                    "north-northeast", "northeast", "east-northeast",
+                    "east", "east-southeast", "southeast", "south-southeast"]
 
     def __init__(self):
         pass
@@ -12,6 +18,7 @@ class BaseStructure:
         self.info = info
         self.size = [0, 0, 0]
         self.computedOrientation = {}
+
 
     def returnWorldPosition(self, localPoint, flip, rotation, referencePoint, worldStructurePosition) :
         worldPosition = [0, 0, 0]
@@ -48,6 +55,14 @@ class BaseStructure:
             propertyValue = self.computedOrientation[propertyValue]
 
         return propertyName + "=" + propertyValue
+
+
+    def returnRotationFromFacing(self, facing):
+        for i in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]:
+            if BaseStructure.LIST_ALL_FACING[i] == facing:
+                return i
+        
+        return -1
 
 
     def computeOrientation(self, rotation, flip) :
@@ -118,6 +133,65 @@ class BaseStructure:
         return corners
 
 
+    def generateSignatureSign(self, position, worldModification, woodType, people):
+        worldModification.setBlock(position[0], position[1], position[2], 
+            "minecraft:" + woodType + "_wall_sign[facing=" + self.computedOrientation[self.info["sign"]["facing"]] + "]", 
+            placeImmediately=True)
+    
+        lines = ["", "", "", "", "", "", "", ""]
+        lines[0] = "Tier " + str(self.info["sign"]["tier"])
+        lines[1] = self.info["sign"]["name"]
+
+        currentLine = 2
+        for person in people:
+            partss = ("-" + person + "\n").split(" ")
+            parts = []
+
+            for i in range(len(partss)):
+                if len(partss[i]) > 15:
+                    parts.append(partss[i][0:14])
+                    parts.append(partss[i][15:])
+                else:
+                    parts.append(partss[i])
+
+            i = 0
+            while i < len(parts):
+                jumpLine = False
+                if len(lines[currentLine]) > 0 :
+                    if len(parts[i]) + 1  <= 15 - len(lines[currentLine]):
+                        if "\n" in parts[i]:
+                            jumpLine = True
+                        lines[currentLine] += " " + parts[i].replace("\n", "")
+                        i += 1
+                    else :
+                        jumpLine = True
+
+                else :
+                    if len(parts[i])  <= 15 - len(lines[currentLine]):
+                        if "\n" in parts[i]:
+                            jumpLine = True
+                        lines[currentLine] += parts[i].replace("\n", "")
+                        i += 1
+                    else :
+                        jumpLine = True
+                
+                if jumpLine :
+                    currentLine += 1
+
+        interfaceUtils.setSignText(
+            position[0], position[1], position[2], 
+            lines[0], lines[1], lines[2], lines[3])
+
+        if len(lines[4]) > 0:
+            worldModification.setBlock(position[0], position[1] - 1, position[2], 
+                "minecraft:" + woodType + "_wall_sign[facing=" + self.computedOrientation[self.info["sign"]["facing"]] + "]", 
+                placeImmediately=True)
+
+            interfaceUtils.setSignText(
+                position[0], position[1] - 1, position[2], 
+                lines[4], lines[5], lines[6], lines[7])
+
+
     def getFacingMainEntry(self, flip, rotation):
         self.computeOrientation(rotation, flip)
         return self.computedOrientation[self.info["mainEntry"]["facing"]]
@@ -153,3 +227,11 @@ class BaseStructure:
 
     def getRotateSize(self):
         return [self.size[2], self.size[1], self.size[0]]
+
+    
+    def propertyCompatible(self, blockName, property):
+        if property == "snowy":
+            if blockName != "minecraft:grass_block":
+                return False
+        
+        return True

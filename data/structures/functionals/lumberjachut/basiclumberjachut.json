@@ -24,5 +24,11 @@
   },
   "ground" : {
     "info" : "all"
+  },
+  "sign" : {
+    "position" : [1, 2, -1],
+    "facing" : "north",
+    "tier" : 1,
+    "name" : "LumberJack Hut"
   }
 }
