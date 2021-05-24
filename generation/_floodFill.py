@@ -15,12 +15,12 @@ class FloodFill:
         self.listHouse = []
         random.seed(a=None, version=2)
         self.buildArea = area
-        self.startPosRange = [0.85, 0.85]
+        self.startPosRange = [0.89, 0.89]
 
         self.distanceFirstHouse = 40
         self.distanceFirstHouseIncrease = 3
 
-        self.size = [area[3] - area[0], area[4] - area[1]]
+        self.size = [area[3] - area[0], area[5] - area[2]]
         self.validHouseFloodFillPosition = [ self.buildArea[0] + self.size[0]/10, 
                                     self.buildArea[2] + self.size[1]/10, 
                                     self.buildArea[3] - self.size[0]/10,
@@ -109,14 +109,12 @@ class FloodFill:
         zRange = 1 - self.startPosRange[1]
 
 
-        lowLimit = int(self.buildArea[0] + abs(self.buildArea[0] * xRange) + sizeStructure )
-        upperLimit = int(self.buildArea[3] - abs(self.buildArea[3] * xRange) - sizeStructure)
-
+        lowLimit = int(self.buildArea[0] + self.size[0] * xRange + sizeStructure )
+        upperLimit = int(self.buildArea[3] - self.size[0] * xRange - sizeStructure)
         xPos = random.randint(lowLimit, upperLimit)
 
-        lowLimit = int(self.buildArea[2] + abs(self.buildArea[2] * zRange) + sizeStructure )
-        upperLimit = int(self.buildArea[5] - abs(self.buildArea[5] * zRange) - sizeStructure)
-
+        lowLimit = int(self.buildArea[2] + self.size[1] * zRange + sizeStructure )
+        upperLimit = int(self.buildArea[5] - self.size[1] * zRange - sizeStructure)
         zPos = random.randint(lowLimit, upperLimit)
 
         return xPos, zPos 
