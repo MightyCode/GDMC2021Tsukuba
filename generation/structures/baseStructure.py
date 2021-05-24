@@ -108,7 +108,7 @@ class BaseStructure:
                 int(max(temp[0], temp1[0])), 
                 int(max(temp[1], temp1[1]))]
 
-
+    
     def getCornersLocalPositionsAllFlipRotation(self, referencePosition):
         corners = []
         for flip in [0, 1, 2, 3]:
@@ -116,6 +116,11 @@ class BaseStructure:
                 corners.append(self.getCornersLocalPositions(referencePosition, flip, rotation))
 
         return corners
+
+    def getFacingMainEntry(self, flip, rotation):
+        self.computedOrientation(rotation, flip)
+        return self.computedOrientation[self.info["mainEntry"]["facing"]]
+
 
 
     def getNextBuildingInformation(self):
