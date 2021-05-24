@@ -100,11 +100,14 @@ class Structures(BaseStructure):
         if "lootTables" in self.info.keys():
             self.lootTable = len(self.info["lootTables"]) > 0
 
+    def setupInfoAndGetCorners(self):
+        return self.getCornersLocalPositionsAllFlipRotation(self.info["mainEntry"]["position"])
 
-    def getNextBuildingInformation(self):
+    def getNextBuildingInformation(self, flip, rotation):
         info = {}
-        info["corners"] = self.getCornersLocalPositionsAllFlipRotation(self.info["mainEntry"]["position"])
-        info["entry"] = { "position" : self.info["mainEntry"]["position"].copy(), "facing" : self.info["mainEntry"]["facing"] }
+        info["entry"] = { 
+            "position" : self.info["mainEntry"]["position"].copy(), 
+            "facing" : self.getFacingMainEntry(flip, rotation) }
         info["size"] = self.size
 
         return info

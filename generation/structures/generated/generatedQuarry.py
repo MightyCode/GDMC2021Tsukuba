@@ -18,15 +18,22 @@ class GeneratedQuarry(BaseStructure):
         'minecraft:dead_bush', "minecraft:cactus", "minecraft:sugar_cane"]
 
     
-    def getNextBuildingInformation(self):
-        info = {}
+    def setupInfoAndGetCorners(self):
         self.setSize([random.randint(7, 14), random.randint(9, 21), random.randint(7, 14)])
-        info["size"] = self.size
-        self.info["mainEntry"]["position"] = [int(self.size[0] / 2), self.size[1] - 5, 0]
-        self.info["mainEntry"]["facing"] = "north"
-        info["entry"] = { "position" : self.info["mainEntry"]["position"], "facing" : "north" }
 
-        info["corners"] = self.getCornersLocalPositionsAllFlipRotation(self.info["mainEntry"]["position"])
+        self.info["mainEntry"]["position"] = [int(self.size[0] / 2), self.size[1] - 5, 0]
+        
+        return self.getCornersLocalPositionsAllFlipRotation(self.info["mainEntry"]["position"])
+
+
+    def getNextBuildingInformation(self, flip, rotation):
+        info = {}
+        self.info["mainEntry"]["facing"] = "north"
+        info["entry"] = { 
+            "position" : self.info["mainEntry"]["position"], 
+            "facing" : self.getFacingMainEntry(flip, rotation) 
+            }
+        info["size"] = self.size
 
         return info
 

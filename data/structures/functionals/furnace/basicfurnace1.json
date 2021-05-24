@@ -1,6 +1,6 @@
 {
   "mainEntry": {
-    "facing" : "est",
+    "facing" : "east",
     "position" : [5, 1, 2]
   },
   "replacements" : {

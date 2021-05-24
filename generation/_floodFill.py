@@ -1,4 +1,5 @@
 import random
+from typing import Tuple
 import utils._math as _math
 
 class FloodFill:
@@ -27,6 +28,7 @@ class FloodFill:
                                     self.buildArea[5] - self.size[1]/10]
         self.minDistanceHouse = 4
         self.floodfillHouseSpace = 10
+        self.previousStructure = -1
 
     """
     To get the height of a x,z position
@@ -132,17 +134,19 @@ class FloodFill:
                 placeindex = random.randint(0, len(self.listHouse[indices[index]][4]) - 1)
 
                 if not isinstance(self.listHouse[indices[index]][4][placeindex], int):
+                    self.previousStructure = indices[index]
                     return self.listHouse[indices[index]][4][placeindex]
                     
             del indices[index]
             
         return 0, 0, 0
 
+
     def findPosHouse(self, CornerPos, ws):
         sizeStruct = max(abs(CornerPos[0][0]) + abs(CornerPos[0][2]) + 1, abs(CornerPos[0][1]) + abs(CornerPos[0][3]) + 1)
 
         notFinded = True
-        debug = 125 * 12
+        debug = 250 * 12
         debugNoHouse = 5
         verifCorners = False
         verifOverlapseHouse = False
@@ -205,6 +209,9 @@ class FloodFill:
                                 listverifhouse = self.listHouse.copy()
                                 while listverifhouse and verifCorners:
                                     house = listverifhouse.pop()
+                                    if not house[6]:
+                                        continue
+
                                     if not _math.isTwoRectOverlapse([xPos, zPos], choosenCorner, [house[0], house[2]], house[3], self.minDistanceHouse):
                                         verifOverlapseHouse = True
                                     else:
@@ -235,9 +242,10 @@ class FloodFill:
         if debug <= 0:
             dictionnary = {"position" : [xPos, yPos, zPos] , "validPosition" : False , "flip" : rand1 , "rotation" : rand2, "corner" : choosenCorner }
             
+            self.listHouse.append((xPos, yPos, zPos, choosenCorner, FloodFillValue, -1, False))
             FloodFillValue = [xPos, yPos, zPos]
             print("debug failed")
         else:
-            self.listHouse.append((xPos, yPos, zPos, choosenCorner, FloodFillValue))
+            self.listHouse.append((xPos, yPos, zPos, choosenCorner, FloodFillValue, self.previousStructure, True))
             dictionnary = {"position" : [xPos, yPos, zPos],"validPosition" : True , "flip" : rand1 , "rotation" : rand2, "corner" : choosenCorner }
         return dictionnary

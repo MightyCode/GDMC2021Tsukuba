@@ -117,14 +117,19 @@ class BaseStructure:
 
         return corners
 
+
     def getFacingMainEntry(self, flip, rotation):
-        self.computedOrientation(rotation, flip)
+        self.computeOrientation(rotation, flip)
         return self.computedOrientation[self.info["mainEntry"]["facing"]]
 
 
+    def setupInfoAndGetCorners(self):
+        return {}
 
-    def getNextBuildingInformation(self):
-        return
+
+    def getNextBuildingInformation(self, flip, rotation):
+        return {}
+
 
     def setSize(self, size):
         self.size = size
