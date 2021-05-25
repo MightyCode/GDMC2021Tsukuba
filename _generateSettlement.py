@@ -11,6 +11,7 @@ from lib.worldLoader import WorldSlice
 import utils.argumentParser as argParser
 import random
 import time
+import generation.road as road
 
 file = "temp.txt"
 interface = interfaceUtils.Interface(buffering=True)
@@ -124,6 +125,10 @@ if not args.remove:
     _bookGeneration.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2], villageNameBook, worldModif, 'east')
     _bookGeneration.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2] + 1, villagerNamesList, worldModif,'east')
     
+
+    #for the PATH
+    road.initRoad(floodFill, settlementData, worldModif,ws)
+
     #structureMananager.printStructureChoose()
 
     # Build after every computationsr

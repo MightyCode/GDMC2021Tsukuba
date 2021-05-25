@@ -9,7 +9,7 @@ class FloodFill:
         'minecraft:void_air', 'minecraft:air', 'minecraft:cave_air', 'minecraft:water', 
         'minecraft:oak_leaves',  'minecraft:leaves',  'minecraft:birch_leaves', 'minecraft:spruce_leaves'
         'minecraft:oak_log',  'minecraft:spruce_log',  'minecraft:birch_log',  'minecraft:jungle_log', 'minecraft:acacia_log', 'minecraft:dark_oak_log',
-        'minecraft:grass', 'minecraft:snow',
+        'minecraft:grass', 'minecraft:snow','minecraft:acacia_leaves','minecraft:tall_grass','minecraft:poppy','minecraft:dandelion',
         'minecraft:dead_bush', "minecraft:cactus"]
 
     def __init__(self, area):
@@ -36,6 +36,16 @@ class FloodFill:
     def getHeight(self, x, z, ws):
         y = 255
         while self.is_air(x, y, z, ws) and y > 0:
+            y -= 1
+        return y
+
+
+    """
+    to get the height of a x,z posisition and taking water and lava in it
+    """
+    def getHeightRoad(self, x, z, ws):
+        y = 255
+        while self.is_air(x, y, z, ws) and y > 0 and not (ws.getBlockAt(x, y - 1, z)=="minecraft:water" or ws.getBlockAt(x, y - 1, z) == "minecraft:lava"):
             y -= 1
         return y
 
@@ -146,7 +156,7 @@ class FloodFill:
         sizeStruct = max(abs(CornerPos[0][0]) + abs(CornerPos[0][2]) + 1, abs(CornerPos[0][1]) + abs(CornerPos[0][3]) + 1)
 
         notFinded = True
-        debug = 250 * 12
+        debug = 50 * 12
         debugNoHouse = 5
         verifCorners = False
         verifOverlapseHouse = False
