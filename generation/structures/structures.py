@@ -100,11 +100,15 @@ class Structures(BaseStructure):
         if "lootTables" in self.info.keys():
             self.lootTable = len(self.info["lootTables"]) > 0
 
+    def setupInfoAndGetCorners(self):
+        return self.getCornersLocalPositionsAllFlipRotation(self.info["mainEntry"]["position"])
 
-    def getNextBuildingInformation(self):
+
+    def getNextBuildingInformation(self, flip, rotation):
         info = {}
-        info["corners"] = self.getCornersLocalPositionsAllFlipRotation(self.info["mainEntry"]["position"])
-        info["entry"] = { "position" : self.info["mainEntry"]["position"].copy(), "facing" : self.info["mainEntry"]["facing"] }
+        info["entry"] = { 
+            "position" : self.info["mainEntry"]["position"].copy(), 
+            "facing" : self.getFacingMainEntry(flip, rotation) }
         info["size"] = self.size
 
         return info
@@ -143,7 +147,7 @@ class Structures(BaseStructure):
         
         ## Computing : Modify from blocks
         for block in self.file["blocks"]:
-            blockPalette = self.file["palette"][block["state"].value]
+            blockPalette = self.file["palette"][block["state"].value] 
             self.placeImmediately = False
 
             # Check if the current block is in excluded zone
@@ -169,16 +173,29 @@ class Structures(BaseStructure):
                 buildingCondition["referencePoint"], buildingCondition["position"] )
             
             self.checkBeforePlacing(blockName)
-
-            worldModif.setBlock(
-                blockPosition[0], blockPosition[1], blockPosition[2],
-                self.convertNbtBlockToStr(
+            theBlock = self.convertNbtBlockToStr(
                     self.file["palette"][block["state"].value],
                     takeOriginalBlock
-                    ), placeImmediately=self.placeImmediately
+                    )
+
+            print(theBlock)        
+
+            worldModif.setBlock( 
+                blockPosition[0], blockPosition[1], blockPosition[2],
+               theBlock , placeImmediately=self.placeImmediately
             )
 
             self.checkAfterPlacing(block, blockName, blockPosition, chestGeneration, buildingCondition)
+
+        # Place sign
+        signPosition = self.returnWorldPosition(
+            self.info["sign"]["position"],
+            buildingCondition["flip"], buildingCondition["rotation"], 
+            buildingCondition["referencePoint"], buildingCondition["position"]
+        )
+        signPosition[1] += 1
+
+        self.generateSignatureSign(signPosition, worldModif, buildingCondition["replacements"]["woodType"], ["Jean eude", "Brijite cas", "Da los rmas"])
             
 
     def checkBeforePlacing(self, blockName):
@@ -256,16 +273,18 @@ class Structures(BaseStructure):
 
 
     def convertNbtBlockToStr(self, blockPalette, takeOriginalBlockName=False):
-        block = "["
+        
         if takeOriginalBlockName:
-            block = blockPalette[Structures.CHANGE_ORIGINAL_BLOCK].value + block
+            block = blockPalette[Structures.CHANGE_ORIGINAL_BLOCK].value
         else:
-            block = blockPalette["Name"].value + block
+            block = blockPalette["Name"].value
 
+        property = "["
         if "Properties" in blockPalette.keys():
             for key in blockPalette["Properties"].keys():
-                block += self.convertProperty(key, blockPalette["Properties"][key].value) + ","
+                if self.propertyCompatible(block, key):
+                    property += self.convertProperty(key, blockPalette["Properties"][key].value) + ","
   
-            block = block[:-1] 
-        block += "]"
+            property = property[:-1] 
+        block = block + property + "]"
         return block

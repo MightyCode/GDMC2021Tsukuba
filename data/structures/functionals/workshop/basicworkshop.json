@@ -23,5 +23,11 @@
   },
   "ground" : {
     "info" : "all"
+  },
+  "sign" : {
+    "position" : [2, 2, -1],
+    "facing" : "north",
+    "tier" : 1,
+    "name" : "Workshop"
   }
 }

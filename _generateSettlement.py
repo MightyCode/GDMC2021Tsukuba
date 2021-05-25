@@ -11,6 +11,7 @@ import utils.argumentParser as argParser
 import random
 import time
 import lib.toolbox as toolbox
+import generation.road as road
 
 file = "temp.txt"
 interface = interfaceUtils.Interface(buffering=True)
@@ -76,14 +77,13 @@ if not args.remove:
             continue
 
         structure = resources.structures[settlementData["structures"][i]["name"]]
-                
-        settlementData["structures"][i]["prebuildingInfo"] = structure.getNextBuildingInformation()
 
         """settlementData["structures"][i]["position"] = [random.randint(0, 256), 0, random.randint(0, 256)]
         settlementData["structures"][i]["flip"] = 0
         settlementData["structures"][i]["rotation"] = 0"""
 
-        result = floodFill.findPosHouse(settlementData["structures"][i]["prebuildingInfo"]["corners"], ws)
+        corners = structure.setupInfoAndGetCorners()
+        result = floodFill.findPosHouse(corners, ws)
 
         settlementData["structures"][i]["validPosition"] = result["validPosition"]
 
@@ -92,7 +92,8 @@ if not args.remove:
 
         settlementData["structures"][i]["flip"] = result["flip"]
         settlementData["structures"][i]["rotation"] = result["rotation"]
-
+         
+        settlementData["structures"][i]["prebuildingInfo"] = structure.getNextBuildingInformation(result["flip"], result["rotation"])
 
         # If new chunck discovererd, add new ressources
         chunk = [int(settlementData["structures"][i]["position"][0] / 16), int(settlementData["structures"][i]["position"][2] / 16)] 
@@ -126,6 +127,9 @@ if not args.remove:
     books = [villageNameBook, villagerNamesList, deadVillagersBook]
     for i in range(3):
         toolbox.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2] + i, books[i], worldModif, 'east')
+
+    #for the PATH
+    road.initRoad(floodFill, settlementData, worldModif,ws)
 
     #structureMananager.printStructureChoose()
 
