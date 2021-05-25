@@ -21,14 +21,14 @@ if not args.remove:
     resources = Resources()
     resLoader.loadAllResources(resources)
     chestGeneration = ChestGeneration(resources, interface)
-    structure = resources.structures["haybalehouse1"]
+    structure = resources.structures["basicgeneratedwell"]
 
     info = structure.info
     buildingCondition = Structures.BUILDING_CONDITIONS.copy()
     buildingInfo = structure.getNextBuildingInformation()
     buildingCondition["flip"] = 3
     buildingCondition["rotation"] = 3
-    buildingCondition["position"] = [-248, 68, 348]
+    buildingCondition["position"] = [-105, 82, 111]
     buildingCondition["referencePoint"] = buildingInfo["entry"]["position"]
     buildingCondition["size"] = buildingInfo["size"]
     print(structure.getCornersLocalPositions(info["mainEntry"]["position"], 3, 1))

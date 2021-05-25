@@ -50,7 +50,7 @@ if not args.remove:
                 "farmer", "fisherman", "shepherd", "fletcher", "librarian", "cartographer", 
                 "cleric", "armorer", "weaponsmith", "toolsmith", "butcher", "leatherworker", "mason", "nitwit"]
     
-    settlementData["structuresNumberGoal"] = random.randint(15, 70)
+    settlementData["structuresNumberGoal"] = random.randint(15, 30)
 
     #structures contains "position", "rotation", "flip" "name", "type", "group" ->, "villagersId"
     settlementData["structures"] = []
@@ -110,11 +110,10 @@ if not args.remove:
     for i in range(len(settlementData["villagerNames"])):
         strVillagers += settlementData["villagerNames"][i] + " : " + settlementData["villagerProfession"][i] + ";"
     listOfVillagers = strVillagers.split(";")
-
-
+    listOfDeadVillagers = [i.split(':', 1)[0] for i in listOfVillagers]
 
     textVillagersNames = _utils.createTextForVillagersNames(listOfVillagers)
-    textDeadVillagers = _utils.createTextForDeadVillagers(listOfVillagers)
+    textDeadVillagers = _utils.createTextForDeadVillagers(listOfDeadVillagers)
     textVillagePresentationBook = _utils.createTextOfPresentationVillage(settlementData["villageName"], settlementData["villagerNames"], 
                 settlementData["structuresNumberGoal"], settlementData["structures"], textDeadVillagers[1])
     
@@ -172,7 +171,7 @@ if not args.remove:
 
         structure.build(worldModif, buildingCondition, chestGeneration)
         time.sleep(0.3)
-        #_utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
+        _utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
     worldModif.saveToFile(file)  
 
 else : 
