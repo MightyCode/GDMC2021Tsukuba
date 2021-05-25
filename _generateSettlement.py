@@ -184,8 +184,13 @@ if not args.remove:
         buildingCondition["replacements"]["deadVillagerRegistry"] = deadVillagersBook
 
         structure.build(worldModif, buildingCondition, chestGeneration)
+        settlementData["structures"][i]["position"]
+        _utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i],
+            [settlementData["structures"][i]["position"][0], 
+             settlementData["structures"][i]["position"][1] + 1, 
+             settlementData["structures"][i]["position"][2]])
         time.sleep(0.3)
-        _utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
+        
     worldModif.saveToFile(file)  
 
 else : 

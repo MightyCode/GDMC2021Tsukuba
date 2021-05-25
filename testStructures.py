@@ -24,11 +24,12 @@ if not args.remove:
     structure = resources.structures["basicgeneratedwell"]
 
     info = structure.info
-    buildingCondition = Structures.BUILDING_CONDITIONS.copy()
-    buildingInfo = structure.getNextBuildingInformation()
-    buildingCondition["flip"] = 3
-    buildingCondition["rotation"] = 3
-    buildingCondition["position"] = [-105, 82, 111]
+    buildingCondition = BaseStructure.createBuildingCondition()
+    buildingInfo = structure.setupInfoAndGetCorners()
+    buildingCondition["flip"] = 0
+    buildingCondition["rotation"] = 0
+    buildingInfo = structure.getNextBuildingInformation( buildingCondition["flip"], buildingCondition["rotation"])
+    buildingCondition["position"] = [487, 63, 886]
     buildingCondition["referencePoint"] = buildingInfo["entry"]["position"]
     buildingCondition["size"] = buildingInfo["size"]
     corners = structure.getCornersLocalPositionsAllFlipRotation(info["mainEntry"]["position"])

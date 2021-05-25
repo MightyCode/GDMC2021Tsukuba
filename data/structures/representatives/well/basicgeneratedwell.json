@@ -4,14 +4,9 @@
     "position" : [0, 0, 0]
   },
   "villageInfo" : {
-    "villager" : 2,
+    "villager" : 0,
     "gameProfession" : "toolsmith",
     "profession" : "Miner"
-  },
-  "sign" : {
-    "position" : [0, 0, 0],
-    "facing" : "north",
-    "tier" : 1,
-    "name" : "Quarry"
   }
 }
+  

@@ -85,6 +85,7 @@ class StructureManager:
         
         # Functionnals or representatives structure
         elif structure["type"] == StructureManager.FUNCTIONALS or structure["type"] == StructureManager.REPRESENTATIVES:
+            print(struct.info)
             numberToAttribute = struct.info["villageInfo"]["villager"]
             self.settlementData["structures"][-1]["villagersId"] = []
             size = len(self.settlementData["villagerNames"])

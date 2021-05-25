@@ -111,7 +111,7 @@ class GeneratedQuarry(BaseStructure):
                         [1, 0, 1], buildingCondition["flip"], 
                         buildingCondition["rotation"], buildingCondition["referencePoint"], buildingCondition["position"])
         # Set a chest
-        worldModif.setBlock(position[0], position[1], position[2], "minecraft:chest[" +  self.convertProperty("facing", "south")  +"]")
+        worldModif.setBlock(position[0], position[1], position[2], "minecraft:chest[" +  self.convertProperty("facing", "south")  +"]", placeImmediately=True)
 
         counter = collections.Counter(list)
         items = counter.items()

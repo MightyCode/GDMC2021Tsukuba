@@ -5,16 +5,21 @@ class GeneratedWell(BaseStructure):
     def __init__(self) :
         super(BaseStructure, self).__init__()
 
-    
-    def getNextBuildingInformation(self):
-        info = {}
-        self.setSize([2, 10, 2])
-        info["size"] = self.size
-        self.info["mainEntry"]["position"] = [int(self.size[0] / 2), self.size[1] - 5, 0]
-        self.info["mainEntry"]["facing"] = "north"
-        info["entry"] = { "position" : self.info["mainEntry"]["position"], "facing" : "north" }
 
-        info["corners"] = self.getCornersLocalPositionsAllFlipRotation(self.info["mainEntry"]["position"])
+    def setupInfoAndGetCorners(self):
+        self.setSize([6, 9, 6])
+        self.info["mainEntry"]["position"] = [int(self.size[0] / 2), self.size[1] - 6, 0]
+        return self.getCornersLocalPositionsAllFlipRotation(self.info["mainEntry"]["position"])
+    
+
+    def getNextBuildingInformation(self, flip, rotation):
+        info = {}
+        info["size"] = self.size
+        self.info["mainEntry"]["facing"] = "north"
+        info["entry"] = { 
+            "position" : self.info["mainEntry"]["position"], 
+            "facing" : self.getFacingMainEntry(flip, rotation) 
+        }
 
         return info
 
