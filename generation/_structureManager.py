@@ -1,7 +1,6 @@
-from generation.structures.structures import Structures
+import utils._utils as _utils
 import json
 import random
-import utils._utils as _utils
 
 class StructureManager:
     PATH = "data/structures/dependencies.json"

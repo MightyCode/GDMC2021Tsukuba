@@ -7,8 +7,6 @@ import generation._resourcesLoader as resLoader
 import utils._utils as _utils
 from utils._worldModification import *
 from lib.worldLoader import WorldSlice
-import random
-import sys
 #seed testing : -2997648135289524795
 
 interface = interfaceUtils.Interface()

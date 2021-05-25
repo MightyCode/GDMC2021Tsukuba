@@ -1,6 +1,6 @@
-from nbt import nbt
 from generation.structures.structures import *
 import json
+from nbt import nbt
 
 class Resources :
     STRUCTURE_PATH = "data/structures/"

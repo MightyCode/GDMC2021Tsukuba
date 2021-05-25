@@ -1,6 +1,6 @@
-import math
 import utils._math as _math
 import lib.interfaceUtils as interfaceUtils
+import math
 
 class BaseStructure:
 
@@ -239,6 +239,16 @@ class BaseStructure:
         return True
 
 
+    """
+    Flip is applied before rotation
+
+    flip : No flip = 0, Flip x = 1, flip z = 2, Flip xz = 3
+    rotation : No rotation = 0, rotation 90 = 1, rotation 180 = 2, rotation 270 = 3
+    replaceAllAir : 0 no air placed, 1 place all air block, 2 place all choosen air block, 3 take the prefered replacement air from info file
+    position : the center of the contruction
+    referencePoint : point x, z where the building will rotate around, the block at the reference point will be on position point
+    replacement : change one type of block to another
+    """
     def createBuildingCondition():
         return {
             "size" : [0, 0, 0],

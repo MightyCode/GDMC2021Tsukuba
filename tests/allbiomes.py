@@ -1,5 +1,5 @@
 from generation._resources import *
-from generation._buildings import *
+from generation.structures import *
 from utils._worldModification import *
 import lib.interfaceUtils as interfaceUtils
 from nbt.nbt import *

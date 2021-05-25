@@ -7,11 +7,11 @@ import generation._resourcesLoader as resLoader
 import utils._utils as _utils
 from utils._worldModification import *
 from lib.worldLoader import WorldSlice
+import lib.toolbox as toolbox
+import generation.road as road
 import utils.argumentParser as argParser
 import random
 import time
-import lib.toolbox as toolbox
-import generation.road as road
 
 file = "temp.txt"
 interface = interfaceUtils.Interface(buffering=True)

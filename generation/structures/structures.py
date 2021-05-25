@@ -1,8 +1,8 @@
 import utils._math as _math
 import utils._utils as _utils
 from generation.structures.baseStructure import *
-from nbt import nbt
 import generation._floodFill as floodFill
+from nbt import nbt
 
 class Structures(BaseStructure):
     REPLACEMENTS = "replacements"
@@ -18,18 +18,6 @@ class Structures(BaseStructure):
     REPLACEMENTS_EXCLUSIF = {
         "oak" : "dark_oak"
     }
-
-    """
-    Flip is applied before rotation
-
-    flip : No flip = 0, Flip x = 1, flip z = 2, Flip xz = 3
-    rotation : No rotation = 0, rotation 90 = 1, rotation 180 = 2, rotation 270 = 3
-    replaceAllAir : 0 no air placed, 1 place all air block, 2 place all choosen air block, 3 take the prefered replacement air from info file
-    position : the center of the contruction
-    referencePoint : point x, z where the building will rotate around, the block at the reference point will be on position point
-    replacement : change one type of block to another
-    """
-
 
 
     def __init__(self, nbtfile, info, name):
