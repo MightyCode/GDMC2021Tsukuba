@@ -26,7 +26,7 @@ def children(point):
 
 #house is : [x,y,z,CornerPos]
 def squareOfHouse(house):
-	return false
+	return False
 
 
 def comparenode(node1,node2):

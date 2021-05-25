@@ -2,7 +2,7 @@ import argparse
 import lib.interfaceUtils as iu
 
 def giveArgsAndParser():
-    parser = argparse.ArgumentParser(description="Build a Minecraft Settlement, by Bordeaux Team (2021)")
+    parser = argparse.ArgumentParser(description="Build a Minecraft Settlement, by Tsukuba Team (2021)")
     group = parser.add_mutually_exclusive_group(required=False)
     group.add_argument("-p", "--player",
                         help="build the settlement around the player's current location",
@@ -26,7 +26,6 @@ def getBuildArea(interfaceUtils, args):
 
     if(args.radius):
         size = args.radius
-        print(size)
 
     if (args.player):
         area = iu.requestPlayerArea(size * 2 , size * 2)

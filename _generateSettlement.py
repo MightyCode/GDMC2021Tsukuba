@@ -7,11 +7,11 @@ import generation._resourcesLoader as resLoader
 import utils._utils as _utils
 from utils._worldModification import *
 from lib.worldLoader import WorldSlice
+import lib.toolbox as toolbox
+import generation.road as road
 import utils.argumentParser as argParser
 import random
 import time
-import lib.toolbox as toolbox
-import generation.road as road
 
 file = "temp.txt"
 interface = interfaceUtils.Interface(buffering=True)
@@ -22,6 +22,7 @@ area = argParser.getBuildArea(interface, args)
 if area == -1:
     exit()
 
+# Three main steps : choose structures and find its positions, make road between these structures, and finaly build structures.
 if not args.remove:
     resources = Resources()
     resLoader.loadAllResources(resources)
@@ -31,7 +32,7 @@ if not args.remove:
     floodFill = FloodFill(area)
     
     settlementData = {}
-    settlementData["center"] = [int((area[0] + area[2]) / 2) , 82, int((area[1] + area[3]) / 2)]
+    settlementData["center"] = [int((area[0] + area[3]) / 2) , 82, int((area[2] + area[5]) / 2)]
     settlementData["size"] = [area[0] - area[2], area[1] - area[3]]
     settlementData["discoveredChunk"] = []
 
@@ -63,6 +64,7 @@ if not args.remove:
 
     structureMananager = StructureManager(settlementData, resources)
 
+    # Choose structures and its position
     for i in range(settlementData["structuresNumberGoal"]) : 
         # 0 -> normal, 1 -> replacement, 2 -> no more structure
         result = structureMananager.chooseOneStructure()
@@ -107,6 +109,7 @@ if not args.remove:
 
         structureMananager.checkDependencies()
 
+    # Create books for the village
     strVillagers = ""
     for i in range(len(settlementData["villagerNames"])):
         strVillagers += settlementData["villagerNames"][i] + " : " + settlementData["villagerProfession"][i] + ";"
@@ -121,26 +124,33 @@ if not args.remove:
     villageNameBook = toolbox.writeBook(textVillagePresentationBook, title="Village Presentation", author="Mayor", description="Presentation of the village")
     villagerNamesList = toolbox.writeBook(textVillagersNames, title="List of all villagers", author="Mayor", description="List of all villagers")
     deadVillagersBook = toolbox.writeBook(textDeadVillagers[0], title="List of all dead villagers", author="Mayor", description="List of all dead villagers")
-
     print(settlementData["center"])
     books = [villageNameBook, villagerNamesList, deadVillagersBook]
     for i in range(3):
-        toolbox.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2] + i, books[i], worldModif, 'east')
+        toolbox.placeLectern(
+            settlementData["center"][0], 
+            floodFill.getHeight(settlementData["center"][0], settlementData["center"][2], ws), 
+             settlementData["center"][2] + i, books[i], worldModif, 'east')
 
-    #for the PATH
+
+    # Creates roads
     road.initRoad(floodFill, settlementData, worldModif,ws)
 
     #structureMananager.printStructureChoose()
 
-    # Build after every computationsr
+    # Build all structures
     for i in range(len(settlementData["structures"])) :
         print(settlementData["structures"][i]["name"])
         print(settlementData["structures"][i]["validPosition"])
 
         structure = resources.structures[settlementData["structures"][i]["name"]]
         info = structure.info
+        
+        buildingCondition = BaseStructure.createBuildingCondition() 
 
-        buildingCondition = Structures.BUILDING_CONDITIONS.copy()
+        for index in settlementData["structures"][i]["villagersId"]:
+            buildingCondition["villager"].append(settlementData["villagerNames"][index])
+
         buildingCondition["flip"] = settlementData["structures"][i]["flip"]
         buildingCondition["rotation"] = settlementData["structures"][i]["rotation"]
         buildingCondition["position"] = settlementData["structures"][i]["position"]

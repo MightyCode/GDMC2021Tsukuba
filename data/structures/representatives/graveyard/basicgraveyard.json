@@ -46,5 +46,11 @@
         [21, 8, 21, 15],
         [22, 10, 22, 13]
       ]
+    },
+    "sign" : {
+      "position" : [9, 2, 0],
+      "facing" : "north",
+      "tier" : 1,
+      "name" : "Graveyard"
     }
   }

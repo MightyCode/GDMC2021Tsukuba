@@ -4,6 +4,9 @@ import utils._utils as utils
 import math
 from generation.structures.baseStructure import * 
 
+"""
+Hand made generated quarry
+"""
 class GeneratedQuarry(BaseStructure):
     def __init__(self) :
         super(BaseStructure, self).__init__()
@@ -100,7 +103,9 @@ class GeneratedQuarry(BaseStructure):
             # Set a chest
             worldModif.setBlock(position[0], position[1], position[2], "minecraft:wall_torch[" +  self.convertProperty("facing", orientations[i])  +"]")
 
-
+    """
+    Add chest at the bottom of quarry and fill it with blocks removed by the quarry
+    """
     def addChestToQuarry(self, worldModif, buildingCondition, list):  
         position = self.returnWorldPosition(
                         [1, 0, 1], buildingCondition["flip"], 
