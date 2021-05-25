@@ -21,15 +21,14 @@ if not args.remove:
     resources = Resources()
     resLoader.loadAllResources(resources)
     chestGeneration = ChestGeneration(resources, interface)
-    structure = resources.structures["basictavern"]
+    structure = resources.structures["basicgeneratedwell"]
 
     info = structure.info
     buildingCondition = Structures.BUILDING_CONDITIONS.copy()
-    corners = structure.setupInfoAndGetCorners()
-    buildingCondition["flip"] = 0
-    buildingCondition["rotation"] = 2
-    buildingInfo = structure.getNextBuildingInformation(buildingCondition["flip"], buildingCondition["rotation"])
-    buildingCondition["position"] = [982, 63, 1219]
+    buildingInfo = structure.getNextBuildingInformation()
+    buildingCondition["flip"] = 3
+    buildingCondition["rotation"] = 3
+    buildingCondition["position"] = [-105, 82, 111]
     buildingCondition["referencePoint"] = buildingInfo["entry"]["position"]
     buildingCondition["size"] = buildingInfo["size"]
     corners = structure.getCornersLocalPositionsAllFlipRotation(info["mainEntry"]["position"])
