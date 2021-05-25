@@ -5,15 +5,20 @@ __all__ = ['loop2d', 'loop3d', 'writeBook', 'placeLectern',
            'placeInventoryBlock', 'placeSign', 'getOptimalDirection']
 __version__ = 'v4.2_dev'
 __year__ = '2021'
-__author__ = 'Blinkenlights'
+__author__ = 'Yusuf & Lucien & Maxence'
 
 from functools import lru_cache
 from random import choice
-
-import lib.lookup as lookup
+from generation.structures.structures import *
+from generation.structures.generated.generatedQuarry import *
+from generation._resources import *
+from generation._chestGeneration import *
+from utils._worldModification import *
 from lib.interfaceUtils import getBlock
 from lib.interfaceUtils import globalinterface as gi
 from lib.interfaceUtils import runCommand
+import utils._utils as _utils
+import lib.lookup as lookup
 
 
 def loop2d(x1, y1, x2=None, y2=None):
@@ -140,42 +145,21 @@ def writeBook(text, title="Chronicle", author=__author__,
         pixels_left = PIXELS
         bookData += '"}\',\'{"text":"'    # end page and start new page
 
-    def jokepage():
-        nonlocal bookData
-        bookData += ('"}\',\'{"text":"'
-                     '…and there was more\\\\n'
-                     'to say, but the paper\\\\n'
-                     '        ran out…\\\\n'
-                     '\\\\n'
-                     '\\\\n'
-                     '        ⌠       ⌠\\\\n'
-                     '        `|  THE  |\\\\n'
-                     '        `|  END  |\\\\n'
-                     '        ⌡`       ⌡\\\\n'
-                     '\\\\n'
-                     '\\\\n'
-                     '\\\\n'
-                     '§7§o…and frankly it was\\\\n'
-                     'getting boring…§r')
-        newpage()
-
     def finalpage():
         nonlocal bookData
-        bookData += ('§8╔══════════╗\\\\n'
-                     '║                      `║\\\\n'
-                     '║                      `║\\\\n'
-                     '║      ᴘᴜʙʟiꜱʜᴇᴅ   .`║\\\\n'
-                     '║          ʙʏ         `║\\\\n'
-                     '║     §2Ⓟ§8ᴇɴᴅᴇʀᴍᴀɴ  .`║\\\\n'
-                     '║                      `║\\\\n'
-                     '║           ⁂         `║\\\\n'
-                     '║                      `║\\\\n'
-                     '║         GDMC       `║\\\\n'
-                     f'║         {__year__}       `║\\\\n'
-                     '║                      `║\\\\n'
-                     '║                      `║\\\\n'
-                     '╚══════════╝\\\\n'
-                     '"}\']}')
+        bookData += ('--------------\\\\n'
+                    '                     \\\\n'
+                    '                   \\\\n'
+                    '      Published    \\\\n'
+                    '         by         \\\\n'
+                   f'    {__author__}      \\\\n'
+                    '                   \\\\n'
+                    '                   \\\\n'
+                    '      GDMC          \\\\n'
+                   f'      {__year__}          \\\\n'
+                    '                      \\\\n'
+                    '---------------\\\\n'
+                    '"}\']}')
 
     pages = [page for page in text.split('\f')]
     text = [[[word for word in line.split()] for line in page.split('\n')]
@@ -189,7 +173,6 @@ def writeBook(text, title="Chronicle", author=__author__,
     bookData += '\'{"text":"'   # start first page
     for page in pages:
         if pages_left < 1:
-            jokepage()
             break
         if page[:3] == '\\\\s':
             print(page[3:])
@@ -230,11 +213,15 @@ def writeBook(text, title="Chronicle", author=__author__,
     return bookData
 
 
-def placeLectern(x, y, z, bookData, facing=None):
+def placeLectern(x, y, z, bookData, worldModif, facing="east"):
+    """**Place a lectern with a book in the world**."""
+    # worldModif.setBlock(x, y, z, f"lectern[facing={facing}, has_book=true]")
+    # _utils.addBookToLectern(x, y, z, bookData)
+    
     """**Place a lectern with a book in the world**."""
     if facing is None:
         facing = choice(getOptimalDirection(x, y, z))
-    gi.placeBlock(x, y, z, f"lectern[facing={facing}, has_book=true]")
+    worldModif.setBlock(x, y, z, f"lectern[facing={facing}, has_book=true]", placeImmediately=True)
     command = (f'data merge block {x} {y} {z} '
                f'{{Book: {{id: "minecraft:written_book", '
                f'Count: 1b, tag: {bookData}'
@@ -244,7 +231,7 @@ def placeLectern(x, y, z, bookData, facing=None):
         print(f"{lookup.TCOLORS['orange']}Warning: Server returned error "
               f"upon placing book in lectern:\n\t{lookup.TCOLORS['CLR']}"
               f"{response}")
-
+    
 
 def placeInventoryBlock(x, y, z, block='minecraft:chest', facing=None,
                         items=[]):

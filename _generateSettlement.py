@@ -3,7 +3,6 @@ from generation._chestGeneration import *
 from generation.structures.structures import *
 from generation._structureManager import *
 from generation._floodFill import *
-import _bookGeneration
 import generation._resourcesLoader as resLoader
 import utils._utils as _utils
 from utils._worldModification import *
@@ -11,6 +10,7 @@ from lib.worldLoader import WorldSlice
 import utils.argumentParser as argParser
 import random
 import time
+import lib.toolbox as toolbox
 import generation.road as road
 
 file = "temp.txt"
@@ -31,7 +31,7 @@ if not args.remove:
     floodFill = FloodFill(area)
     
     settlementData = {}
-    settlementData["center"] = [int((area[0] + area[2]) / 2) , 60, int((area[1] + area[3]) / 2)]
+    settlementData["center"] = [int((area[0] + area[2]) / 2) , 82, int((area[1] + area[3]) / 2)]
     settlementData["size"] = [area[0] - area[2], area[1] - area[3]]
     settlementData["discoveredChunk"] = []
 
@@ -113,18 +113,20 @@ if not args.remove:
     listOfVillagers = strVillagers.split(";")
 
 
-    textVillagePresentationBook = _utils.createTextOfPresentationVillage(settlementData["villageName"], settlementData["villagerNames"], 
-                settlementData["structuresNumberGoal"], settlementData["structures"])
-    textVillagersNames = _utils.createTextForVillagersNames(listOfVillagers)
-    villageNameBook = _bookGeneration.writeBook(textVillagePresentationBook, title="Village Presentation", author="Yusuf", description="Presentation of the village")
-    villagerNamesList = _bookGeneration.writeBook(textVillagersNames, title="List of all villagers", author="Yusuf", description="List of all villagers")
 
-    deadVillagersBook = _utils.makeBookItem("List of all dead villagers : ", title="List of all dead villagers")
-    #print(settlementData)
+    textVillagersNames = _utils.createTextForVillagersNames(listOfVillagers)
+    textDeadVillagers = _utils.createTextForDeadVillagers(listOfVillagers)
+    textVillagePresentationBook = _utils.createTextOfPresentationVillage(settlementData["villageName"], settlementData["villagerNames"], 
+                settlementData["structuresNumberGoal"], settlementData["structures"], textDeadVillagers[1])
     
-    _bookGeneration.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2], villageNameBook, worldModif, 'east')
-    _bookGeneration.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2] + 1, villagerNamesList, worldModif,'east')
-    
+    villageNameBook = toolbox.writeBook(textVillagePresentationBook, title="Village Presentation", author="Mayor", description="Presentation of the village")
+    villagerNamesList = toolbox.writeBook(textVillagersNames, title="List of all villagers", author="Mayor", description="List of all villagers")
+    deadVillagersBook = toolbox.writeBook(textDeadVillagers[0], title="List of all dead villagers", author="Mayor", description="List of all dead villagers")
+
+    print(settlementData["center"])
+    books = [villageNameBook, villagerNamesList, deadVillagersBook]
+    for i in range(3):
+        toolbox.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2] + i, books[i], worldModif, 'east')
 
     #for the PATH
     road.initRoad(floodFill, settlementData, worldModif,ws)
