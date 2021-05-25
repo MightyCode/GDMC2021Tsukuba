@@ -1,3 +1,4 @@
+from generation.structures.generated.generatedWell import GeneratedWell
 from generation.structures.generated.generatedQuarry import * 
 
 def loadAllResources(resources) : 
@@ -42,6 +43,7 @@ def loadAllResources(resources) :
     resources.loadStructures("representatives/barrack/basicbarrack.nbt", "representatives/barrack/basicbarrack.json", "basicbarrack")
 
     resources.addGeneratedStructures(GeneratedQuarry(), "functionals/quarry/basicgeneratedquarry.json", "basicgeneratedquarry")
+    resources.addGeneratedStructures(GeneratedWell(), "functionals/well/basicgeneratedwell.json", "basicgeneratedwell")
 
     # Load lootTable
     resources.loadLootTable("houses/kitchenhouse.json", "kitchenhouse")

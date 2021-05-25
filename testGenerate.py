@@ -1,3 +1,4 @@
+from generation.structures.generated.generatedWell import *
 import sys
 import lib.interfaceUtils as interfaceUtils
 import utils._utils as _utils
@@ -46,7 +47,9 @@ if len(sys.argv) <= 1:
     buildingConditions["position"] = [cx, cy, cz]
 
     quarry = GeneratedQuarry()
-    quarry.build(worldModif, buildingConditions, chestGeneration) 
+    quarry.build(worldModif, buildingConditions) 
+    # well = GeneratedWell()
+    # well.build(worldModif, buildingConditions)
     
  
 

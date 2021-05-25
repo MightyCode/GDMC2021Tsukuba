@@ -55,6 +55,19 @@
             ]
         }
     },
+    "basicWell" : {
+        "structures" : [
+            "basicgeneratedwell"
+        ],
+        "type" : "functionals",
+        "conditions" : {
+            "villagerNeeded" : { "min" : 1 },
+            "previous" : [
+                { "name" : "basicLumberJackHut", "min" : 1 }
+            ],
+            "stoneResources" : { "min" : 1}
+        }
+    },
     "basicQuarry" : {
         "structures" : [
             "basicgeneratedquarry"
