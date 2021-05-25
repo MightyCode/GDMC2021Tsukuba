@@ -127,9 +127,12 @@ if not args.remove:
     books = [villageNameBook, villagerNamesList, deadVillagersBook]
     for i in range(3):
         toolbox.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2] + i, books[i], worldModif, 'east')
-    exit()
+    #to init materials needed to build the path
+    materials = {}
+    for aProperty in resources.biomesBlocks[settlementData["biomeBlockId"]]:
+        materials [aProperty] = resources.biomesBlocks[settlementData["biomeBlockId"]][aProperty]
     #for the PATH
-    road.initRoad(floodFill, settlementData, worldModif,ws)
+    road.initRoad(floodFill, settlementData, worldModif, ws, materials)
 
     #structureMananager.printStructureChoose()
 
