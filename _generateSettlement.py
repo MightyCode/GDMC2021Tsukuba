@@ -127,7 +127,6 @@ if not args.remove:
     books = [villageNameBook, villagerNamesList, deadVillagersBook]
     for i in range(3):
         toolbox.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2] + i, books[i], worldModif, 'east')
-    exit()
     #for the PATH
     road.initRoad(floodFill, settlementData, worldModif,ws)
 
