@@ -21,7 +21,7 @@ if not args.remove:
     resources = Resources()
     resLoader.loadAllResources(resources)
     chestGeneration = ChestGeneration(resources, interface)
-    structure = resources.structures["basicworkshop"]
+    structure = resources.structures["basictavern"]
 
     info = structure.info
     buildingCondition = Structures.BUILDING_CONDITIONS.copy()
@@ -29,7 +29,6 @@ if not args.remove:
     buildingCondition["flip"] = 0
     buildingCondition["rotation"] = 2
     buildingInfo = structure.getNextBuildingInformation(buildingCondition["flip"], buildingCondition["rotation"])
-    print(buildingInfo["entry"]["facing"])
     buildingCondition["position"] = [982, 63, 1219]
     buildingCondition["referencePoint"] = buildingInfo["entry"]["position"]
     buildingCondition["size"] = buildingInfo["size"]

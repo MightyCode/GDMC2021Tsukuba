@@ -128,8 +128,7 @@ class Structures(BaseStructure):
         for blockPalette in self.file["palette"]:
             if blockPalette[Structures.CHANGE].value:
                 changeState = blockPalette[Structures.CHANGE_STATE].value
-                if blockPalette["Name"].value == "minecraft:grass_block":
-                    print(changeState)
+
                 if changeState == 0 or changeState == 1:
                     blockPalette["Name"].value = buildingCondition["replacements"][blockPalette[Structures.CHANGE_TO].value].split("[")[0]
                 elif changeState == 2:
@@ -176,9 +175,7 @@ class Structures(BaseStructure):
             theBlock = self.convertNbtBlockToStr(
                     self.file["palette"][block["state"].value],
                     takeOriginalBlock
-                    )
-
-            print(theBlock)        
+                    )      
 
             worldModif.setBlock( 
                 blockPosition[0], blockPosition[1], blockPosition[2],
@@ -195,7 +192,7 @@ class Structures(BaseStructure):
         )
         signPosition[1] += 1
 
-        self.generateSignatureSign(signPosition, worldModif, buildingCondition["replacements"]["woodType"], ["Jean eude", "Brijite cas", "Da los rmas"])
+        self.generateSignatureSign(signPosition, worldModif, buildingCondition["replacements"]["woodType"], buildingCondition["villager"])
             
 
     def checkBeforePlacing(self, blockName):

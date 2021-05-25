@@ -22,5 +22,11 @@
     },
     "ground" : {
       "info" : "all"
+    },
+    "sign" : {
+      "position" : [5, 5, -1],
+      "facing" : "north",
+      "tier" : 1,
+      "name" : "Barrack"
     }
   }

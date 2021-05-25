@@ -126,7 +126,7 @@ if not args.remove:
     
     #structureMananager.printStructureChoose()
 
-    # Build after every computationsr
+    # Build after every computations
     for i in range(len(settlementData["structures"])) :
         print(settlementData["structures"][i]["name"])
         print(settlementData["structures"][i]["validPosition"])
@@ -134,6 +134,10 @@ if not args.remove:
         structure = resources.structures[settlementData["structures"][i]["name"]]
         info = structure.info
 
+        buildingCondition["villager"] = []
+        for index in settlementData["structures"][i]["villagersId"]:
+            buildingCondition["villager"].append(settlementData["villagerNames"][index])
+        
         buildingCondition = Structures.BUILDING_CONDITIONS.copy()
         buildingCondition["flip"] = settlementData["structures"][i]["flip"]
         buildingCondition["rotation"] = settlementData["structures"][i]["rotation"]

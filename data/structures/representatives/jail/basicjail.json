@@ -23,5 +23,11 @@
       "zones" : [
         [1, 0, 4, 6]
       ]
+    },
+    "sign" : {
+      "position" : [5, 3, 2],
+      "facing" : "east",
+      "tier" : 1,
+      "name" : "Jail"
     }
   }
