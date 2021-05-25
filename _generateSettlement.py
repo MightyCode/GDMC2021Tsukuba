@@ -31,7 +31,7 @@ if not args.remove:
     floodFill = FloodFill(area)
     
     settlementData = {}
-    settlementData["center"] = [int((area[0] + area[2]) / 2) , 82, int((area[1] + area[3]) / 2)]
+    settlementData["center"] = [int((area[0] + area[3]) / 2) , 82, int((area[2] + area[5]) / 2)]
     settlementData["size"] = [area[0] - area[2], area[1] - area[3]]
     settlementData["discoveredChunk"] = []
 
@@ -127,7 +127,7 @@ if not args.remove:
     books = [villageNameBook, villagerNamesList, deadVillagersBook]
     for i in range(3):
         toolbox.placeLectern(settlementData["center"][0], settlementData["center"][1], settlementData["center"][2] + i, books[i], worldModif, 'east')
-
+    exit()
     #for the PATH
     road.initRoad(floodFill, settlementData, worldModif,ws)
 
