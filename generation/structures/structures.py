@@ -30,12 +30,15 @@ class Structures(BaseStructure):
     replacement : change one type of block to another
     """
     BUILDING_CONDITIONS =  {
-        "rotation" : 0,
-        "flip" : 0,
-        "replaceAllAir" : 0,
+        "size" : [0, 0, 0],
         "position" : [0, 0, 0],
         "referencePoint" : [0, 0, 0],
+        "flip" : 0,
+        "rotation" : 0,
+        "replaceAllAir" : 0,
         "replacements" : {},
+        "villager" : [],
+        "prebuildingInfo" : {}
     }
 
 

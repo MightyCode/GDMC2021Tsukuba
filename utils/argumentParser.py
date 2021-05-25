@@ -26,7 +26,6 @@ def getBuildArea(interfaceUtils, args):
 
     if(args.radius):
         size = args.radius
-        print(size)
 
     if (args.player):
         area = iu.requestPlayerArea(size * 2 , size * 2)

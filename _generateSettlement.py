@@ -140,12 +140,11 @@ if not args.remove:
 
         structure = resources.structures[settlementData["structures"][i]["name"]]
         info = structure.info
-
-        buildingCondition["villager"] = []
-        for index in settlementData["structures"][i]["villagersId"]:
-            buildingCondition["villager"].append(settlementData["villagerNames"][index])
         
         buildingCondition = Structures.BUILDING_CONDITIONS.copy()
+        
+        for index in settlementData["structures"][i]["villagersId"]:
+            buildingCondition["villager"].append(settlementData["villagerNames"][index])
         buildingCondition["flip"] = settlementData["structures"][i]["flip"]
         buildingCondition["rotation"] = settlementData["structures"][i]["rotation"]
         buildingCondition["position"] = settlementData["structures"][i]["position"]

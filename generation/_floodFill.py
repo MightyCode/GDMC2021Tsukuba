@@ -156,7 +156,7 @@ class FloodFill:
         sizeStruct = max(abs(CornerPos[0][0]) + abs(CornerPos[0][2]) + 1, abs(CornerPos[0][1]) + abs(CornerPos[0][3]) + 1)
 
         notFinded = True
-        debug = 50 * 12
+        debug = 250 * 12
         debugNoHouse = 5
         verifCorners = False
         verifOverlapseHouse = False
