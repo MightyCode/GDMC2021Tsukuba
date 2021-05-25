@@ -29,17 +29,7 @@ class Structures(BaseStructure):
     referencePoint : point x, z where the building will rotate around, the block at the reference point will be on position point
     replacement : change one type of block to another
     """
-    BUILDING_CONDITIONS =  {
-        "size" : [0, 0, 0],
-        "position" : [0, 0, 0],
-        "referencePoint" : [0, 0, 0],
-        "flip" : 0,
-        "rotation" : 0,
-        "replaceAllAir" : 0,
-        "replacements" : {},
-        "villager" : [],
-        "prebuildingInfo" : {}
-    }
+
 
 
     def __init__(self, nbtfile, info, name):

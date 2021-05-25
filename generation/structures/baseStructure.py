@@ -134,6 +134,7 @@ class BaseStructure:
 
 
     def generateSignatureSign(self, position, worldModification, woodType, people):
+        worldModification.setBlock(position[0], position[1], position[2], "minecraft:air", placeImmediately=True)
         worldModification.setBlock(position[0], position[1], position[2], 
             "minecraft:" + woodType + "_wall_sign[facing=" + self.computedOrientation[self.info["sign"]["facing"]] + "]", 
             placeImmediately=True)
@@ -155,7 +156,7 @@ class BaseStructure:
                     parts.append(partss[i])
 
             i = 0
-            while i < len(parts):
+            while i < len(parts) and currentLine < len(lines):
                 jumpLine = False
                 if len(lines[currentLine]) > 0 :
                     if len(parts[i]) + 1  <= 15 - len(lines[currentLine]):
@@ -183,6 +184,7 @@ class BaseStructure:
             lines[0], lines[1], lines[2], lines[3])
 
         if len(lines[4]) > 0:
+            worldModification.setBlock(position[0], position[1] - 1, position[2], "minecraft:air", placeImmediately=True)
             worldModification.setBlock(position[0], position[1] - 1, position[2], 
                 "minecraft:" + woodType + "_wall_sign[facing=" + self.computedOrientation[self.info["sign"]["facing"]] + "]", 
                 placeImmediately=True)
@@ -235,3 +237,17 @@ class BaseStructure:
                 return False
         
         return True
+
+
+    def createBuildingCondition():
+        return {
+            "size" : [0, 0, 0],
+            "position" : [0, 0, 0],
+            "referencePoint" : [0, 0, 0],
+            "flip" : 0,
+            "rotation" : 0,
+            "replaceAllAir" : 0,
+            "replacements" : {},
+            "villager" : [],
+            "prebuildingInfo" : {}
+        }
