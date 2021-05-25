@@ -7,6 +7,15 @@ class ChestGeneration:
         self.resources = resources
         self.interface = interface
     
+
+    """
+    Generate a chest content at given position and loottable
+    x : x position of chest
+    y : y position of chest
+    z : z position of chest
+    lootTableName : name of the lootTable used
+    changeItemName : indicates what ** balise should change, ex : *woodType*
+    """
     def generate(self, x, y, z, lootTableName, changeItemName={}):
         lootTable = self.resources.lootTables[lootTableName]["pools"][0]
 
@@ -52,7 +61,9 @@ class ChestGeneration:
         
         interfaceUtils.addItemChest(x, y, z, items, itemPlaces)
 
-
+    """
+    Generate places of items
+    """
     def generatePlaces(self, number):
         places = list(range(28))
         if number > 13:
