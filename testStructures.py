@@ -31,7 +31,6 @@ if not args.remove:
     buildingCondition["position"] = [-105, 82, 111]
     buildingCondition["referencePoint"] = buildingInfo["entry"]["position"]
     buildingCondition["size"] = buildingInfo["size"]
-    print(structure.getCornersLocalPositions(info["mainEntry"]["position"], 3, 1))
     corners = structure.getCornersLocalPositionsAllFlipRotation(info["mainEntry"]["position"])
 
     buildingCondition["replaceAllAir"] = 3

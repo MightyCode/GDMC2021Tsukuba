@@ -50,7 +50,7 @@ class ChestGeneration:
                         
                     break
         
-        interfaceUtils.Interface.addItemChest(x, y, z, items, itemPlaces)
+        interfaceUtils.addItemChest(x, y, z, items, itemPlaces)
 
 
     def generatePlaces(self, number):
