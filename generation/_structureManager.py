@@ -1,7 +1,6 @@
-from generation.structures.structures import Structures
+import utils._utils as _utils
 import json
 import random
-import utils._utils as _utils
 
 class StructureManager:
     PATH = "data/structures/dependencies.json"
@@ -86,6 +85,7 @@ class StructureManager:
         
         # Functionnals or representatives structure
         elif structure["type"] == StructureManager.FUNCTIONALS or structure["type"] == StructureManager.REPRESENTATIVES:
+            print(struct.info)
             numberToAttribute = struct.info["villageInfo"]["villager"]
             self.settlementData["structures"][-1]["villagersId"] = []
             size = len(self.settlementData["villagerNames"])

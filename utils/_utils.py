@@ -17,7 +17,8 @@ def getBiome(x, z, dx, dz):
     try:
         response = requests.get(url)
     except ConnectionError:
-        return "minecraft:plains"
+        return -1
+        #return "minecraft:plains"
     biomeId = response.text.split(":")
     biomeinfo = biomeId[6].split(";")
     biome = biomeinfo[1].split(",")
@@ -95,11 +96,13 @@ def createTextForVillagersNames(listOfVillagers):
     textVillagerNames = (' ')
     for i in range(len(listOfVillagers)):
         if i <= 6: 
-            textVillagerNames += (f'{listOfVillagers[i]}       \\\\n')
+            textVillagerNames += ('-'
+                f'{listOfVillagers[i]}       \\\\n')
         if i % 6 == 0 and i != 0:
             textVillagerNames += ('\f')
         if i > 6:
-            textVillagerNames += (f'{listOfVillagers[i]}       \\\\n')
+            textVillagerNames += ('-'
+                f'{listOfVillagers[i]}       \\\\n')
     textVillagerNames += ('\f')
     return textVillagerNames
 
@@ -116,11 +119,13 @@ def createTextForDeadVillagers(listOfVillagers):
         deadVillager = rd.choice(newList)
         # print(deadVillager)
         if i <= 6:
-            textDeadVillagers += (f'{deadVillager} \\\\n')
+            textDeadVillagers += ('-'
+                f'{deadVillager} \\\\n')
         if i % 6 == 0 and i != 0:
             textDeadVillagers += ('\f')
         if i > 6:
-            textDeadVillagers += (f'{deadVillager} \\\\n')
+            textDeadVillagers += ('-'
+                f'{deadVillager} \\\\n')
         newList.remove(deadVillager)
     textDeadVillagers += ('\f')
     return [textDeadVillagers, random]

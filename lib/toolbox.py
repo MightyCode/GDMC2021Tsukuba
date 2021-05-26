@@ -9,15 +9,9 @@ __author__ = 'Yusuf & Lucien & Maxence'
 
 from functools import lru_cache
 from random import choice
-from generation.structures.structures import *
-from generation.structures.generated.generatedQuarry import *
-from generation._resources import *
-from generation._chestGeneration import *
-from utils._worldModification import *
 from lib.interfaceUtils import getBlock
 from lib.interfaceUtils import globalinterface as gi
 from lib.interfaceUtils import runCommand
-import utils._utils as _utils
 import lib.lookup as lookup
 
 

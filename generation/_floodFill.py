@@ -1,6 +1,5 @@
-import random
-from typing import Tuple
 import utils._math as _math
+import random
 
 class FloodFill:
     
