@@ -47,6 +47,7 @@ class FloodFill:
         y = 255
         while self.is_air(x, y, z) and y > 0 and not (iu.getBlock(x, y - 1, z)=="minecraft:water" or iu.getBlock(x, y - 1, z) == "minecraft:lava"):
             y -= 1
+
         return y
 
     """
@@ -67,6 +68,13 @@ class FloodFill:
         y2 = y - 1
         #print(is_air(x,y2+1,z,ws) and not(is_air(x,y2,z,ws)))
         """ and not(ws.getBlockAt(x, y2, z)=='minecraft:water') """
+        if iu.getBlock(x,y,z)=='minecraft:lava':
+            iu.setBlock(x,y,z,'minecraft:obsidian')
+        if iu.getBlock(x,y1,z)=='minecraft:lava':
+            iu.setBlock(x,y1,z,'minecraft:obsidian')
+        if iu.getBlock(x,y2,z)=='minecraft:lava':
+            iu.setBlock(x,y2,z,'minecraft:obsidian')
+
         if self.is_air(x, y2 + 1, z) and not(self.is_air(x, y2, z)) :
             return y2 
 
@@ -161,13 +169,13 @@ class FloodFill:
 
         notFinded = True
         debug = 250 * 16
-        debugNoHouse = 5
+        debugNoHouse = 250 * 16
         verifCorners = False
         verifOverlapseHouse = False
 
         print("there is already", len(self.listHouse), "placed")
 
-        while notFinded and (debug>0) and debugNoHouse and not verifCorners:
+        while notFinded and (debug>0) and (debugNoHouse>0) and not verifCorners:
             if len(self.listHouse) == 0:
                 xPos, zPos = self.takeRandomPosition(sizeStruct)
 

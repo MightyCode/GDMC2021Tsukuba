@@ -130,20 +130,20 @@ def initRoad(floodFill, settlementData, worldmodif,  materials):
 			x = entry1[0] + ORIENTATION[facingenfant][0]
 			y = entry1[1]
 			z = entry1[2] + ORIENTATION[facingenfant][1]
-			while not(floodFill.is_air(x, y+1, z)) or floodFill.is_air(x, y, z):
-						if floodFill.is_air(x, y, z):
+			while not(floodFill.is_air(x, y+2, z)) or floodFill.is_air(x, y+1, z):
+						if floodFill.is_air(x, y + 1, z):
 							y -=1
-						if not(floodFill.is_air(x, y+1, z)):
+						if not(floodFill.is_air(x, y + 2, z)):
 							y += 1
-			worldmodif.setBlock(x, y - 1, z, "minecraft:grass_path")
+			worldmodif.setBlock(x, y, z, "minecraft:grass_path")
 			x += ORIENTATION[facingenfant][0]
 			z += ORIENTATION[facingenfant][1]
-			while not(floodFill.is_air(x, y+1, z)) or floodFill.is_air(x, y, z):
-						if floodFill.is_air(x, y, z):
+			while not(floodFill.is_air(x, y+2, z)) or floodFill.is_air(x, y + 1, z):
+						if floodFill.is_air(x, y + 1, z):
 							y -=1
-						if not(floodFill.is_air(x, y+1, z)):
+						if not(floodFill.is_air(x, y + 2, z)):
 							y += 1
-			worldmodif.setBlock(x, y - 1, z, "minecraft:grass_path")
+			worldmodif.setBlock(x, y, z, "minecraft:grass_path")
 			x += ORIENTATION[facingenfant][0]
 			z += ORIENTATION[facingenfant][1]
 			start = [x, z]
@@ -161,27 +161,27 @@ def initRoad(floodFill, settlementData, worldmodif,  materials):
 			y = entry2[1]
 			z = entry2[2] + ORIENTATION[facingparent][1]
 			while not(floodFill.is_air(x, y+2, z)) or floodFill.is_air(x, y+1, z):
-						if floodFill.is_air(x, y, z):
+						if floodFill.is_air(x, y+1, z):
 							y -=1
-						if not(floodFill.is_air(x, y+1, z)):
+						if not(floodFill.is_air(x, y+2, z)):
 							y += 1
 						print("stuck1")
 			worldmodif.setBlock(x, y, z, "minecraft:grass_path")
 			x += ORIENTATION[facingparent][0]
 			z += ORIENTATION[facingparent][1]
 			while not(floodFill.is_air(x, y+2, z)) or floodFill.is_air(x, y+1, z):
-						if floodFill.is_air(x, y, z):
+						if floodFill.is_air(x, y+1, z):
 							y -=1
-						if not(floodFill.is_air(x, y+1, z)):
+						if not(floodFill.is_air(x, y+2, z)):
 							y += 1
 						print("stuck2")
 			worldmodif.setBlock(x, y, z, "minecraft:grass_path")
 			x += ORIENTATION[facingparent][0]
 			z += ORIENTATION[facingparent][1]
 			while not(floodFill.is_air(x, y+2, z)) or floodFill.is_air(x, y+1, z):
-						if floodFill.is_air(x, y, z):
+						if floodFill.is_air(x, y+1, z):
 							y -=1
-						if not(floodFill.is_air(x, y+1, z)):
+						if not(floodFill.is_air(x, y+2, z)):
 							y += 1
 						print("stuck3")
 			worldmodif.setBlock(x, y, z, "minecraft:grass_path")
