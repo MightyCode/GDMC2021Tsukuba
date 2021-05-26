@@ -1,0 +1,20 @@
+{
+  "mainEntry": {
+    "facing" : "west",
+    "position" : [6, 6, 2]
+  },
+  "replacements" : {
+  },
+  "air" : {
+    "preferedAirMode" : 2,
+    "replacements" : [
+      [0, 0, 1, 5, 3, 3]
+    ]
+  },
+  "lootTables" : [
+    ["murderercache"]
+  ],
+  "special" : {
+    "specialSign" : [5, 2, 2]
+  } 
+}

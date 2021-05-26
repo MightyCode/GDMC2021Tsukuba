@@ -7,6 +7,8 @@ import generation._resourcesLoader as resLoader
 import utils._utils as _utils
 from utils._worldModification import *
 import utils.argumentParser as argParser
+import generation.loremaker as loremaker
+import copy
 
 file = "temp.txt"
 interface = interfaceUtils.Interface(buffering=True)
@@ -21,7 +23,7 @@ if not args.remove:
     resources = Resources()
     resLoader.loadAllResources(resources)
     chestGeneration = ChestGeneration(resources, interface)
-    structure = resources.structures["basicgeneratedwell"]
+    structure = resources.structures["haybalehouse1"]
 
     info = structure.info
     buildingCondition = BaseStructure.createBuildingCondition()
@@ -29,7 +31,7 @@ if not args.remove:
     buildingCondition["flip"] = 0
     buildingCondition["rotation"] = 0
     buildingInfo = structure.getNextBuildingInformation( buildingCondition["flip"], buildingCondition["rotation"])
-    buildingCondition["position"] = [487, 63, 886]
+    buildingCondition["position"] = [784, 70, 1032]
     buildingCondition["referencePoint"] = buildingInfo["entry"]["position"]
     buildingCondition["size"] = buildingInfo["size"]
     corners = structure.getCornersLocalPositionsAllFlipRotation(info["mainEntry"]["position"])
@@ -44,6 +46,11 @@ if not args.remove:
     if structureBiomeBlockId == "-1" :
         structureBiomeBlockId = "0" 
         
+    settlementData = {}
+    settlementData["materialsReplacement"] = {}
+    loremaker.voteForColor(settlementData)
+    buildingCondition["replacements"] = copy.deepcopy(settlementData["materialsReplacement"])
+
     # Load block for structure biome
     for aProperty in resources.biomesBlocks[structureBiomeBlockId]:
         if aProperty in resources.biomesBlocks["rules"]["village"]:
@@ -53,6 +60,8 @@ if not args.remove:
     for aProperty in resources.biomesBlocks[structureBiomeBlockId]:
         if aProperty in resources.biomesBlocks["rules"]["structure"]:
             buildingCondition["replacements"][aProperty] = resources.biomesBlocks[structureBiomeBlockId][aProperty]
+
+    print(buildingCondition["replacements"])
 
     structure.build(worldModif, buildingCondition, chestGeneration)
     worldModif.saveToFile(file)

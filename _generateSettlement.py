@@ -10,8 +10,10 @@ from lib.worldLoader import WorldSlice
 import lib.toolbox as toolbox
 import generation.road as road
 import utils.argumentParser as argParser
+import generation.loremaker as loremaker
 import random
 import time
+import copy
 
 file = "temp.txt"
 interface = interfaceUtils.Interface(buffering=True)
@@ -29,6 +31,8 @@ if not args.remove:
 
     chestGeneration = ChestGeneration(resources, interface)
     ws = WorldSlice(area[0], area[2], area[3], area[5])
+    ws.setBuffering(True)
+    ws.setCaching(True)
     floodFill = FloodFill(area)
     
     settlementData = {}
@@ -36,12 +40,21 @@ if not args.remove:
     settlementData["size"] = [area[0] - area[2], area[1] - area[3]]
     settlementData["discoveredChunk"] = []
 
+    # Materials replacement
+    settlementData["materialsReplacement"] = {}
+
+    # Biome 
     settlementData["biomeId"] = _utils.getBiome(settlementData["center"][0], settlementData["center"][2], 1, 1) # TODO get mean
     settlementData["biomeName"] = resources.biomeMinecraftId[int(settlementData["biomeId"])]
     settlementData["biomeBlockId"] = str(resources.biomesBlockId[settlementData["biomeName"]])
     if settlementData["biomeBlockId"] == "-1": 
         print("Generation on biome block id -1")
         settlementData["biomeBlockId"] = "0"
+
+    # Load replaceements for structure biome
+    for aProperty in resources.biomesBlocks[settlementData["biomeBlockId"]]:
+        if aProperty in resources.biomesBlocks["rules"]["village"]:
+            settlementData["materialsReplacement"][aProperty] = resources.biomesBlocks[settlementData["biomeBlockId"]][aProperty]
 
     settlementData["villageName"] = _utils.generateVillageName()
 
@@ -107,6 +120,7 @@ if not args.remove:
             settlementData["discoveredChunk"].append(chunk)
             _utils.addResourcesFromChunk(resources, settlementData, structureBiomeBlockId)
 
+        loremaker.alterSettlementDataWithNewStructures(settlementData, i)
         structureMananager.checkDependencies()
 
     # Create books for the village
@@ -124,13 +138,20 @@ if not args.remove:
     villageNameBook = toolbox.writeBook(textVillagePresentationBook, title="Village Presentation", author="Mayor", description="Presentation of the village")
     villagerNamesList = toolbox.writeBook(textVillagersNames, title="List of all villagers", author="Mayor", description="List of all villagers")
     deadVillagersBook = toolbox.writeBook(textDeadVillagers[0], title="List of all dead villagers", author="Mayor", description="List of all dead villagers")
-    print(settlementData["center"])
+   
+
     books = [villageNameBook, villagerNamesList, deadVillagersBook]
     for i in range(3):
         toolbox.placeLectern(
             settlementData["center"][0], 
             floodFill.getHeight(settlementData["center"][0], settlementData["center"][2], ws), 
              settlementData["center"][2] + i, books[i], worldModif, 'east')
+
+    
+    # Add books replacements
+    settlementData["materialsReplacement"]["villageBook"] = villageNameBook
+    settlementData["materialsReplacement"]["villagerRegistry"] = villagerNamesList
+    settlementData["materialsReplacement"]["deadVillagerRegistry"] = deadVillagersBook
 
 
     # Creates roads
@@ -168,20 +189,12 @@ if not args.remove:
         if structureBiomeBlockId == "-1" :
             structureBiomeBlockId = settlementData["biomeBlockId"]    
         
-        # Load block for structure biome
-        for aProperty in resources.biomesBlocks[settlementData["biomeBlockId"]]:
-            if aProperty in resources.biomesBlocks["rules"]["village"]:
-                buildingCondition["replacements"][aProperty] = resources.biomesBlocks[settlementData["biomeBlockId"]][aProperty]
+        buildingCondition["replacements"][aProperty] = copy.deepcopy(settlementData["materialsReplacement"])
 
         # Load block for structure biome
         for aProperty in resources.biomesBlocks[structureBiomeBlockId]:
             if aProperty in resources.biomesBlocks["rules"]["structure"]:
                 buildingCondition["replacements"][aProperty] = resources.biomesBlocks[structureBiomeBlockId][aProperty]
-
-        # Add books replacements
-        buildingCondition["replacements"]["villageBook"] = villageNameBook
-        buildingCondition["replacements"]["villagerRegistry"] = villagerNamesList
-        buildingCondition["replacements"]["deadVillagerRegistry"] = deadVillagersBook
 
         structure.build(worldModif, buildingCondition, chestGeneration)
         settlementData["structures"][i]["position"]

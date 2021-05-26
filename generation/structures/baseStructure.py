@@ -204,6 +204,9 @@ class BaseStructure:
     people : people's name which should appears in the sign
     """
     def generateSignatureSign(self, position, worldModification, woodType, people):
+        if not "sign" in self.info.keys():
+            return
+
         worldModification.setBlock(position[0], position[1], position[2], "minecraft:air", placeImmediately=True)
         worldModification.setBlock(position[0], position[1], position[2], 
             "minecraft:" + woodType + "_wall_sign[facing=" + self.computedOrientation[self.info["sign"]["facing"]] + "]", 
@@ -270,6 +273,9 @@ class BaseStructure:
     buildingCondition : condition used to build a structures
     """
     def placeSupportUnderStructure(self, worldModif, buildingCondition):
+        if not "ground" in self.info.keys():
+            return
+
         zones = []
         if "info" in self.info["ground"].keys():
             if "all" == self.info["ground"]["info"] :
