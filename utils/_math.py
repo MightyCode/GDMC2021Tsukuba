@@ -1,10 +1,17 @@
 import math
 
 
+def isPointInCube(point, cube):
+    if (cube[0] <= point[0] and cube[3] >= point[0]):
+        if (cube[1] <= point[1] and cube[4] >= point[1]):
+            if (cube[2] <= point[2] and cube[5] >= point[2]):
+                return True
+    return False
+
+
 def isPointInSquare(point, square):
-    if (square[0] <= point[0] and square[3] >= point[0]):
-        if (square[1] <= point[1] and square[4] >= point[1]):
-            if (square[2] <= point[2] and square[5] >= point[2]):
+    if (square[0] <= point[0] and square[2] >= point[0]):
+        if (square[1] <= point[1] and square[3] >= point[1]):
                 return True
 
     return False

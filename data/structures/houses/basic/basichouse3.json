@@ -23,5 +23,11 @@
     "zones" : [
       [0, 0, 5, 9]
     ]
+  },
+  "sign" : {
+    "position" : [5, 2, 3],
+    "facing" : "east",
+    "tier" : 1,
+    "name" : "House"
   }
 }

@@ -25,5 +25,11 @@
     "zones" : [
       [0, 0, 8, 8]
     ]
+  },
+  "sign" : {
+    "position" : [4, 3, 10],
+    "facing" : "north",
+    "tier" : 1,
+    "name" : "Farm"
   }
 }

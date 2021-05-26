@@ -17,7 +17,8 @@ def getBiome(x, z, dx, dz):
     try:
         response = requests.get(url)
     except ConnectionError:
-        return "minecraft:plains"
+        return -1
+        #return "minecraft:plains"
     biomeId = response.text.split(":")
     biomeinfo = biomeId[6].split(";")
     biome = biomeinfo[1].split(",")
@@ -43,7 +44,8 @@ def getAllBiome():
     value = getNameBiome(savedbiome)
     return value
         
-def getNameBiome(self, biome):
+        
+def getNameBiome(biome):
     filin = open("data/biome.txt")
     lignes = filin.readlines()
     biomename = lignes[int(biome)].split(":")[0]
@@ -54,9 +56,9 @@ def getNameBiome(self, biome):
 """
 Return the text of the book of the village presentation
 """
-def createTextOfPresentationVillage(villageName, villagerNames, structuresNumber, structuresNames):
+def createTextOfPresentationVillage(villageName, villagerNames, structuresNumber, structuresNames, deadVillagersNumber):
     textVillagePresentationBook = (
-            '\f\\\\s--------------\\\\n'
+            '\\\\s--------------\\\\n'
             '                      \\\\n'
             '                      \\\\n'
             '   Welcome to      \\\\n'
@@ -71,36 +73,62 @@ def createTextOfPresentationVillage(villageName, villagerNames, structuresNumber
             '--------------')
     textVillagePresentationBook += ('\f\\\\s---------------\\\\n')
     textVillagePresentationBook += ('There are '
-        f'{len(villagerNames)} villagers in this village\\\\n')
+        f'{len(villagerNames)} villagers in this village.\\\\n'
+        f'{deadVillagersNumber} are dead. \\\\n')
     textVillagePresentationBook += ('---------------\\\\n\f')
-    textVillagePresentationBook += ('\f\\\\s---------------\\\\n'
+    textVillagePresentationBook += ('\f'
                       'There are '
                       f'{structuresNumber} structures : \\\\n')
     for i in range(len(structuresNames)):
         if i <= 10:
             textVillagePresentationBook += (f'{structuresNames[i]["name"]} ')
-        if i % 10 == 0:
-            textVillagePresentationBook += ('-----------------\\\\n\f')
+        if i % 10 == 0 and i != 0:
+            textVillagePresentationBook += ('\f')
         if i > 10:
             textVillagePresentationBook += (f'{structuresNames[i]["name"]} ')
-    textVillagePresentationBook += ('---------------\\\\n\f')
-    
+    textVillagePresentationBook += ('\f')
     return textVillagePresentationBook
 
 """
 Return the text of the book of the villagers names and professions
 """
 def createTextForVillagersNames(listOfVillagers):
-    textVillagerNames = ('\f\\\\s-----------------\\\\n')
+    textVillagerNames = (' ')
     for i in range(len(listOfVillagers)):
         if i <= 6: 
-            textVillagerNames += (f'{listOfVillagers[i]}       \\\\n')
-        if i % 6 == 0:
-            textVillagerNames += ('-----------------\\\\n\f')
+            textVillagerNames += ('-'
+                f'{listOfVillagers[i]}       \\\\n')
+        if i % 6 == 0 and i != 0:
+            textVillagerNames += ('\f')
         if i > 6:
-            textVillagerNames += (f'{listOfVillagers[i]}       \\\\n')
-    textVillagerNames += ('-----------------\\\\n\f')
+            textVillagerNames += ('-'
+                f'{listOfVillagers[i]}       \\\\n')
+    textVillagerNames += ('\f')
     return textVillagerNames
+
+"""
+Return the text of the book of the dead villagers names and professions
+"""
+def createTextForDeadVillagers(listOfVillagers):
+    newList = listOfVillagers
+    textDeadVillagers = (' ')
+    random = rd.randint(0, len(newList) - 1)
+    # print("the dead villagers : ")
+    # print(random)
+    for i in range(random):
+        deadVillager = rd.choice(newList)
+        # print(deadVillager)
+        if i <= 6:
+            textDeadVillagers += ('-'
+                f'{deadVillager} \\\\n')
+        if i % 6 == 0 and i != 0:
+            textDeadVillagers += ('\f')
+        if i > 6:
+            textDeadVillagers += ('-'
+                f'{deadVillager} \\\\n')
+        newList.remove(deadVillager)
+    textDeadVillagers += ('\f')
+    return [textDeadVillagers, random]
 
 def addResourcesFromChunk(resources, settlementData, biome):
     if biome == "-1":

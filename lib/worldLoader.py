@@ -1,6 +1,5 @@
 # ! /usr/bin/python3
 """### Provides tools for reading chunk data.
-
 This module contains functions to:
 * Calculate a heightmap ideal for building
 * Visualise numpy arrays
@@ -119,7 +118,7 @@ class WorldSlice:
         """**Return block data**."""
         chunkX = (x >> 4) - self.chunkRect[0]
         chunkZ = (z >> 4) - self.chunkRect[1]
-        chunkY = y - 1 >> 4
+        chunkY = y >> 4
 
         cachedSection = self.sections[chunkX][chunkZ][chunkY]
 
@@ -143,7 +142,6 @@ class WorldSlice:
 
     def getBiomeAt(self, x, y, z):
         """**Return biome at given coordinates**.
-
         Due to the noise around chunk borders,
             there is an inacurracy of +/-2 blocks.
         """

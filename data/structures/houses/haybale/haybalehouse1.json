@@ -21,5 +21,11 @@
     "zones" : [
       [0, 1, 4, 5]
     ]
+  },
+  "sign" : {
+    "position" : [3, 3, 1],
+    "facing" : "west",
+    "tier" : 0,
+    "name" : "House"
   }
-}
+} 

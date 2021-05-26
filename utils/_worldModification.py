@@ -2,7 +2,6 @@ import os.path
 from os import path
 import json 
 import lib.interfaceUtils as interfaceUtils
-import utils._utils as _utils
 
 # Class which serve to save all modification, do undo actions
 class WorldModification: 
@@ -28,7 +27,7 @@ class WorldModification:
 
     def setBlock(self, x, y, z, block, compareBlockState=False, placeImmediately=False):
         if WorldModification.DEBUG_MODE:
-            previousBlock = self.interface.getBlock(x, y, z, True)
+            previousBlock = self.interface.getBlock(x, y, z)
 
             # We won't replace block by same one, 
             # option to compare or not the state of both blocks -> [...]
@@ -61,7 +60,7 @@ class WorldModification:
                     for y in range(from_y, to_y + 1):
                         # We won't replace block by same one, 
                         # option to compare or not the state of both blocks -> [...]
-                        previousBlock = self.interface.getBlock(x, y, z, True)
+                        previousBlock = self.interface.getBlock(x, y, z)
                         if block.split("[")[0] == previousBlock.split("[")[0]:
                             if compareBlockState: 
                                 pass

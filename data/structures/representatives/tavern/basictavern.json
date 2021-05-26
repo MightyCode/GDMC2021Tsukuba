@@ -23,5 +23,11 @@
     },
     "ground" : {
       "info": "all"
+    },
+    "sign" : {
+      "position" : [0, 2, 0],
+      "facing" : "north",
+      "tier" : 1,
+      "name" : "Tavern"
     }
   }

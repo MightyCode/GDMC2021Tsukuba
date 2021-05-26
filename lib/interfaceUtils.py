@@ -1,6 +1,5 @@
 # ! /usr/bin/python3
 """### Provide tools for placing and getting blocks and more.
-
 This module contains functions to:
 * Request the build area as defined in-world
 * Run Minecraft commands
@@ -16,16 +15,17 @@ __version__ = "v4.2_dev"
 from collections import OrderedDict
 from random import choice
 
+from collections import OrderedDict
+from random import choice
+
 import lib.direct_interface as di
 import numpy as np
 from lib.lookup import TCOLORS
 from lib.worldLoader import WorldSlice
 
 
-
 class OrderedByLookupDict(OrderedDict):
     """Limit size, evicting the least recently looked-up key when full.
-
     Taken from
     https://docs.python.org/3/library/collections.html?highlight=ordereddict#collections.OrderedDict
     """
@@ -52,7 +52,6 @@ class OrderedByLookupDict(OrderedDict):
 
 class Interface():
     """**Provides tools for interacting with the HTML interface**.
-
     All function parameters and returns are in local coordinates.
     """
 
@@ -83,7 +82,6 @@ class Interface():
 
     def getBlock(self, x, y, z):
         """**Return the name of a block in the world**.
-
         Takes local coordinates, works with global coordinates
         """
         x, y, z = self.local2global(x, y, z)
@@ -106,7 +104,6 @@ class Interface():
 
     def fill(self, x1, y1, z1, x2, y2, z2, replaceBlock):
         """**Fill the given region with the given block**.
-
         Supports sequences of block strings for random texturing
         Works with local coordinates
         """
@@ -123,7 +120,6 @@ class Interface():
 
     def replace(self, x1, y1, z1, x2, y2, z2, searchBlock, replaceBlock):
         """**Replace searchBlock with replaceBlock**.
-
         Supports sequences of block strings for random texturing
         Works with local coordinates
         """
@@ -141,7 +137,6 @@ class Interface():
 
     def setBlock(self, x, y, z, blockStr):
         """**Place a block in the world depending on buffer activation**.
-
         Takes local coordinates, works with local and global coordinates
         """
         if self.__buffering:
@@ -163,7 +158,6 @@ class Interface():
 
     def placeBlock(self, x, y, z, blockStr):
         """**Place a single block in the world directly**.
-
         Takes local coordinates, works with global coordinates
         """
         x, y, z = self.local2global(x, y, z)
@@ -188,7 +182,7 @@ class Interface():
             self.sendBlocks()
             print("Buffering has been deactivated.")
 
-    def getBufferlimit(self):
+    def getBufferLimit(self):
         """**Get self.bufferlimit**."""
         return self.bufferlimit
 
@@ -214,7 +208,6 @@ class Interface():
 
     def placeBlockBatched(self, x, y, z, blockStr, limit=50):
         """**Place a block in the buffer and send once limit is exceeded**.
-
         Takes local coordinates and works with global coordinates
         """
         x, y, z = self.local2global(x, y, z)
@@ -227,7 +220,6 @@ class Interface():
 
     def sendBlocks(self, x=0, y=0, z=0, retries=5):
         """**Send the buffer to the server and clear it**.
-
         Since the buffer contains global coordinates
             no conversion takes place in this function
         """
@@ -264,6 +256,50 @@ class Interface():
             result.append(z - self.offset[2])
         return result
 
+        #------------ caranha functions
+
+def makeBuildArea(width = 128, height = 128):
+    runCommand("execute at @p run setbuildarea ~{} 0 ~{} ~{} 255 ~{}".format(int(-1*width/2), int(-1*height/2), int(width/2), int(height/2)))
+    buildArea = requestBuildArea()
+    x1 = buildArea["xFrom"]
+    z1 = buildArea["zFrom"]
+    x2 = buildArea["xTo"]
+    z2 = buildArea["zTo"]
+    return (x1, z1, x2 - x1, z2 - z1)
+def setSignText(x, y, z, line1 = "", line2 = "", line3 = "", line4 = ""):
+    l1 = 'Text1:\'{"text":"'+line1+'"}\''
+    l2 = 'Text2:\'{"text":"'+line2+'"}\''
+    l3 = 'Text3:\'{"text":"'+line3+'"}\''
+    l4 = 'Text4:\'{"text":"'+line4+'"}\''
+    blockNBT = "{"+l1+","+l2+","+l3+","+l4+"}"
+    return(runCommand("data merge block {} {} {} ".format(x, y, z) + blockNBT))
+def addItemChest(x, y, z, items, places=[]):
+    if len(places) == 0:
+        places = list(range(len(items)))
+    for id, v in enumerate(items):
+        id = places[id]
+        command = "replaceitem block {} {} {} {} {} {}".format(x, y, z,
+                                                               "container."+str(id),
+                                                               v[0],
+                                                               v[1])
+        runCommand(command)
+def makeBookItem(text, title = "", author = "", desc = ""):
+    booktext = "pages:["
+    while len(text) > 0:
+        page = text[:15*23]
+        text = text[15*23:]
+        bookpage = "'{\"text\":\""
+        while len(page) > 0:
+            line = page[:23]
+            page = page[23:]
+            bookpage += line+"\\\\n"
+        bookpage += "\"}',"
+        booktext += bookpage
+    booktext = booktext + "],"
+    booktitle = "title:\""+title+"\","
+    bookauthor = "author:\""+author+"\","
+    bookdesc = "display:{Lore:[\""+desc+"\"]}"
+    return "written_book{"+booktext+booktitle+bookauthor+bookdesc+"}"
 
 def runCommand(command):
     """**Run a Minecraft command in the world**."""
@@ -272,12 +308,11 @@ def runCommand(command):
 
 def setBuildArea(x1, y1, z1, x2, y2, z2):
     runCommand(f"setbuildarea {x1} {y1} {z1} {x2} {y2} {z2}")
-    requestBuildArea()
+    return requestBuildArea()
 
 
 def requestBuildArea():
     """**Return the current building area**.
-
     Will reset anything dependant on the build area.
     """
     global globalBuildArea

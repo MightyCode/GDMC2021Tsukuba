@@ -1,12 +1,21 @@
-import random
 import lib.interfaceUtils as interfaceUtils
 import utils._utils as _utils
+import random
 
 class ChestGeneration:
     def __init__(self, resources, interface):
         self.resources = resources
         self.interface = interface
     
+
+    """
+    Generate a chest content at given position and loottable
+    x : x position of chest
+    y : y position of chest
+    z : z position of chest
+    lootTableName : name of the lootTable used
+    changeItemName : indicates what ** balise should change, ex : *woodType*
+    """
     def generate(self, x, y, z, lootTableName, changeItemName={}):
         lootTable = self.resources.lootTables[lootTableName]["pools"][0]
 
@@ -50,9 +59,11 @@ class ChestGeneration:
                         
                     break
         
-        interfaceUtils.Interface.addItemChest(x, y, z, items, itemPlaces)
+        interfaceUtils.addItemChest(x, y, z, items, itemPlaces)
 
-
+    """
+    Generate places of items
+    """
     def generatePlaces(self, number):
         places = list(range(28))
         if number > 13:

@@ -69,6 +69,18 @@
             "stoneResources" : { "min" : 1}
         }
     },
+    "basicWell" : {
+        "structures" : [
+            "basicgeneratedwell"
+        ],
+        "type" : "representatives",
+        "conditions" : {
+            "previous" : [
+                { "name" : "basicQuarry", "min" : 1 },
+                { "name" : "basicWell", "max" : 1 }
+            ]
+        }
+    },
     "basicFurnace" : {
         "structures" : [
             "basicfurnace1"

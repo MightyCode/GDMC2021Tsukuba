@@ -26,5 +26,11 @@
     "villager" : 2,
     "gameProfession" : "farmer",
     "profession" : "Crusher"
+  },
+  "sign" : {
+    "position" : [3, 4, 0],
+    "facing" : "north",
+    "tier" : 1,
+    "name" : "Windmill"
   }
 }

@@ -28,5 +28,11 @@
         [3, 0, 6, 1],
         [1, 2, 9, 7]
       ]
+    },
+    "sign" : {
+      "position" : [2, 2, 1],
+      "facing" : "north",
+      "tier" : 1,
+      "name" : "Townhall"
     }
   }

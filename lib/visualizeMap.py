@@ -7,9 +7,9 @@ import lib.interfaceUtils as interfaceUtils
 import lib.lookup as lookup
 from lib.toolbox import loop2d
 from lib.worldLoader import WorldSlice
-import cv2
 import matplotlib.pyplot as plt
 import numpy as np
+import cv2
 
 if __name__ == '__main__':
     # see if a different build area was defined ingame
