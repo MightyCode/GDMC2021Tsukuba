@@ -42,21 +42,20 @@ class GeneratedWell(BaseStructure):
             woodType = "oak"
         
         self.plankType = "minecraft:" + woodType + "_planks"
-        
-        fromBlock = self.returnWorldPosition([1, 0, 1], buildingCondition["flip"], 
-                        buildingCondition["rotation"], buildingCondition["referencePoint"], buildingCondition["position"])
-        toBlock = self.returnWorldPosition([self.size_x() - 2, self.size_y() - 1 , self.size_z() - 2], buildingCondition["flip"], 
-                        buildingCondition["rotation"], buildingCondition["referencePoint"], buildingCondition["position"])
-
-        worldModif.fillBlocks(fromBlock[0], fromBlock[1], fromBlock[2], toBlock[0], toBlock[1], toBlock[2], "minecraft:air")
+    
         position = self.returnWorldPosition(
-                        [self.entry[0], self.entry[1] - 1, self.entry[2]],
+                        [self.entry[0], self.entry[1], self.entry[2]],
                         buildingCondition["flip"], buildingCondition["rotation"], buildingCondition["referencePoint"],
                         buildingCondition["position"])
         # Add water
-        for i in range(2):
-            for j in range(2):
-                worldModif.setBlock(position[0] - i, position[1], position[2] - j, "minecraft:water")
+        positions = [[0,0], [0,1], [1,1], [1,0]]
+        for i in range(len(positions)):
+            localPosition = [positions[i][0], int(self.size_y()/2) - 1, positions[i][1]] 
+            position = self.returnWorldPosition(
+                        localPosition, buildingCondition["flip"], 
+                        buildingCondition["rotation"], buildingCondition["referencePoint"], buildingCondition["position"])
+            worldModif.setBlock(position[0], position[1], position[2], "minecraft:water")
+        worldModif.fillBlocks(position[0], position[1], position[2], position[0]-1, position[1]-10, position[2]+1,"minecraft:air")
 
         self.addStoneBricks(worldModif, buildingCondition)
         self.addStoneBrickStairs(worldModif, buildingCondition)
@@ -66,8 +65,7 @@ class GeneratedWell(BaseStructure):
         
     def addWoodAroundTheWell(self, worldModif, buildingCondition):
         positions =[[ 0,-2], [1,-2], [3, 0], [3,1], [1,3], [0,3], [-2,0], [-2,1], [-2, -1], [3, -1], [3, 2], [-2, 2],
-                    [-1, -2], [2, -2], [2, 3], [-1, 3], [-2, -2], [3, -2], [3, 3], [-2, 3]]
-
+                     [-1, -2], [2, -2], [2, 3], [-1, 3], [-2, -2], [3, -2], [3, 3], [-2, 3]]
         # Add wood plank
         for i in range(len(positions)):
             localPosition = [positions[i][0], int(self.size_y()/2) - 1, positions[i][1]] 

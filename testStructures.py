@@ -31,7 +31,11 @@ if not args.remove:
     buildingCondition["flip"] = 0
     buildingCondition["rotation"] = 0
     buildingInfo = structure.getNextBuildingInformation( buildingCondition["flip"], buildingCondition["rotation"])
+<<<<<<< HEAD
     buildingCondition["position"] = [784, 70, 1032]
+=======
+    buildingCondition["position"] = [-105, 81, 111]
+>>>>>>> ab3a1e643394b502b5aea928afbee012cadc5e7e
     buildingCondition["referencePoint"] = buildingInfo["entry"]["position"]
     buildingCondition["size"] = buildingInfo["size"]
     corners = structure.getCornersLocalPositionsAllFlipRotation(info["mainEntry"]["position"])
