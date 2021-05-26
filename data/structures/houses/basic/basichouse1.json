@@ -4,6 +4,7 @@
     "position" : [7, 1, 2]
   },
   "replacements" : {
+    "minecraft:cyan_bed" : { "type" : "bed", "state" : 1 },
     "oak" : { "type" : "woodType", "state" : 2 },
     "spruce" : { "type" : "woodType2", "state" : 2 }  
   },

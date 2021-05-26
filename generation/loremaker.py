@@ -24,3 +24,4 @@ def voteForColor(settlementData):
     settlementData["materialsReplacement"]["dye"] = "minecraft:" + color + "_dye"
     settlementData["materialsReplacement"]["bed"] = "minecraft:" + color + "_bed"
     settlementData["materialsReplacement"]["banner"] = "minecraft:" + color + "_banner"
+    settlementData["materialsReplacement"]["wall_banner"] = "minecraft:" + color + "_wall_banner"

@@ -16,7 +16,7 @@ import time
 import copy
 
 file = "temp.txt"
-interface = interfaceUtils.Interface(buffering=True)
+interface = interfaceUtils.Interface(buffering=True, caching=True)
 worldModif = WorldModification(interface)
 args, parser = argParser.giveArgsAndParser()
 area = argParser.getBuildArea(interface, args)
@@ -31,8 +31,6 @@ if not args.remove:
 
     chestGeneration = ChestGeneration(resources, interface)
     ws = WorldSlice(area[0], area[2], area[3], area[5])
-    ws.setBuffering(True)
-    ws.setCaching(True)
     floodFill = FloodFill(area)
     
     settlementData = {}
@@ -189,15 +187,16 @@ if not args.remove:
         if structureBiomeBlockId == "-1" :
             structureBiomeBlockId = settlementData["biomeBlockId"]    
         
-        buildingCondition["replacements"][aProperty] = copy.deepcopy(settlementData["materialsReplacement"])
+        buildingCondition["replacements"] = copy.deepcopy(settlementData["materialsReplacement"])
 
         # Load block for structure biome
         for aProperty in resources.biomesBlocks[structureBiomeBlockId]:
             if aProperty in resources.biomesBlocks["rules"]["structure"]:
                 buildingCondition["replacements"][aProperty] = resources.biomesBlocks[structureBiomeBlockId][aProperty]
 
+        print(buildingCondition["replacements"][aProperty])
         structure.build(worldModif, buildingCondition, chestGeneration)
-        settlementData["structures"][i]["position"]
+
         _utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i],
             [settlementData["structures"][i]["position"][0], 
              settlementData["structures"][i]["position"][1] + 1, 

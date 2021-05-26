@@ -23,7 +23,7 @@ if not args.remove:
     resources = Resources()
     resLoader.loadAllResources(resources)
     chestGeneration = ChestGeneration(resources, interface)
-    structure = resources.structures["haybalehouse1"]
+    structure = resources.structures["basicgeneratedwell"]
 
     info = structure.info
     buildingCondition = BaseStructure.createBuildingCondition()
@@ -31,11 +31,7 @@ if not args.remove:
     buildingCondition["flip"] = 0
     buildingCondition["rotation"] = 0
     buildingInfo = structure.getNextBuildingInformation( buildingCondition["flip"], buildingCondition["rotation"])
-<<<<<<< HEAD
-    buildingCondition["position"] = [784, 70, 1032]
-=======
-    buildingCondition["position"] = [-105, 81, 111]
->>>>>>> ab3a1e643394b502b5aea928afbee012cadc5e7e
+    buildingCondition["position"] = [551, 63, 915]
     buildingCondition["referencePoint"] = buildingInfo["entry"]["position"]
     buildingCondition["size"] = buildingInfo["size"]
     corners = structure.getCornersLocalPositionsAllFlipRotation(info["mainEntry"]["position"])
@@ -64,8 +60,6 @@ if not args.remove:
     for aProperty in resources.biomesBlocks[structureBiomeBlockId]:
         if aProperty in resources.biomesBlocks["rules"]["structure"]:
             buildingCondition["replacements"][aProperty] = resources.biomesBlocks[structureBiomeBlockId][aProperty]
-
-    print(buildingCondition["replacements"])
 
     structure.build(worldModif, buildingCondition, chestGeneration)
     worldModif.saveToFile(file)
