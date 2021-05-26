@@ -42,7 +42,9 @@ class WorldModification:
             self.after_modificaton.append([x, y, z, block])
 
         if placeImmediately : 
-            self.interface.placeBlock(x, y, z, block)
+            self.interface.setBuffering(False)
+            self.interface.setBlock(x, y, z, block)
+            self.interface.setBuffering(True)
         else :
             self.interface.setBlock(x, y, z, block)
 

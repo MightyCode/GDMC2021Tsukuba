@@ -94,7 +94,7 @@ class FloodFill:
         while stack:
             Node = stack.pop()
             validPositions.append(Node)
-            iu.setBlock(Node[0],Node[1]-1,Node[2],"minecraft:bricks")
+            #iu.setBlock(Node[0],Node[1]-1,Node[2],"minecraft:bricks")
             for add in toAdd:
                 x = Node[0] + add[0]
                 z = Node[2] + add[1]
@@ -160,7 +160,7 @@ class FloodFill:
         sizeStruct = max(abs(CornerPos[0][0]) + abs(CornerPos[0][2]) + 1, abs(CornerPos[0][1]) + abs(CornerPos[0][3]) + 1)
 
         notFinded = True
-        debug = 250 * 12
+        debug = 250 * 16
         debugNoHouse = 5
         verifCorners = False
         verifOverlapseHouse = False

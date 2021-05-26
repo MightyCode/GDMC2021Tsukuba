@@ -15,7 +15,11 @@ import generation.road as road
 import lib.interfaceUtils as iu
 
 file = "temp.txt"
-interface = interfaceUtils.Interface(buffering=True,caching = True)
+interface = interfaceUtils.Interface(buffering=True, caching = True)
+interface.setCaching(True)
+interface.setBuffering(True)
+iu.setCaching(True)
+iu.setBuffering(True)
 worldModif = WorldModification(interface)
 args, parser = argParser.giveArgsAndParser()
 area = argParser.getBuildArea(interface, args)
@@ -52,7 +56,7 @@ if not args.remove:
                 "farmer", "fisherman", "shepherd", "fletcher", "librarian", "cartographer", 
                 "cleric", "armorer", "weaponsmith", "toolsmith", "butcher", "leatherworker", "mason", "nitwit"]
     
-    settlementData["structuresNumberGoal"] = random.randint(15, 70)
+    settlementData["structuresNumberGoal"] = random.randint(50,75)
 
     #structures contains "position", "rotation", "flip" "name", "type", "group" ->, "villagersId"
     settlementData["structures"] = []
