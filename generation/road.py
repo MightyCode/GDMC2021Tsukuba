@@ -164,6 +164,7 @@ def initRoad(floodFill, settlementData, worldmodif, ws, materials):
 							y -=1
 						if not(floodFill.is_air(x, y+1, z,ws)):
 							y += 1
+						print("stuck1")
 			worldmodif.setBlock(x, y - 1, z, "minecraft:grass_path")
 			x += ORIENTATION[facingparent][0]
 			z += ORIENTATION[facingparent][1]
@@ -172,6 +173,7 @@ def initRoad(floodFill, settlementData, worldmodif, ws, materials):
 							y -=1
 						if not(floodFill.is_air(x, y+1, z,ws)):
 							y += 1
+						print("stuck2")
 			worldmodif.setBlock(x, y - 1, z, "minecraft:grass_path")
 			x += ORIENTATION[facingparent][0]
 			z += ORIENTATION[facingparent][1]
@@ -180,6 +182,7 @@ def initRoad(floodFill, settlementData, worldmodif, ws, materials):
 							y -=1
 						if not(floodFill.is_air(x, y+1, z,ws)):
 							y += 1
+						print("stuck3")
 			worldmodif.setBlock(x, y - 1, z, "minecraft:grass_path")
 			x += ORIENTATION[facingparent][0]
 			z += ORIENTATION[facingparent][1]

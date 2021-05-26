@@ -5,7 +5,7 @@ class FloodFill:
     
     # Ignoreblockvalue is the list of block that we want to ignore when we read the field
     IGNORED_BLOCKS = [
-        'minecraft:void_air', 'minecraft:air', 'minecraft:cave_air', 'minecraft:water', 
+        'minecraft:void_air', 'minecraft:air', 'minecraft:cave_air', 'minecraft:water','minecraft:dark_oak_leaves',
         'minecraft:oak_leaves',  'minecraft:leaves',  'minecraft:birch_leaves', 'minecraft:spruce_leaves','minecraft:vine'
         'minecraft:oak_log',  'minecraft:spruce_log',  'minecraft:birch_log',  'minecraft:jungle_log', 'minecraft:acacia_log', 'minecraft:dark_oak_log',
         'minecraft:grass', 'minecraft:snow','minecraft:acacia_leaves','minecraft:tall_grass','minecraft:poppy','minecraft:dandelion','minecraft:brown_mushroom_block','minecraft:mushroom_stem','minecraft:rose_bush','minecraft:red_mushroom_block',
@@ -99,7 +99,11 @@ class FloodFill:
                 z = Node[2] + add[1]
                 y = Node[1]
                 if _math.isPointInCube([x, y, z], self.buildArea):
-                    groundHeight = self.is_ground(x, y, z, ws)
+                    try:
+                        groundHeight = self.is_ground(x, y, z, ws)
+                    except IndexError:
+                        print("indexerror")
+                        print(x,y,z)
                     if groundHeight != -1 and (x, groundHeight, z) not in validPositions and _math.isPointInCube([x, y, z], floodFillArea):
                         stack.append((x, groundHeight, z))
 
@@ -162,7 +166,7 @@ class FloodFill:
 
         print("there is already", len(self.listHouse), "placed")
 
-        while notFinded and debug and debugNoHouse and not verifCorners:
+        while notFinded and (debug>0) and debugNoHouse and not verifCorners:
             if len(self.listHouse) == 0:
                 xPos, zPos = self.takeRandomPosition(sizeStruct)
 
@@ -197,9 +201,10 @@ class FloodFill:
             else:
                 verifOverlapseHouse = False
                 verifCorners = False
-                while not verifCorners and debug:
-                    xPos, yPos, zPos = self.takeNewPositionForHouse(sizeStruct)
 
+                while not verifCorners and (debug>0):
+                    xPos, yPos, zPos = self.takeNewPositionForHouse(sizeStruct)
+                    print(int(debug / 12),"try left")
                     #to get a random flip and rotation and to test if one is possible
                     if (ws.getBlockAt(xPos, yPos, zPos)=='minecraft:water'):  
                         continue
@@ -250,9 +255,9 @@ class FloodFill:
                 
         if debug <= 0:
             dictionnary = {"position" : [xPos, yPos, zPos] , "validPosition" : False , "flip" : rand1 , "rotation" : rand2, "corner" : choosenCorner }
-            
-            self.listHouse.append((xPos, yPos, zPos, choosenCorner, FloodFillValue, -1, False))
             FloodFillValue = [xPos, yPos, zPos]
+            self.listHouse.append((xPos, yPos, zPos, choosenCorner, FloodFillValue, -1, False))
+            
             print("debug failed")
         else:
             self.listHouse.append((xPos, yPos, zPos, choosenCorner, FloodFillValue, self.previousStructure, True))
