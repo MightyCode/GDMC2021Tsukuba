@@ -12,9 +12,10 @@ import random
 import time
 import lib.toolbox as toolbox
 import generation.road as road
+import lib.interfaceUtils as iu
 
 file = "temp.txt"
-interface = interfaceUtils.Interface(buffering=True)
+interface = interfaceUtils.Interface(buffering=True,caching = True)
 worldModif = WorldModification(interface)
 args, parser = argParser.giveArgsAndParser()
 area = argParser.getBuildArea(interface, args)
@@ -27,7 +28,7 @@ if not args.remove:
     resLoader.loadAllResources(resources)
 
     chestGeneration = ChestGeneration(resources, interface)
-    ws = WorldSlice(area[0], area[2], area[3], area[5])
+    iu.makeGlobalSlice()
     floodFill = FloodFill(area)
     
     settlementData = {}
@@ -83,7 +84,7 @@ if not args.remove:
         settlementData["structures"][i]["rotation"] = 0"""
 
         corners = structure.setupInfoAndGetCorners()
-        result = floodFill.findPosHouse(corners, ws)
+        result = floodFill.findPosHouse(corners)
 
         settlementData["structures"][i]["validPosition"] = result["validPosition"]
 
@@ -132,7 +133,7 @@ if not args.remove:
     for aProperty in resources.biomesBlocks[settlementData["biomeBlockId"]]:
         materials [aProperty] = resources.biomesBlocks[settlementData["biomeBlockId"]][aProperty]
     #for the PATH
-    road.initRoad(floodFill, settlementData, worldModif, ws, materials)
+    road.initRoad(floodFill, settlementData, worldModif,  materials)
 
     #structureMananager.printStructureChoose()
 

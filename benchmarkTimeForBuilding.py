@@ -25,10 +25,11 @@ resLoader.loadAllResources(resources)
 chestGeneration = ChestGeneration(resources, interface)
 structure = resources.structures["basicwindmill"]
 info = structure.info
-buildingCondition = Structures.BUILDING_CONDITIONS.copy()
-buildingInfo = structure.getNextBuildingInformation()
-buildingCondition["flip"] = 3
-buildingCondition["rotation"] = 3
+buildingCondition = BaseStructure.createBuildingCondition()
+buildingInfo = structure.setupInfoAndGetCorners()
+buildingCondition["flip"] = 0
+buildingCondition["rotation"] = 0
+buildingInfo = structure.getNextBuildingInformation( buildingCondition["flip"], buildingCondition["rotation"])
 buildingCondition["size"] = buildingInfo["size"]
 
 buildingCondition["replaceAllAir"] = 3
@@ -51,7 +52,7 @@ for aProperty in resources.biomesBlocks[structureBiomeBlockId]:
 
 for i in range(200):
     buildingCondition["referencePoint"] = buildingInfo["entry"]["position"]
-    buildingCondition["position"] = [ - 150 + 20 * (int(i / 10)), 71, - 150 + 20 * (int(i % 10))]
+    buildingCondition["position"] = [ - 150 + 20 * (int(i / 10)), 5, - 150 + 20 * (int(i % 10))]
     print(str(i) + " : " + str(buildingCondition["position"]))
     structure.build(worldModif, buildingCondition, chestGeneration)
 

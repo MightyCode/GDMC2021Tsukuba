@@ -1,5 +1,6 @@
 import random
 import utils._math as _math
+import lib.interfaceUtils as iu
 
 
 class Node:
@@ -53,7 +54,7 @@ def isInListWithInferiorCost(node, list):
 				return True
 	return False
 
-def Astar(startcoord,goalcoord,squarelist, floodFill,ws):
+def Astar(startcoord,goalcoord,squarelist, floodFill):
 	#the open and close set
 	start = Node(startcoord)
 	goal = Node(goalcoord)
@@ -103,7 +104,7 @@ def Astar(startcoord,goalcoord,squarelist, floodFill,ws):
 LOGNAME = ['minecrat:oak_log','minecraft:spruce_log','minecraft:jungle_log','minecraft:acacia_log','minecraft:dark_oak_log','minecraft:birch_log']
 
 
-def initRoad(floodFill, settlementData, worldmodif, ws, materials):
+def initRoad(floodFill, settlementData, worldmodif,  materials):
 	ORIENTATION = {"north" : [ 0, -1 ], "south" : [ 0, 1 ], "west" : [ -1, 0 ], "east" : [ 1, 0 ]}
 	#to 
 	squarelist= []
@@ -129,18 +130,18 @@ def initRoad(floodFill, settlementData, worldmodif, ws, materials):
 			x = entry1[0] + ORIENTATION[facingenfant][0]
 			y = entry1[1]
 			z = entry1[2] + ORIENTATION[facingenfant][1]
-			while not(floodFill.is_air(x, y+1, z, ws)) or floodFill.is_air(x, y, z, ws):
-						if floodFill.is_air(x, y, z, ws):
+			while not(floodFill.is_air(x, y+1, z)) or floodFill.is_air(x, y, z):
+						if floodFill.is_air(x, y, z):
 							y -=1
-						if not(floodFill.is_air(x, y+1, z,ws)):
+						if not(floodFill.is_air(x, y+1, z)):
 							y += 1
 			worldmodif.setBlock(x, y - 1, z, "minecraft:grass_path")
 			x += ORIENTATION[facingenfant][0]
 			z += ORIENTATION[facingenfant][1]
-			while not(floodFill.is_air(x, y+1, z, ws)) or floodFill.is_air(x, y, z, ws):
-						if floodFill.is_air(x, y, z, ws):
+			while not(floodFill.is_air(x, y+1, z)) or floodFill.is_air(x, y, z):
+						if floodFill.is_air(x, y, z):
 							y -=1
-						if not(floodFill.is_air(x, y+1, z, ws)):
+						if not(floodFill.is_air(x, y+1, z)):
 							y += 1
 			worldmodif.setBlock(x, y - 1, z, "minecraft:grass_path")
 			x += ORIENTATION[facingenfant][0]
@@ -159,28 +160,28 @@ def initRoad(floodFill, settlementData, worldmodif, ws, materials):
 			x = entry2[0] + ORIENTATION[facingparent][0]
 			y = entry2[1]
 			z = entry2[2] + ORIENTATION[facingparent][1]
-			while not(floodFill.is_air(x, y+1, z, ws)) or floodFill.is_air(x, y, z, ws):
-						if floodFill.is_air(x, y, z, ws):
+			while not(floodFill.is_air(x, y+1, z)) or floodFill.is_air(x, y, z):
+						if floodFill.is_air(x, y, z):
 							y -=1
-						if not(floodFill.is_air(x, y+1, z,ws)):
+						if not(floodFill.is_air(x, y+1, z)):
 							y += 1
 						print("stuck1")
 			worldmodif.setBlock(x, y - 1, z, "minecraft:grass_path")
 			x += ORIENTATION[facingparent][0]
 			z += ORIENTATION[facingparent][1]
-			while not(floodFill.is_air(x, y+1, z, ws)) or floodFill.is_air(x, y, z, ws):
-						if floodFill.is_air(x, y, z, ws):
+			while not(floodFill.is_air(x, y+1, z)) or floodFill.is_air(x, y, z):
+						if floodFill.is_air(x, y, z):
 							y -=1
-						if not(floodFill.is_air(x, y+1, z,ws)):
+						if not(floodFill.is_air(x, y+1, z)):
 							y += 1
 						print("stuck2")
 			worldmodif.setBlock(x, y - 1, z, "minecraft:grass_path")
 			x += ORIENTATION[facingparent][0]
 			z += ORIENTATION[facingparent][1]
-			while not(floodFill.is_air(x, y+1, z, ws)) or floodFill.is_air(x, y, z, ws):
-						if floodFill.is_air(x, y, z, ws):
+			while not(floodFill.is_air(x, y+1, z)) or floodFill.is_air(x, y, z):
+						if floodFill.is_air(x, y, z):
 							y -=1
-						if not(floodFill.is_air(x, y+1, z,ws)):
+						if not(floodFill.is_air(x, y+1, z)):
 							y += 1
 						print("stuck3")
 			worldmodif.setBlock(x, y - 1, z, "minecraft:grass_path")
@@ -192,7 +193,7 @@ def initRoad(floodFill, settlementData, worldmodif, ws, materials):
 
 			#generating the path among 2 houses
 			try:
-				path = Astar(start, goal, squarelist,floodFill,ws)
+				path = Astar(start, goal, squarelist,floodFill)
 				print("Astar done : ", path)
 				temp = 0
 				z0 = entry1[1]
@@ -204,16 +205,16 @@ def initRoad(floodFill, settlementData, worldmodif, ws, materials):
 				for block in path:
 					z = z0
 					material = 'minecraft:grass_path'
-					while not(floodFill.is_air(block[0], z+1, block[1], ws)) or floodFill.is_air(block[0], z, block[1], ws):
-						if floodFill.is_air(block[0], z, block[1], ws):
+					while not(floodFill.is_air(block[0], z+1, block[1])) or floodFill.is_air(block[0], z, block[1]):
+						if floodFill.is_air(block[0], z, block[1]):
 							z -=1
-						if not(floodFill.is_air(block[0], z+1, block[1],ws)):
+						if not(floodFill.is_air(block[0], z+1, block[1])):
 							z += 1
-					while ws.getBlockAt(block[0], z, block[1]) == 'minecraft:water':
+					while iu.getBlock(block[0], z, block[1]) == 'minecraft:water':
 						z = z + 1
 						material = "minecraft:"+materials["woodType"]+"_planks"
 
-					while ws.getBlockAt(block[0], z, block[1]) == 'minecraft:lava':
+					while iu.getBlock(block[0], z, block[1]) == 'minecraft:lava':
 						z = z + 1
 						material = "minecraft:obsidian"
 					#here, we need to check if there is a tree above the path, and if yes, we want to remove it
