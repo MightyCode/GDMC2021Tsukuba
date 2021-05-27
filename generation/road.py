@@ -44,9 +44,8 @@ def comparenode(node1,node2):
 		return -1
 
 def isInClosedList(node, closedlist):
-	print("testing : ",node.point)
+	
 	for i in closedlist:
-		print(i.point)
 		if node.point == i.point:
 			return True
 	return False
@@ -106,7 +105,6 @@ def Astar(startcoord,goalcoord,squarelist, floodFill):
 
 			if notinsquare:
 				if not(isInClosedList(node, closedlist) or isInListWithInferiorCost(node, openlist)):
-					print(node.point)
 					node.cost = current.cost + 1
 					node.H = node.cost + manhattan(node,goal)
 					node.parent = current
@@ -118,13 +116,13 @@ LOGNAME = ['minecrat:oak_log','minecraft:spruce_log','minecraft:jungle_log','min
 
 
 def initRoad(floodFill, settlementData, worldmodif,  materials):
-	ORIENTATION = {"north" : [ 0, -1 ], "south" : [ 0, 1 ], "west" : [ -1, 0 ], "east" : [ 1, 0 ]}
+	CORNER_PROJECTION = { "north" : [ 0, 1, 0, 0], "south" : [ 0, 0, 0, 1 ], "west" : [ 1, 0, 0, 0 ], "east" : [ 0, 0, 1, 0 ] }
 	#to 
 	squarelist= []
 	for index in range(0, len(settlementData["structures"])):
 		entrytemp = []
 		entrytemp.append(floodFill.listHouse[index][0])
-		entrytemp.append(floodFill.listHouse[index][1]-1)
+		entrytemp.append(floodFill.listHouse[index][1])
 		entrytemp.append(floodFill.listHouse[index][2])
 		squarelist.append([entrytemp[0] + floodFill.listHouse[index][3][0] , entrytemp[2] + floodFill.listHouse[index][3][1], 
 			entrytemp[0] + floodFill.listHouse[index][3][2], entrytemp[2] + floodFill.listHouse[index][3][3]])
@@ -137,29 +135,20 @@ def initRoad(floodFill, settlementData, worldmodif,  materials):
 		index2 = floodFill.listHouse[index][5]
 		if not index2 == -1:
 			facingenfant = settlementData["structures"][index]["prebuildingInfo"]["entry"]["facing"]
+			cornerenfant = settlementData["structures"][index]["prebuildingInfo"]["corner"]
 			entry1 = []
+			print(settlementData["structures"][index]["prebuildingInfo"]["size"])
 			entry1.append(floodFill.listHouse[index][0])
-			entry1.append(floodFill.listHouse[index][1]-1)
+			entry1.append(floodFill.listHouse[index][1])
 			entry1.append(floodFill.listHouse[index][2])
-			x = entry1[0] + ORIENTATION[facingenfant][0]
+			x = entry1[0] + CORNER_PROJECTION[facingenfant][0] * cornerenfant[0] - CORNER_PROJECTION[facingenfant][0] + CORNER_PROJECTION[facingenfant][2] * cornerenfant[2] + CORNER_PROJECTION[facingenfant][2]
 			y = entry1[1]
-			z = entry1[2] + ORIENTATION[facingenfant][1]
+			z = entry1[2] + CORNER_PROJECTION[facingenfant][1] * cornerenfant[1] + CORNER_PROJECTION[facingenfant][3] * cornerenfant[3] - CORNER_PROJECTION[facingenfant][1] + CORNER_PROJECTION[facingenfant][3]
 			while not(floodFill.is_air(x, y+2, z)) or floodFill.is_air(x, y+1, z):
 						if floodFill.is_air(x, y + 1, z):
 							y -=1
 						if not(floodFill.is_air(x, y + 2, z)):
 							y += 1
-			worldmodif.setBlock(x, y, z, "minecraft:grass_path")
-			x += ORIENTATION[facingenfant][0]
-			z += ORIENTATION[facingenfant][1]
-			while not(floodFill.is_air(x, y+2, z)) or floodFill.is_air(x, y + 1, z):
-						if floodFill.is_air(x, y + 1, z):
-							y -=1
-						if not(floodFill.is_air(x, y + 2, z)):
-							y += 1
-			worldmodif.setBlock(x, y, z, "minecraft:grass_path")
-			x += ORIENTATION[facingenfant][0]
-			z += ORIENTATION[facingenfant][1]
 			start = [x, z]
 
 
@@ -167,40 +156,20 @@ def initRoad(floodFill, settlementData, worldmodif,  materials):
 			#house parent
 			facingparent = settlementData["structures"][index2]["prebuildingInfo"]["entry"]["facing"]
 			#print(facingparent)
+			cornerparent = settlementData["structures"][index2]["prebuildingInfo"]["corner"]
 			entry2 = []
 			entry2.append(floodFill.listHouse[index2][0])
 			entry2.append(floodFill.listHouse[index2][1]-1)
 			entry2.append(floodFill.listHouse[index2][2])
-			x = entry2[0] + ORIENTATION[facingparent][0]
+			x = entry2[0] + CORNER_PROJECTION[facingparent][0] * cornerparent[0] - CORNER_PROJECTION[facingparent][0] + CORNER_PROJECTION[facingparent][2] * cornerparent[2] + CORNER_PROJECTION[facingparent][2]
 			y = entry2[1]
-			z = entry2[2] + ORIENTATION[facingparent][1]
+			z = entry2[2] + CORNER_PROJECTION[facingparent][1] * cornerparent[1] + CORNER_PROJECTION[facingparent][3] * cornerparent[3] - CORNER_PROJECTION[facingparent][1] + CORNER_PROJECTION[facingparent][3]
 			while not(floodFill.is_air(x, y+2, z)) or floodFill.is_air(x, y+1, z):
 						if floodFill.is_air(x, y+1, z):
 							y -=1
 						if not(floodFill.is_air(x, y+2, z)):
 							y += 1
 						#print("stuck1")
-			worldmodif.setBlock(x, y, z, "minecraft:grass_path")
-			x += ORIENTATION[facingparent][0]
-			z += ORIENTATION[facingparent][1]
-			while not(floodFill.is_air(x, y+2, z)) or floodFill.is_air(x, y+1, z):
-						if floodFill.is_air(x, y+1, z):
-							y -=1
-						if not(floodFill.is_air(x, y+2, z)):
-							y += 1
-						#print("stuck2")
-			worldmodif.setBlock(x, y, z, "minecraft:grass_path")
-			x += ORIENTATION[facingparent][0]
-			z += ORIENTATION[facingparent][1]
-			while not(floodFill.is_air(x, y+2, z)) or floodFill.is_air(x, y+1, z):
-						if floodFill.is_air(x, y+1, z):
-							y -=1
-						if not(floodFill.is_air(x, y+2, z)):
-							y += 1
-						#print("stuck3")
-			worldmodif.setBlock(x, y, z, "minecraft:grass_path")
-			x += ORIENTATION[facingparent][0]
-			z += ORIENTATION[facingparent][1]
 			goal = [x, z]
 
 
@@ -247,19 +216,19 @@ def initRoad(floodFill, settlementData, worldmodif,  materials):
 						if not(floodFill.is_air(block[0], z+1, block[1])):
 							z += 1
 					if temp%12 == 0 and (temp )<(len(path)-3):
-						if not([block[0]-1, block[1]] in path):
+						if not([block[0]-1, block[1]] in path) and not(floodFill.isInHouse([block[0] - 1,block[1]])) and not(isInRoad([block[0] - 1,block[1]])):
 							worldmodif.setBlock(block[0]-1, z-1, block[1], 'minecraft:cobblestone')
 							worldmodif.setBlock(block[0]-1, z, block[1], 'minecraft:cobblestone_wall')
 							worldmodif.setBlock(block[0]-1, z+1, block[1], 'minecraft:redstone_lamp[lit=true]')
-						elif not([block[0], block[1] - 1] in path):
+						elif not([block[0], block[1] - 1] in path) and not(floodFill.isInHouse([block[0],block[1] - 1])) and not(isInRoad([block[0],block[1] - 1])):
 							worldmodif.setBlock(block[0], z-1, block[1] - 1, 'minecraft:cobblestone')
 							worldmodif.setBlock(block[0], z, block[1] - 1, 'minecraft:cobblestone_wall')
 							worldmodif.setBlock(block[0], z+1, block[1] - 1, 'minecraft:redstone_lamp[lit=true]')
-						elif not([block[0] + 1, block[1]] in path):
+						elif not([block[0] + 1, block[1]] in path) and not(floodFill.isInHouse([block[0] + 1,block[1]])) and not(isInRoad([block[0] + 1,block[1]])):
 							worldmodif.setBlock(block[0] + 1, z-1, block[1], 'minecraft:cobblestone')
 							worldmodif.setBlock(block[0] + 1, z, block[1], 'minecraft:cobblestone_wall')
 							worldmodif.setBlock(block[0] + 1, z+1, block[1], 'minecraft:redstone_lamp[lit=true]')
-						elif not([block[0], block[1] + 1] in path):
+						elif not([block[0], block[1] + 1] in path) and not(floodFill.isInHouse([block[0],block[1] + 1])) and not(isInRoad([block[0],block[1] + 1])):
 							worldmodif.setBlock(block[0], z-1, block[1] + 1, 'minecraft:cobblestone')
 							worldmodif.setBlock(block[0], z, block[1] + 1, 'minecraft:cobblestone_wall')
 							worldmodif.setBlock(block[0], z+1, block[1] + 1, 'minecraft:redstone_lamp[lit=true]')
