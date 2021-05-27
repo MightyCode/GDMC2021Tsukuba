@@ -2,6 +2,8 @@ import random
 import utils._math as _math
 import lib.interfaceUtils as iu
 
+NODE_IN_ROAD = []
+
 
 class Node:
 	def __init__(self,point):
@@ -50,9 +52,16 @@ def isInClosedList(node, closedlist):
 def isInListWithInferiorCost(node, list):
 	for i in list:
 		if node.point == i.point:
-			if i.H <= node.H:
+			if i.H < node.H:
 				return True
 	return False
+
+def isInRoad(coord):
+	for index in NODE_IN_ROAD:
+		if coord in index:
+			return True
+	return False
+
 
 def Astar(startcoord,goalcoord,squarelist, floodFill):
 	#the open and close set
@@ -81,6 +90,7 @@ def Astar(startcoord,goalcoord,squarelist, floodFill):
 			while current.parent:
 				path.append(current.parent.point)
 				current = current.parent
+			NODE_IN_ROAD.append(path)
 			return path[::-1] #to reverse the path
 		#for every neighbourg of current node
 		for node in children(current):
@@ -94,6 +104,7 @@ def Astar(startcoord,goalcoord,squarelist, floodFill):
 
 			if notinsquare:
 				if not(isInClosedList(node, closedlist) or isInListWithInferiorCost(node, openlist)):
+					print(node.point)
 					node.cost = current.cost + 1
 					node.H = node.cost + manhattan(node,goal)
 					node.parent = current
@@ -196,7 +207,7 @@ def initRoad(floodFill, settlementData, worldmodif,  materials):
 			try:
 				path = Astar(start, goal, squarelist,floodFill)
 				print("Astar done : ", path)
-				temp = 0
+				temp = 1
 				z0 = entry1[1]
 				zgoal = entry2[1]
 				print("start is :", start)
@@ -217,7 +228,7 @@ def initRoad(floodFill, settlementData, worldmodif,  materials):
 
 					while iu.getBlock(block[0], z, block[1]) == 'minecraft:lava':
 						z = z + 1
-						material = "minecraft:obsidian"
+						material = "minecraft:nether_bricks"
 					#here, we need to check if there is a tree above the path, and if yes, we want to remove it
 					#if 
 					worldmodif.setBlock(block[0],z, block[1],"minecraft:air")
@@ -233,7 +244,7 @@ def initRoad(floodFill, settlementData, worldmodif,  materials):
 							z -=1
 						if not(floodFill.is_air(block[0], z+1, block[1])):
 							z += 1
-					if temp%12 == 0:
+					if temp%12 == 0 and (temp )<(len(path)-3):
 						if not([block[0]-1, block[1]] in path):
 							worldmodif.setBlock(block[0]-1, z-1, block[1], 'minecraft:cobblestone')
 							worldmodif.setBlock(block[0]-1, z, block[1], 'minecraft:cobblestone_wall')

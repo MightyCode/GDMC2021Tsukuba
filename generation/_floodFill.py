@@ -1,6 +1,7 @@
 import utils._math as _math
 import random
 import lib.interfaceUtils as iu
+import generation.road as road
 
 class FloodFill:
     
@@ -13,6 +14,7 @@ class FloodFill:
         'minecraft:dead_bush', "minecraft:cactus"]
 
     def __init__(self, area):
+        self.numberOfDecoration = 50
         self.listHouse = []
         random.seed(a=None, version=2)
         self.buildArea = area
@@ -53,14 +55,23 @@ class FloodFill:
     """
     To know if it's a air block (or leaves and stuff)
     """
-    def is_air(self, x, y, z):   
-        block = iu.getBlock(x, y - 1, z)
-        if block in FloodFill.IGNORED_BLOCKS:
-            #print("its air")
-            return True
-        else:
-            #print("itsnotair")
-            return False
+    def is_air(self, x, y, z):
+        try:
+            block = iu.getBlock(x, y - 1, z)
+            if block in FloodFill.IGNORED_BLOCKS:
+                #print("its air")
+                return True
+            else:
+                #print("itsnotair")
+                return False
+        except IndexError:
+            print("indexError")
+        return False
+
+        
+
+
+
 
 
     def is_ground(self, x, y, z):
@@ -68,12 +79,15 @@ class FloodFill:
         y2 = y - 1
         #print(is_air(x,y2+1,z,ws) and not(is_air(x,y2,z,ws)))
         """ and not(ws.getBlockAt(x, y2, z)=='minecraft:water') """
-        if iu.getBlock(x,y,z)=='minecraft:lava':
-            iu.setBlock(x,y,z,'minecraft:obsidian')
-        if iu.getBlock(x,y1,z)=='minecraft:lava':
-            iu.setBlock(x,y1,z,'minecraft:obsidian')
-        if iu.getBlock(x,y2,z)=='minecraft:lava':
-            iu.setBlock(x,y2,z,'minecraft:obsidian')
+        try:
+            if iu.getBlock(x,y,z)=='minecraft:lava':
+                iu.setBlock(x,y,z,'minecraft:obsidian')
+            if iu.getBlock(x,y1,z)=='minecraft:lava':
+                iu.setBlock(x,y1,z,'minecraft:obsidian')
+            if iu.getBlock(x,y2,z)=='minecraft:lava':
+                iu.setBlock(x,y2,z,'minecraft:obsidian')
+        except IndexError:
+            print("IndexError")
 
         if self.is_air(x, y2 + 1, z) and not(self.is_air(x, y2, z)) :
             return y2 
@@ -163,6 +177,55 @@ class FloodFill:
             
         return 0, 0, 0
 
+    def isInHouse(self,coord):
+        listverifhouse = self.listHouse.copy()
+        while listverifhouse:
+            house = listverifhouse.pop()
+            if _math.isPointInSquare(coord,[house[0] + house[3][0], house[2] + house[3][1], house[0] + house[3][2], house[2] + house[3][3]]):
+                return True
+        return False
+
+
+    def decideMinMax(self):
+        listverifhouse = self.listHouse.copy()
+        if listverifhouse:
+            house = listverifhouse.pop()
+            xmin = house[0]
+            xmax = xmin
+            zmin = house[2]
+            zmax = zmin
+        while listverifhouse:
+            house = listverifhouse.pop()
+            if house[0] < xmin:
+                xmin = house[0]
+            if house[2] < zmin:
+                zmin = house[2]
+            if house[0] > xmax:
+                xmax = house[0]
+            if house[2] > zmax:
+                zmax = house[2]
+        print("range of the village is : ", xmin, xmax, zmin, zmax)
+        return xmin, xmax, zmin, zmax
+
+    def placeDecorations(self):
+        xmin, xmax, zmin,zmax = self.decideMinMax()
+        decorationcoord = []
+        for i in range(self.numberOfDecoration):
+            decoput = False
+            debug = 15
+            while not decoput and debug > 0:
+
+                xrand = random.randint(xmin,xmax)
+                zrand = random.randint(zmin,zmax)
+                if not self.isInHouse([xrand,zrand]):
+                    if not road.isInRoad([xrand,zrand]):
+                        print("deco n :",i, "placed in ",xrand,zrand)
+                        iu.setBlock(xrand,self.getHeight(xrand,zrand),zrand,"minecraft:hay_block")
+                        decoput = True
+                debug -= 1
+
+
+
 
     def findPosHouse(self, CornerPos):
         sizeStruct = max(abs(CornerPos[0][0]) + abs(CornerPos[0][2]) + 1, abs(CornerPos[0][1]) + abs(CornerPos[0][3]) + 1)
@@ -172,7 +235,6 @@ class FloodFill:
         debugNoHouse = 250 * 16
         verifCorners = False
         verifOverlapseHouse = False
-
         print("there is already", len(self.listHouse), "placed")
 
         while notFinded and (debug>0) and (debugNoHouse>0) and not verifCorners:
@@ -213,7 +275,6 @@ class FloodFill:
 
                 while not verifCorners and (debug>0):
                     xPos, yPos, zPos = self.takeNewPositionForHouse(sizeStruct)
-                    print(int(debug / 12),"try left")
                     #to get a random flip and rotation and to test if one is possible
                     if (iu.getBlock(xPos, yPos, zPos)=='minecraft:water'):  
                         continue
