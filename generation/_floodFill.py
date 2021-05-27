@@ -1,14 +1,15 @@
 import utils._math as _math
 import random
+import lib.interfaceUtils as iu
 
 class FloodFill:
     
     # Ignoreblockvalue is the list of block that we want to ignore when we read the field
     IGNORED_BLOCKS = [
-        'minecraft:void_air', 'minecraft:air', 'minecraft:cave_air', 'minecraft:water', 
-        'minecraft:oak_leaves',  'minecraft:leaves',  'minecraft:birch_leaves', 'minecraft:spruce_leaves'
+        'minecraft:void_air', 'minecraft:air', 'minecraft:cave_air', 'minecraft:water','minecraft:dark_oak_leaves','minecraft:redstone_lamp','minecraft:cobblestone_wall',
+        'minecraft:oak_leaves',  'minecraft:leaves',  'minecraft:birch_leaves', 'minecraft:spruce_leaves','minecraft:vine'
         'minecraft:oak_log',  'minecraft:spruce_log',  'minecraft:birch_log',  'minecraft:jungle_log', 'minecraft:acacia_log', 'minecraft:dark_oak_log',
-        'minecraft:grass', 'minecraft:snow','minecraft:acacia_leaves','minecraft:tall_grass','minecraft:poppy','minecraft:dandelion',
+        'minecraft:grass', 'minecraft:snow','minecraft:acacia_leaves','minecraft:tall_grass','minecraft:poppy','minecraft:dandelion','minecraft:brown_mushroom_block','minecraft:mushroom_stem','minecraft:rose_bush','minecraft:red_mushroom_block',
         'minecraft:dead_bush', "minecraft:cactus"]
 
     def __init__(self, area):
@@ -32,9 +33,9 @@ class FloodFill:
     """
     To get the height of a x,z position
     """
-    def getHeight(self, x, z, ws):
+    def getHeight(self, x, z):
         y = 255
-        while self.is_air(x, y, z, ws) and y > 0:
+        while self.is_air(x, y, z) and y > 0:
             y -= 1
         return y
 
@@ -42,17 +43,18 @@ class FloodFill:
     """
     to get the height of a x,z posisition and taking water and lava in it
     """
-    def getHeightRoad(self, x, z, ws):
+    def getHeightRoad(self, x, z):
         y = 255
-        while self.is_air(x, y, z, ws) and y > 0 and not (ws.getBlockAt(x, y - 1, z)=="minecraft:water" or ws.getBlockAt(x, y - 1, z) == "minecraft:lava"):
+        while self.is_air(x, y, z) and y > 0 and not (iu.getBlock(x, y - 1, z)=="minecraft:water" or iu.getBlock(x, y - 1, z) == "minecraft:lava"):
             y -= 1
+
         return y
 
     """
     To know if it's a air block (or leaves and stuff)
     """
-    def is_air(self, x, y, z, ws):   
-        block = ws.getBlockAt(x, y - 1, z)
+    def is_air(self, x, y, z):   
+        block = iu.getBlock(x, y - 1, z)
         if block in FloodFill.IGNORED_BLOCKS:
             #print("its air")
             return True
@@ -61,23 +63,30 @@ class FloodFill:
             return False
 
 
-    def is_ground(self, x, y, z, ws):
+    def is_ground(self, x, y, z):
         y1 = y + 1
         y2 = y - 1
         #print(is_air(x,y2+1,z,ws) and not(is_air(x,y2,z,ws)))
         """ and not(ws.getBlockAt(x, y2, z)=='minecraft:water') """
-        if self.is_air(x, y2 + 1, z, ws) and not(self.is_air(x, y2, z, ws)) :
+        if iu.getBlock(x,y,z)=='minecraft:lava':
+            iu.setBlock(x,y,z,'minecraft:obsidian')
+        if iu.getBlock(x,y1,z)=='minecraft:lava':
+            iu.setBlock(x,y1,z,'minecraft:obsidian')
+        if iu.getBlock(x,y2,z)=='minecraft:lava':
+            iu.setBlock(x,y2,z,'minecraft:obsidian')
+
+        if self.is_air(x, y2 + 1, z) and not(self.is_air(x, y2, z)) :
             return y2 
 
-        elif self.is_air(x, y1 + 1, z, ws) and not(self.is_air(x, y1, z, ws)):
+        elif self.is_air(x, y1 + 1, z) and not(self.is_air(x, y1, z)):
             return y1
-        elif self.is_air(x, y + 1, z, ws) and not(self.is_air(x, y, z, ws)):
+        elif self.is_air(x, y + 1, z) and not(self.is_air(x, y, z)):
             return y 
         else:
             return -1
 
 
-    def floodfill(self, xi, yi, zi, ws, size):
+    def floodfill(self, xi, yi, zi, size):
         validPositions = []
         # if floodfill start is in building area
         if not _math.isPointInCube([xi, yi, zi], self.buildArea):
@@ -93,13 +102,17 @@ class FloodFill:
         while stack:
             Node = stack.pop()
             validPositions.append(Node)
-
+            #iu.setBlock(Node[0],Node[1]-1,Node[2],"minecraft:bricks")
             for add in toAdd:
                 x = Node[0] + add[0]
                 z = Node[2] + add[1]
                 y = Node[1]
                 if _math.isPointInCube([x, y, z], self.buildArea):
-                    groundHeight = self.is_ground(x, y, z, ws)
+                    try:
+                        groundHeight = self.is_ground(x, y, z)
+                    except IndexError:
+                        print("indexerror")
+                        print(x,y,z)
                     if groundHeight != -1 and (x, groundHeight, z) not in validPositions and _math.isPointInCube([x, y, z], floodFillArea):
                         stack.append((x, groundHeight, z))
 
@@ -107,9 +120,9 @@ class FloodFill:
  
 
 
-    def verifHouse(self, xPos, yPos, zPos, CornerPos, ws):
+    def verifHouse(self, xPos, yPos, zPos, CornerPos):
         for i,j in [[0, 1], [2, 1], [0, 3], [2, 3]]:
-            if self.is_ground(xPos + CornerPos[i], yPos, zPos + CornerPos[j], ws) == -1:
+            if self.is_ground(xPos + CornerPos[i], yPos, zPos + CornerPos[j]) == -1:
                 return False
                 
         return True
@@ -151,23 +164,23 @@ class FloodFill:
         return 0, 0, 0
 
 
-    def findPosHouse(self, CornerPos, ws):
+    def findPosHouse(self, CornerPos):
         sizeStruct = max(abs(CornerPos[0][0]) + abs(CornerPos[0][2]) + 1, abs(CornerPos[0][1]) + abs(CornerPos[0][3]) + 1)
 
         notFinded = True
-        debug = 250 * 12
-        debugNoHouse = 5
+        debug = 250 * 16
+        debugNoHouse = 250 * 16
         verifCorners = False
         verifOverlapseHouse = False
 
         print("there is already", len(self.listHouse), "placed")
 
-        while notFinded and debug and debugNoHouse and not verifCorners:
+        while notFinded and (debug>0) and (debugNoHouse>0) and not verifCorners:
             if len(self.listHouse) == 0:
                 xPos, zPos = self.takeRandomPosition(sizeStruct)
 
-                yPos = self.getHeight(xPos, zPos, ws)
-                if (ws.getBlockAt(xPos, yPos, zPos) == 'minecraft:water'):
+                yPos = self.getHeight(xPos, zPos)
+                if (iu.getBlock(xPos, yPos, zPos) == 'minecraft:water'):
                     continue
 
                 print("starting position :" ,xPos, yPos, zPos)
@@ -184,24 +197,25 @@ class FloodFill:
 
                         choosenCorner = CornerPos[rand1 * 4 + rand2]
 
-                        if self.verifHouse(xPos, yPos, zPos, choosenCorner, ws):
+                        if self.verifHouse(xPos, yPos, zPos, choosenCorner):
                             notFinded = False
                             # To be sure the place is large enough to build the village
-                            FloodFillValue = self.floodfill(xPos, yPos, zPos, ws, self.distanceFirstHouse)   
+                            FloodFillValue = self.floodfill(xPos, yPos, zPos, self.distanceFirstHouse)   
                                 
                             if len(FloodFillValue) > 5000:
-                                FloodFillValue = self.floodfill(xPos, yPos, zPos, ws, sizeStruct + self.floodfillHouseSpace)
+                                FloodFillValue = self.floodfill(xPos, yPos, zPos, sizeStruct + self.floodfillHouseSpace)
                             else:
                                 notFinded = True
                                 debugNoHouse -= 1
             else:
                 verifOverlapseHouse = False
                 verifCorners = False
-                while not verifCorners and debug:
-                    xPos, yPos, zPos = self.takeNewPositionForHouse(sizeStruct)
 
+                while not verifCorners and (debug>0):
+                    xPos, yPos, zPos = self.takeNewPositionForHouse(sizeStruct)
+                    print(int(debug / 12),"try left")
                     #to get a random flip and rotation and to test if one is possible
-                    if (ws.getBlockAt(xPos, yPos, zPos)=='minecraft:water'):  
+                    if (iu.getBlock(xPos, yPos, zPos)=='minecraft:water'):  
                         continue
                         
                     fliptest = [0, 1, 2, 3]
@@ -213,7 +227,7 @@ class FloodFill:
                             rand2 = rotationtest[random.randint(0,len(rotationtest)-1)]
                             choosenCorner = CornerPos[rand1 * 4 + rand2]
                             rotationtest.remove(rand2)
-                            if self.verifHouse(xPos, yPos, zPos, choosenCorner, ws):
+                            if self.verifHouse(xPos, yPos, zPos, choosenCorner):
                                 verifCorners = True
                                 listverifhouse = self.listHouse.copy()
                                 while listverifhouse and verifCorners:
@@ -237,7 +251,7 @@ class FloodFill:
 
                                     # If house is valid to create a floodfill
                                     if _math.isPointInSquare([xPos, zPos], self.validHouseFloodFillPosition):
-                                        FloodFillValue = self.floodfill(xPos, yPos, zPos, ws, sizeStruct + self.floodfillHouseSpace)
+                                        FloodFillValue = self.floodfill(xPos, yPos, zPos,  sizeStruct + self.floodfillHouseSpace)
                                         
                                     else:
                                         FloodFillValue = [xPos, yPos, zPos]
@@ -250,9 +264,9 @@ class FloodFill:
                 
         if debug <= 0:
             dictionnary = {"position" : [xPos, yPos, zPos] , "validPosition" : False , "flip" : rand1 , "rotation" : rand2, "corner" : choosenCorner }
-            
-            self.listHouse.append((xPos, yPos, zPos, choosenCorner, FloodFillValue, -1, False))
             FloodFillValue = [xPos, yPos, zPos]
+            self.listHouse.append((xPos, yPos, zPos, choosenCorner, FloodFillValue, -1, False))
+            
             print("debug failed")
         else:
             self.listHouse.append((xPos, yPos, zPos, choosenCorner, FloodFillValue, self.previousStructure, True))

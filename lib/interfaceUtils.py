@@ -95,7 +95,6 @@ class Interface():
                 block = globalWorldSlice.getBlockAt(x, y, z)
                 self.cache[(x, y, z)] = block
                 return block
-
         response = di.getBlock(x, y, z)
         if self.caching:
             self.cache[(x, y, z)] = response
@@ -176,11 +175,9 @@ class Interface():
     def setBuffering(self, value):
         """**Set self.__buffering**."""
         self.__buffering = value
-        if self.__buffering:
-            print("Buffering has been activated.")
-        else:
+        if not self.__buffering:
             self.sendBlocks()
-            print("Buffering has been deactivated.")
+            
 
     def getBufferLimit(self):
         """**Get self.bufferlimit**."""

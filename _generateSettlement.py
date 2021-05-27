@@ -7,22 +7,27 @@ import generation._resourcesLoader as resLoader
 import utils._utils as _utils
 from utils._worldModification import *
 from lib.worldLoader import WorldSlice
-import generation.road as road
 import utils.argumentParser as argParser
 import generation.loremaker as loremaker
+import lib.toolbox as toolbox
+import generation.road as road
+import lib.interfaceUtils as iu
 import time
 
 
 file = "temp.txt"
-interface = interfaceUtils.Interface(buffering=True, caching=True)
+interface = interfaceUtils.Interface(buffering=True, caching = True)
+interface.setCaching(True)
+interface.setBuffering(True)
+iu.setCaching(True)
+iu.setBuffering(True)
 worldModif = WorldModification(interface)
 args, parser = argParser.giveArgsAndParser()
 area = argParser.getBuildArea(interface, args)
 
 if area == -1:
     exit()
-
-
+    
 # Three main steps : choose structures and find its positions, make road between these structures, and finaly build structures.
 if not args.remove:
     
@@ -30,14 +35,13 @@ if not args.remove:
     resLoader.loadAllResources(resources)
 
     chestGeneration = ChestGeneration(resources, interface)
-    ws = WorldSlice(area[0], area[2], area[3], area[5])
+    iu.makeGlobalSlice()
     floodFill = FloodFill(area)
     
     settlementData = generator.createSettlementData(area, resources)
 
     structureMananager = StructureManager(settlementData, resources)
 
-    # Choose structures and its position
     for i in range(settlementData["structuresNumberGoal"]) : 
         # 0 -> normal, 1 -> replacement, 2 -> no more structure
         result = structureMananager.chooseOneStructure()
@@ -58,7 +62,7 @@ if not args.remove:
         settlementData["structures"][i]["rotation"] = 0"""
 
         corners = structure.setupInfoAndGetCorners()
-        result = floodFill.findPosHouse(corners, ws)
+        result = floodFill.findPosHouse(corners)
 
         settlementData["structures"][i]["validPosition"] = result["validPosition"]
 
@@ -82,7 +86,7 @@ if not args.remove:
 
         loremaker.alterSettlementDataWithNewStructures(settlementData, i)
         structureMananager.checkDependencies()
-
+        
     books = generator.generateBooks(settlementData)
     generator.placeBooks(settlementData, books, floodFill, worldModif, ws)
     
@@ -96,11 +100,11 @@ if not args.remove:
 
     #structureMananager.printStructureChoose()
 
-    # Build all structures
+    # Build after every computations
     for i in range(len(settlementData["structures"])) :
         generator.generateStructure(settlementData["structures"][i], settlementData, resources, worldModif, chestGeneration)
         time.sleep(0.3)
-        
+        #_utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
     worldModif.saveToFile(file)  
 
 else : 
