@@ -3,6 +3,7 @@ import random
 import copy
 import lib.toolbox as toolbox
 from generation.structures.baseStructure import BaseStructure
+import generation.loremaker as loremaker
 
 def createSettlementData(area, resources):
     settlementData = {}
@@ -25,6 +26,8 @@ def createSettlementData(area, resources):
     for aProperty in resources.biomesBlocks[settlementData["biomeBlockId"]]:
         if aProperty in resources.biomesBlocks["rules"]["village"]:
             settlementData["materialsReplacement"][aProperty] = resources.biomesBlocks[settlementData["biomeBlockId"]][aProperty]
+
+    loremaker.fillSettlementDataWitholor(settlementData, "white")
 
     settlementData["villageName"] = _utils.generateVillageName()
 
@@ -103,9 +106,9 @@ def generateStructure(structureData, settlementData, resources, worldModif, ches
     
     buildingCondition = BaseStructure.createBuildingCondition() 
     for index in structureData["villagersId"]:
-        """if index == structureData["murdererIndex"]:
-            if "murderer" in info["villageInfo"].keys():
-                buildMurdererCache = True"""
+        if index == settlementData["murdererIndex"]:
+            if "murdererTrap" in info["villageInfo"].keys():
+                buildMurdererCache = True
 
         buildingCondition["villager"].append(settlementData["villagerNames"][index])
 
@@ -130,9 +133,45 @@ def generateStructure(structureData, settlementData, resources, worldModif, ches
             buildingCondition["replacements"][aProperty] = resources.biomesBlocks[structureBiomeBlockId][aProperty]
 
     
-    structure.build(worldModif, buildingCondition, chestGeneration)
+    structure.build(worldModif,  buildingCondition, chestGeneration)
     
     """_utils.spawnVillagerForStructure(settlementData, structureData,
         [structureData["position"][0], 
          structureData["position"][1] + 1, 
          structureData["position"][2]])"""
+
+    if buildMurdererCache:
+        buildMurdererHouse(structureData, settlementData, resources, worldModif, chestGeneration, buildingCondition)
+
+
+def buildMurdererHouse(structureData, settlementData, resources, worldModif, chestGeneration, buildingCondition):
+    print("Build a house hosting a murderer")
+    structure = resources.structures[structureData["name"]]
+    info = structure.info
+
+    buildingCondition = copy.deepcopy(buildingCondition)
+    buildingCondition["position"] = structure.returnWorldPosition(
+            info["villageInfo"]["murdererTrap"], buildingCondition["flip"], buildingCondition["rotation"], 
+             buildingCondition["referencePoint"], buildingCondition["position"])
+
+    print(buildingCondition["position"][1])
+
+    structureMurderer = resources.structures["murderercache"]
+    buildingInfo = structureMurderer.setupInfoAndGetCorners()
+    buildingCondition["flip"] = random.randint(0, 3)
+    buildingCondition["rotation"] = random.randint(0, 3)
+    buildingInfo = structureMurderer.getNextBuildingInformation( buildingCondition["flip"], buildingCondition["rotation"])
+    buildingCondition["referencePoint"] = buildingInfo["entry"]["position"]
+    buildingCondition["size"] = buildingInfo["size"]
+
+    buildingCondition["special"] = { "sign" : ["Next target :", "", "", ""] }
+    name = settlementData["villagerNames"][settlementData["murdererTargetIndex"]]
+    _utils.parseVillagerNameInLines([name], buildingCondition["special"]["sign"], 1)
+
+    structureMurderer.build(worldModif, buildingCondition, chestGeneration)
+    facing = structureMurderer.getFacingMainEntry(buildingCondition["flip"], buildingCondition["rotation"])
+
+    # Generate murderer trap
+    worldModif.setBlock(buildingCondition["position"][0], buildingCondition["position"][1] + 2, buildingCondition["position"][2], "minecraft:ladder[facing=" + facing + "]")
+    worldModif.setBlock(buildingCondition["position"][0], buildingCondition["position"][1] + 3, buildingCondition["position"][2], 
+        "minecraft:" + buildingCondition["replacements"]["woodType"] + "_trapdoor[half=bottom,facing=" + facing  +"]")
