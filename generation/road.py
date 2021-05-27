@@ -108,7 +108,7 @@ def initRoad(floodFill, settlementData, worldmodif,  materials):
 	ORIENTATION = {"north" : [ 0, -1 ], "south" : [ 0, 1 ], "west" : [ -1, 0 ], "east" : [ 1, 0 ]}
 	#to 
 	squarelist= []
-	for index in range(0,len(settlementData["structures"])):
+	for index in range(0, len(settlementData["structures"])):
 		entrytemp = []
 		entrytemp.append(floodFill.listHouse[index][0])
 		entrytemp.append(floodFill.listHouse[index][1]-1)

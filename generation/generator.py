@@ -69,12 +69,12 @@ def generateBooks(settlementData):
     return books
 
 
-def placeBooks(settlementData, books, floodFill, worldModif, ws):
+def placeBooks(settlementData, books, floodFill, worldModif):
     names = ["villageNameBook", "villagerNamesList", "deadVillagersBook"]
     for i in range(3):
         toolbox.placeLectern(
             settlementData["center"][0], 
-            floodFill.getHeight(settlementData["center"][0], settlementData["center"][2], ws), 
+            floodFill.getHeight(settlementData["center"][0], settlementData["center"][2]), 
             settlementData["center"][2] + i, books[names[i]], worldModif, 'east')
 
 
