@@ -18,6 +18,9 @@ class BaseStructure:
                     "north-northeast", "northeast", "east-northeast",
                     "east", "east-southeast", "southeast", "south-southeast"]
 
+    AIR_FILLING_PROBLEMATIC_BLOCS = ["minecraft:sand", "minecraft:red_sand",
+                             "minecraft:gravel", "minecraft:water", "minecraft:lava"]
+
     """ 
     Empty constructor
     """
@@ -204,6 +207,9 @@ class BaseStructure:
     people : people's name which should appears in the sign
     """
     def generateSignatureSign(self, position, worldModification, woodType, people):
+        if not "sign" in self.info.keys():
+            return
+
         worldModification.setBlock(position[0], position[1], position[2], "minecraft:air", placeImmediately=True)
         worldModification.setBlock(position[0], position[1], position[2], 
             "minecraft:" + woodType + "_wall_sign[facing=" + self.computedOrientation[self.info["sign"]["facing"]] + "]", 
@@ -270,6 +276,9 @@ class BaseStructure:
     buildingCondition : condition used to build a structures
     """
     def placeSupportUnderStructure(self, worldModif, buildingCondition):
+        if not "ground" in self.info.keys():
+            return
+
         zones = []
         if "info" in self.info["ground"].keys():
             if "all" == self.info["ground"]["info"] :
@@ -312,6 +321,11 @@ class BaseStructure:
                 blockTo   = self.returnWorldPosition([ zones[3], zones[4] + 1, zones[5] ],
                                                      buildingCondition["flip"], buildingCondition["rotation"], 
                                                      buildingCondition["referencePoint"], buildingCondition["position"])
+
+                for x in range(min(blockFrom[0], blockTo[0]), max(blockFrom[0], blockTo[0]) + 1):
+                    for z in range(min(blockFrom[2], blockTo[2]), max(blockFrom[2], blockTo[2]) + 1):
+                        if worldModif.interface.getBlock(x, blockTo[1] + 1, z) in BaseStructure.AIR_FILLING_PROBLEMATIC_BLOCS:
+                            worldModif.setBlock(x, blockTo[1] + 1, z, "minecraft:stone", placeImmediately=True)
                                                      
                 worldModif.fillBlocks(blockFrom[0], blockFrom[1], blockFrom[2], blockTo[0], blockTo[1], blockTo[2], BaseStructure.AIR_BLOCKS[0])
 

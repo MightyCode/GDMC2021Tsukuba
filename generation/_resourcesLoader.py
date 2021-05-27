@@ -45,6 +45,9 @@ def loadAllResources(resources) :
     resources.addGeneratedStructures(GeneratedQuarry(), "functionals/quarry/basicgeneratedquarry.json", "basicgeneratedquarry")
     resources.addGeneratedStructures(GeneratedWell(), "representatives/well/basicgeneratedwell.json", "basicgeneratedwell")
 
+
+    resources.loadStructures("decorations/murderercache.nbt", "decorations/murderercache.json", "murderercache")
+
     # Load lootTable
     resources.loadLootTable("houses/kitchenhouse.json", "kitchenhouse")
     resources.loadLootTable("houses/bedroomhouse.json", "bedroomhouse")
@@ -60,5 +63,7 @@ def loadAllResources(resources) :
     resources.loadLootTable("representatives/jail.json", "jail")
     resources.loadLootTable("representatives/tavern.json", "tavern")
     resources.loadLootTable("representatives/barrack.json", "barrack")
+
+    resources.loadLootTable("decorations/murderercache.json", "murderercache")
 
     print("End load ressources")

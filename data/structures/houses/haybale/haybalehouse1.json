@@ -5,6 +5,7 @@
   },
   "replacements" : {
     "oak" : { "type" : "woodType", "state" : 2 },
+    "minecraft:white_bed" : { "type" : "bed", "state" : 1 },
     "minecraft:grass_block" : { "type" : "ground", "state" : 1 },
     "minecraft:dirt" : { "type" : "ground2", "state" : 1 }
   },
@@ -15,7 +16,8 @@
     ]
   },
   "villageInfo" : {
-    "villager" : 1
+    "villager" : 1,
+    "murdererTrap" : [2, -1, 4]
   },
   "ground" : {
     "zones" : [

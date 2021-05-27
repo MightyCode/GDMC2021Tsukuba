@@ -8,10 +8,12 @@ __version__ = "v4.2_dev"
 
 import requests
 from requests.exceptions import ConnectionError
+from socket import *
 
 
 def getBlock(x, y, z):
     """**Return the name of a block from the world**."""
+
     url = f'http://localhost:9000/blocks?x={x}&y={y}&z={z}'
     try:
         response = requests.get(url).text
