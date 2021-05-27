@@ -2,6 +2,8 @@ import random
 import utils._math as _math
 import lib.interfaceUtils as iu
 
+NODE_IN_ROAD = []
+
 
 class Node:
 	def __init__(self,point):
@@ -54,6 +56,13 @@ def isInListWithInferiorCost(node, list):
 				return True
 	return False
 
+def isInRoad(coord):
+	for index in NODE_IN_ROAD:
+		if coord in NODE_IN_ROAD:
+			return False
+	return True
+
+
 def Astar(startcoord,goalcoord,squarelist, floodFill):
 	#the open and close set
 	start = Node(startcoord)
@@ -81,6 +90,7 @@ def Astar(startcoord,goalcoord,squarelist, floodFill):
 			while current.parent:
 				path.append(current.parent.point)
 				current = current.parent
+			NODE_IN_ROAD.append(path)
 			return path[::-1] #to reverse the path
 		#for every neighbourg of current node
 		for node in children(current):
@@ -216,7 +226,7 @@ def initRoad(floodFill, settlementData, worldmodif,  materials):
 
 					while iu.getBlock(block[0], z, block[1]) == 'minecraft:lava':
 						z = z + 1
-						material = "minecraft:obsidian"
+						material = "minecraft:nether_bricks"
 					#here, we need to check if there is a tree above the path, and if yes, we want to remove it
 					#if 
 					worldmodif.setBlock(block[0],z, block[1],"minecraft:air")

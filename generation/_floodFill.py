@@ -1,6 +1,7 @@
 import utils._math as _math
 import random
 import lib.interfaceUtils as iu
+import generation.road as road
 
 class FloodFill:
     
@@ -13,6 +14,7 @@ class FloodFill:
         'minecraft:dead_bush', "minecraft:cactus"]
 
     def __init__(self, area):
+        self.numberOfDecoration = 50
         self.listHouse = []
         random.seed(a=None, version=2)
         self.buildArea = area
@@ -61,6 +63,9 @@ class FloodFill:
         else:
             #print("itsnotair")
             return False
+
+
+
 
 
     def is_ground(self, x, y, z):
@@ -163,6 +168,53 @@ class FloodFill:
             
         return 0, 0, 0
 
+    def isInHouse(self,coord):
+        listverifhouse = self.listHouse.copy()
+        while listverifhouse:
+            house = listverifhouse.pop()
+            print([house[0] + house[3][0], house[2] + house[3][1], house[0] + house[3][2], house[2] + house[3][3]])
+            if _math.isPointInSquare(coord,[house[0] + house[3][0], house[2] + house[3][1], house[0] + house[3][2], house[2] + house[3][3]]):
+                return True
+        return False
+
+
+    def decideMinMax():
+        listverifhouse = self.listHouse.copy()
+        if listverifhouse:
+            house = listverifhouse.pop()
+            xmin = house[0]
+            xmax = xmin
+            zmin = house[2]
+            zmax = zmin
+        while listverifhouse:
+            house = listverifhouse.pop()
+            if house[0] < xmin:
+                xmin = house[0]
+            if house[2] < zmin:
+                zmin = house[2]
+            if house[0] > xmax:
+                xmax = house[0]
+            if house[2] > zmax:
+                zmax = house[2]
+        return xmin, xmax, zmin, zmax
+
+    def placeDecorations():
+        xmin, xmax, zmin,zmax = decideMinMax()
+        decorationcoord = []
+        for i in range(self.numberOfDecoration):
+            decoput = False
+            debug = 15
+            while not decoputted and debug > 0:
+                xrand = random.randint(xmin,xmax)
+                zrand = random.randint(zmin,zmax)
+                if not self.isInHouse([xrand,zrand]):
+                    if not road.isInRoad([xrand,zrand]):
+                        print("deco n :",i, "placed in ",xrand,zrand)
+                        decoputted = True
+                debug -= 1
+
+
+
 
     def findPosHouse(self, CornerPos):
         sizeStruct = max(abs(CornerPos[0][0]) + abs(CornerPos[0][2]) + 1, abs(CornerPos[0][1]) + abs(CornerPos[0][3]) + 1)
@@ -172,7 +224,6 @@ class FloodFill:
         debugNoHouse = 250 * 16
         verifCorners = False
         verifOverlapseHouse = False
-
         print("there is already", len(self.listHouse), "placed")
 
         while notFinded and (debug>0) and (debugNoHouse>0) and not verifCorners:
