@@ -52,7 +52,7 @@ if not args.remove:
                 "farmer", "fisherman", "shepherd", "fletcher", "librarian", "cartographer", 
                 "cleric", "armorer", "weaponsmith", "toolsmith", "butcher", "leatherworker", "mason", "nitwit"]
     
-    settlementData["structuresNumberGoal"] = random.randint(15, 70)
+    settlementData["structuresNumberGoal"] = random.randint(15, 20)
 
     #structures contains "position", "rotation", "flip" "name", "type", "group" ->, "villagersId"
     settlementData["structures"] = []
@@ -117,20 +117,37 @@ if not args.remove:
     listOfDeadVillagers = [i.split(':', 1)[0] for i in listOfVillagers]
 
     textVillagersNames = _utils.createTextForVillagersNames(listOfVillagers)
-    textDeadVillagers = _utils.createTextForDeadVillagers(listOfDeadVillagers)
-    textVillagePresentationBook = _utils.createTextOfPresentationVillage(settlementData["villageName"], settlementData["villagerNames"], 
-                settlementData["structuresNumberGoal"], settlementData["structures"], textDeadVillagers[1])
+    textDeadVillagers = _utils.createTextForDeadVillagers(listOfVillagers)
+    textVillagePresentationBook = _utils.createTextOfPresentationVillage(settlementData["villageName"],
+                settlementData["structuresNumberGoal"], settlementData["structures"], textDeadVillagers[1], listOfVillagers)
     
-    villageNameBook = toolbox.writeBook(textVillagePresentationBook, title="Village Presentation", author="Mayor", description="Presentation of the village")
-    villagerNamesList = toolbox.writeBook(textVillagersNames, title="List of all villagers", author="Mayor", description="List of all villagers")
-    deadVillagersBook = toolbox.writeBook(textDeadVillagers[0], title="List of all dead villagers", author="Mayor", description="List of all dead villagers")
-    print(settlementData["center"])
-    books = [villageNameBook, villagerNamesList, deadVillagersBook]
-    for i in range(3):
-        toolbox.placeLectern(
-            settlementData["center"][0], 
-            floodFill.getHeight(settlementData["center"][0], settlementData["center"][2], ws), 
-             settlementData["center"][2] + i, books[i], worldModif, 'east')
+    villageNameText = toolbox.writeBook(textVillagePresentationBook, title="Village Presentation", author="Mayor", description="Presentation of the village")
+    villagerNamesText = toolbox.writeBook(textVillagersNames, title="Registry of living villagers", author="Mayor", description="List of all villagers")
+    deadVillagersText = toolbox.writeBook(textDeadVillagers[0], title="Registry of dead villagers", author="Mayor", description="List of all dead villagers")
+    settlementData["textOfBooks"] = [villagerNamesText, deadVillagersText]
+    
+    # print(settlementData["center"])
+    settlementData["books"] = ["villagerNamesBook", "deadVillagersBook"]
+    
+    books = []
+    for i in range(len(settlementData["books"])):
+        settlementData["books"][i] = "minecraft:written_book" + settlementData["textOfBooks"][i]
+        books += [[settlementData["books"][i], 1]]
+        
+    # Set a chest for the books and place the books in the chest
+    worldModif.setBlock(settlementData["center"][0], 
+                        floodFill.getHeight(settlementData["center"][0], settlementData["center"][2], ws), 
+                        settlementData["center"][2], "minecraft:chest[facing=east]", placeImmediately=True)
+    _utils.addItemChest(settlementData["center"][0], 
+                        floodFill.getHeight(settlementData["center"][0], settlementData["center"][2], ws),
+                        settlementData["center"][2], books)
+    
+    
+    # Set a lectern for the book of village presentation
+    toolbox.placeLectern(
+        settlementData["center"][0], 
+        floodFill.getHeight(settlementData["center"][0], settlementData["center"][2], ws), 
+         settlementData["center"][2] + 1, villageNameText, worldModif, 'east')
 
 
     # Creates roads
@@ -179,16 +196,16 @@ if not args.remove:
                 buildingCondition["replacements"][aProperty] = resources.biomesBlocks[structureBiomeBlockId][aProperty]
 
         # Add books replacements
-        buildingCondition["replacements"]["villageBook"] = villageNameBook
-        buildingCondition["replacements"]["villagerRegistry"] = villagerNamesList
-        buildingCondition["replacements"]["deadVillagerRegistry"] = deadVillagersBook
+        buildingCondition["replacements"]["villageBook"] = villageNameText
+        buildingCondition["replacements"]["villagerRegistry"] = villagerNamesText
+        buildingCondition["replacements"]["deadVillagerRegistry"] = deadVillagersText
 
         structure.build(worldModif, buildingCondition, chestGeneration)
         settlementData["structures"][i]["position"]
-        _utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i],
-            [settlementData["structures"][i]["position"][0], 
-             settlementData["structures"][i]["position"][1] + 1, 
-             settlementData["structures"][i]["position"][2]])
+        # _utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i],
+            # [settlementData["structures"][i]["position"][0], 
+            #  settlementData["structures"][i]["position"][1] + 1, 
+            #  settlementData["structures"][i]["position"][2]])
         time.sleep(0.3)
         
     worldModif.saveToFile(file)  
