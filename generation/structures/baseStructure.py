@@ -18,6 +18,9 @@ class BaseStructure:
                     "north-northeast", "northeast", "east-northeast",
                     "east", "east-southeast", "southeast", "south-southeast"]
 
+    AIR_FILLING_PROBLEMATIC_BLOCS = ["minecraft:sand", "minecraft:red_sand",
+                             "minecraft:gravel", "minecraft:water", "minecraft:lava"]
+
     """ 
     Empty constructor
     """
@@ -318,6 +321,11 @@ class BaseStructure:
                 blockTo   = self.returnWorldPosition([ zones[3], zones[4] + 1, zones[5] ],
                                                      buildingCondition["flip"], buildingCondition["rotation"], 
                                                      buildingCondition["referencePoint"], buildingCondition["position"])
+
+                for x in range(min(blockFrom[0], blockTo[0]), max(blockFrom[0], blockTo[0]) + 1):
+                    for z in range(min(blockFrom[2], blockTo[2]), max(blockFrom[2], blockTo[2]) + 1):
+                        if worldModif.interface.getBlock(x, blockTo[1] + 1, z) in BaseStructure.AIR_FILLING_PROBLEMATIC_BLOCS:
+                            worldModif.setBlock(x, blockTo[1] + 1, z, "minecraft:stone", placeImmediately=True)
                                                      
                 worldModif.fillBlocks(blockFrom[0], blockFrom[1], blockFrom[2], blockTo[0], blockTo[1], blockTo[2], BaseStructure.AIR_BLOCKS[0])
 

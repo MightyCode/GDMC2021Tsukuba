@@ -1,6 +1,7 @@
 import utils._math as _math
 import utils._utils as _utils
 from generation.structures.baseStructure import *
+import time
 
 from nbt import nbt
 
@@ -135,6 +136,7 @@ class Structures(BaseStructure):
 
         # Air zone
         self.placeAirZones(worldModif, buildingCondition)
+        time.sleep(0.3)
 
         
         ## Computing : Modify from blocks
@@ -205,7 +207,7 @@ class Structures(BaseStructure):
                 for lootTable in self.info["lootTables"] :
                     if len(lootTable) == 1:
                         choosenLootTable = lootTable[0]
-                    elif _math.isPointInSquare([ block["pos"][0].value, block["pos"][1].value, block["pos"][2].value ], lootTable[1]) :
+                    elif _math.isPointInCube([ block["pos"][0].value, block["pos"][1].value, block["pos"][2].value ], lootTable[1]) :
                         choosenLootTable = lootTable[0]
                     
                 if choosenLootTable  != "":
@@ -224,6 +226,7 @@ class Structures(BaseStructure):
                     else :
                         print("Can't add a book to a lectern at pos : " + str(blockPosition))
                     break
+
 
     def convertNbtBlockToStr(self, blockPalette, takeOriginalBlockName=False):
         

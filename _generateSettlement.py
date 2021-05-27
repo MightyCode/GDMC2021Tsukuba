@@ -1,19 +1,17 @@
 from generation._resources import *
 from generation._chestGeneration import *
-from generation.structures.structures import *
 from generation._structureManager import *
 from generation._floodFill import *
+import generation.generator as generator
 import generation._resourcesLoader as resLoader
 import utils._utils as _utils
 from utils._worldModification import *
 from lib.worldLoader import WorldSlice
-import lib.toolbox as toolbox
 import generation.road as road
 import utils.argumentParser as argParser
 import generation.loremaker as loremaker
-import random
 import time
-import copy
+
 
 file = "temp.txt"
 interface = interfaceUtils.Interface(buffering=True, caching=True)
@@ -24,8 +22,10 @@ area = argParser.getBuildArea(interface, args)
 if area == -1:
     exit()
 
+
 # Three main steps : choose structures and find its positions, make road between these structures, and finaly build structures.
 if not args.remove:
+    
     resources = Resources()
     resLoader.loadAllResources(resources)
 
@@ -33,45 +33,7 @@ if not args.remove:
     ws = WorldSlice(area[0], area[2], area[3], area[5])
     floodFill = FloodFill(area)
     
-    settlementData = {}
-    settlementData["center"] = [int((area[0] + area[3]) / 2) , 82, int((area[2] + area[5]) / 2)]
-    settlementData["size"] = [area[0] - area[2], area[1] - area[3]]
-    settlementData["discoveredChunk"] = []
-
-    # Materials replacement
-    settlementData["materialsReplacement"] = {}
-
-    # Biome 
-    settlementData["biomeId"] = _utils.getBiome(settlementData["center"][0], settlementData["center"][2], 1, 1) # TODO get mean
-    settlementData["biomeName"] = resources.biomeMinecraftId[int(settlementData["biomeId"])]
-    settlementData["biomeBlockId"] = str(resources.biomesBlockId[settlementData["biomeName"]])
-    if settlementData["biomeBlockId"] == "-1": 
-        print("Generation on biome block id -1")
-        settlementData["biomeBlockId"] = "0"
-
-    # Load replaceements for structure biome
-    for aProperty in resources.biomesBlocks[settlementData["biomeBlockId"]]:
-        if aProperty in resources.biomesBlocks["rules"]["village"]:
-            settlementData["materialsReplacement"][aProperty] = resources.biomesBlocks[settlementData["biomeBlockId"]][aProperty]
-
-    settlementData["villageName"] = _utils.generateVillageName()
-
-    settlementData["villagerNames"] = []
-    settlementData["villagerProfession"] = []
-    settlementData["villagerGameProfession"] = []
-    settlementData["villagerProfessionList"] = [
-                "farmer", "fisherman", "shepherd", "fletcher", "librarian", "cartographer", 
-                "cleric", "armorer", "weaponsmith", "toolsmith", "butcher", "leatherworker", "mason", "nitwit"]
-    
-    settlementData["structuresNumberGoal"] = random.randint(15, 70)
-
-    #structures contains "position", "rotation", "flip" "name", "type", "group" ->, "villagersId"
-    settlementData["structures"] = []
-    settlementData["freeVillager"] = 0
-
-    settlementData["woodResources"] = 0
-    settlementData["dirtResources"] = 0
-    settlementData["stoneResources"] = 0
+    settlementData = generator.createSettlementData(area, resources)
 
     structureMananager = StructureManager(settlementData, resources)
 
@@ -121,86 +83,22 @@ if not args.remove:
         loremaker.alterSettlementDataWithNewStructures(settlementData, i)
         structureMananager.checkDependencies()
 
-    # Create books for the village
-    strVillagers = ""
-    for i in range(len(settlementData["villagerNames"])):
-        strVillagers += settlementData["villagerNames"][i] + " : " + settlementData["villagerProfession"][i] + ";"
-    listOfVillagers = strVillagers.split(";")
-    listOfDeadVillagers = [i.split(':', 1)[0] for i in listOfVillagers]
-
-    textVillagersNames = _utils.createTextForVillagersNames(listOfVillagers)
-    textDeadVillagers = _utils.createTextForDeadVillagers(listOfDeadVillagers)
-    textVillagePresentationBook = _utils.createTextOfPresentationVillage(settlementData["villageName"], settlementData["villagerNames"], 
-                settlementData["structuresNumberGoal"], settlementData["structures"], textDeadVillagers[1])
-    
-    villageNameBook = toolbox.writeBook(textVillagePresentationBook, title="Village Presentation", author="Mayor", description="Presentation of the village")
-    villagerNamesList = toolbox.writeBook(textVillagersNames, title="List of all villagers", author="Mayor", description="List of all villagers")
-    deadVillagersBook = toolbox.writeBook(textDeadVillagers[0], title="List of all dead villagers", author="Mayor", description="List of all dead villagers")
-   
-
-    books = [villageNameBook, villagerNamesList, deadVillagersBook]
-    for i in range(3):
-        toolbox.placeLectern(
-            settlementData["center"][0], 
-            floodFill.getHeight(settlementData["center"][0], settlementData["center"][2], ws), 
-             settlementData["center"][2] + i, books[i], worldModif, 'east')
-
+    books = generator.generateBooks(settlementData)
+    generator.placeBooks(settlementData, books, floodFill, worldModif, ws)
     
     # Add books replacements
-    settlementData["materialsReplacement"]["villageBook"] = villageNameBook
-    settlementData["materialsReplacement"]["villagerRegistry"] = villagerNamesList
-    settlementData["materialsReplacement"]["deadVillagerRegistry"] = deadVillagersBook
-
+    settlementData["materialsReplacement"]["villageBook"] = books["villageNameBook"]
+    settlementData["materialsReplacement"]["villagerRegistry"] = books["villagerNamesList"]
+    settlementData["materialsReplacement"]["deadVillagerRegistry"] = books["deadVillagersBook"]
 
     # Creates roads
-    road.initRoad(floodFill, settlementData, worldModif,ws)
+    road.initRoad(floodFill, settlementData, worldModif, ws)
 
     #structureMananager.printStructureChoose()
 
     # Build all structures
     for i in range(len(settlementData["structures"])) :
-        print(settlementData["structures"][i]["name"])
-        print(settlementData["structures"][i]["validPosition"])
-
-        structure = resources.structures[settlementData["structures"][i]["name"]]
-        info = structure.info
-        
-        buildingCondition = BaseStructure.createBuildingCondition() 
-
-        for index in settlementData["structures"][i]["villagersId"]:
-            buildingCondition["villager"].append(settlementData["villagerNames"][index])
-
-        buildingCondition["flip"] = settlementData["structures"][i]["flip"]
-        buildingCondition["rotation"] = settlementData["structures"][i]["rotation"]
-        buildingCondition["position"] = settlementData["structures"][i]["position"]
-
-        buildingCondition["replaceAllAir"] = 3
-        buildingCondition["referencePoint"] = settlementData["structures"][i]["prebuildingInfo"]["entry"]["position"]
-        buildingCondition["size"] = settlementData["structures"][i]["prebuildingInfo"]["size"]
-
-        buildingCondition["prebuildingInfo"] = settlementData["structures"][i]["prebuildingInfo"]
-
-        structureBiomeId = _utils.getBiome(buildingCondition["position"][0], buildingCondition["position"][2], 1, 1)
-        structureBiomeName = resources.biomeMinecraftId[int(structureBiomeId)]
-        structureBiomeBlockId = str(resources.biomesBlockId[structureBiomeName])
-
-        if structureBiomeBlockId == "-1" :
-            structureBiomeBlockId = settlementData["biomeBlockId"]    
-        
-        buildingCondition["replacements"] = copy.deepcopy(settlementData["materialsReplacement"])
-
-        # Load block for structure biome
-        for aProperty in resources.biomesBlocks[structureBiomeBlockId]:
-            if aProperty in resources.biomesBlocks["rules"]["structure"]:
-                buildingCondition["replacements"][aProperty] = resources.biomesBlocks[structureBiomeBlockId][aProperty]
-
-        print(buildingCondition["replacements"][aProperty])
-        structure.build(worldModif, buildingCondition, chestGeneration)
-
-        _utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i],
-            [settlementData["structures"][i]["position"][0], 
-             settlementData["structures"][i]["position"][1] + 1, 
-             settlementData["structures"][i]["position"][2]])
+        generator.generateStructure(settlementData["structures"][i], settlementData, resources, worldModif, chestGeneration)
         time.sleep(0.3)
         
     worldModif.saveToFile(file)  

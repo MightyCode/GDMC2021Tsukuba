@@ -23,7 +23,8 @@
     ["bedroomhouse", [2, 6, 2, 11, 11, 8]]
   ],
   "villageInfo" : {
-    "villager" : 3
+    "villager" : 3,
+    "murdererTrap" : [10, -1, 2]
   },
   "ground" : {
     "zones" : [

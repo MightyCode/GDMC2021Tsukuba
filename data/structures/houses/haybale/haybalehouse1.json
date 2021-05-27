@@ -16,7 +16,8 @@
     ]
   },
   "villageInfo" : {
-    "villager" : 1
+    "villager" : 1,
+    "murdererTrap" : [2, -1, 4]
   },
   "ground" : {
     "zones" : [
