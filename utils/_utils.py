@@ -9,6 +9,13 @@ import requests
 from io import BytesIO
 import nbt
 
+VILLAGER_NAME_PATH = "data/names/"
+NUMBER = 5
+MIN_SIZE = 4
+MAX_SIZE = 15
+REASON_OF_DEATHS = ["murdered", "died because of old age", "died of creeper attack", "died of skeleton attack", "died of spider attack (he did not became Spider-Man)",
+                    "died of zombie attack", "died of witch attack", "died in a car accident" , "died in a bus accident", "died in a train accident"]
+
 def getBiome(x, z, dx, dz):
     """**Returns the chunk data.**"""
     x = math.floor(x / 16)
@@ -88,11 +95,10 @@ def parseVillagerNameInLines(names, lines, startIndex=0):
             if jumpLine :
                 currentLine += 1
 
-
 """
 Return the text of the book of the village presentation
 """
-def createTextOfPresentationVillage(villageName, villagerNames, structuresNumber, structuresNames, deadVillagersNumber):
+def createTextOfPresentationVillage(villageName, structuresNumber, structuresNames, deadVillagersNumber, listOfVillagers):
     textVillagePresentationBook = (
             '\\\\s--------------\\\\n'
             '                      \\\\n'
@@ -108,20 +114,70 @@ def createTextOfPresentationVillage(villageName, villagerNames, structuresNumber
             '                      \\\\n'
             '--------------')
     textVillagePresentationBook += ('\f\\\\s---------------\\\\n')
-    textVillagePresentationBook += ('There are '
-        f'{len(villagerNames)} villagers in this village.\\\\n'
-        f'{deadVillagersNumber} are dead. \\\\n')
-    textVillagePresentationBook += ('---------------\\\\n\f')
-    textVillagePresentationBook += ('\f'
-                      'There are '
-                      f'{structuresNumber} structures : \\\\n')
+    
+    numberOfHouse = 0
     for i in range(len(structuresNames)):
-        if i <= 10:
-            textVillagePresentationBook += (f'{structuresNames[i]["name"]} ')
-        if i % 10 == 0 and i != 0:
+        if "house" in structuresNames[i]["name"]:
+            numberOfHouse += 1
+    textVillagePresentationBook += (f'{len(listOfVillagers)} villagers arrived in '
+                                    f'{numberOfHouse} houses \\\\n')
+    textVillagePresentationBook += (f'{deadVillagersNumber} villagers are dead. \\\\n')
+    textVillagePresentationBook += (''
+                      'There are '
+                      f'{structuresNumber} structures. \\\\n')
+    textVillagePresentationBook += ('---------------\\\\n\f')
+
+    for i in range(len(structuresNames)):
+        if i <= 2:
+            if "lumberjachut" in structuresNames[i]["name"]:
+                textVillagePresentationBook += ('Villagers built a '
+                                                f'{structuresNames[i]["name"]} \\\\n')
+            elif "farm" in structuresNames[i]["name"] or "quarry" in structuresNames[i]["name"] or "well" in structuresNames[i]["name"]:
+                textVillagePresentationBook += ('Using the lumberjack hut, villagers built a '
+                                                f'{structuresNames[i]["name"]} \\\\n')
+            elif "smeltery" in structuresNames[i]["name"] or "frunace" in structuresNames[i]["name"] or "stonecutter" in structuresNames[i]["name"]:
+                textVillagePresentationBook += ('Using the quarry, villagers built a '
+                                                f'{structuresNames[i]["name"]} \\\\n')
+            elif "workshop" in structuresNames[i]["name"] or "jail" in structuresNames[i]["name"] or "townhall" in structuresNames[i]["name"]:
+                textVillagePresentationBook += ('Using the stone cutter, villagers built a '
+                                                f'{structuresNames[i]["name"]} \\\\n')
+            elif "graveyard" in structuresNames[i]["name"]:
+                textVillagePresentationBook += ('Using the furnace, villagers built a '
+                                                f'{structuresNames[i]["name"]} \\\\n')
+            elif "windmill" in structuresNames[i]["name"] or "barrack" in structuresNames[i]["name"]:
+                textVillagePresentationBook += ('Using the workshop, villagers built a '
+                                                f'{structuresNames[i]["name"]} \\\\n')
+            elif "tavern" in structuresNames[i]["name"]:
+                textVillagePresentationBook += ('Using the windmill and the farm, villagers built a '
+                                                f'{structuresNames[i]["name"]} \\\\n')
+            # else:
+            #     textVillagePresentationBook += (f'{structuresNames[i]["name"]} \\\\n')
+        if i % 3 == 0 and i != 0:
             textVillagePresentationBook += ('\f')
-        if i > 10:
-            textVillagePresentationBook += (f'{structuresNames[i]["name"]} ')
+        if i >= 3:
+            if "lumberjachut" in structuresNames[i]["name"]:
+                textVillagePresentationBook += ('Villagers built a '
+                                                f'{structuresNames[i]["name"]} \\\\n')
+            elif "farm" in structuresNames[i]["name"] or "quarry" in structuresNames[i]["name"] or "well" in structuresNames[i]["name"]:
+                textVillagePresentationBook += ('Using the lumberjack hut, villagers built a '
+                                                f'{structuresNames[i]["name"]} \\\\n')
+            elif "smeltery" in structuresNames[i]["name"] or "frunace" in structuresNames[i]["name"] or "stonecutter" in structuresNames[i]["name"]:
+                textVillagePresentationBook += ('Using the quarry, villagers built a '
+                                                f'{structuresNames[i]["name"]} \\\\n')
+            elif "workshop" in structuresNames[i]["name"] or "jail" in structuresNames[i]["name"] or "townhall" in structuresNames[i]["name"]:
+                textVillagePresentationBook += ('Using the stone cutter, villagers built a '
+                                                f'{structuresNames[i]["name"]} \\\\n')
+            elif "graveyard" in structuresNames[i]["name"]:
+                textVillagePresentationBook += ('Using the furnace, villagers built a '
+                                                f'{structuresNames[i]["name"]} \\\\n')
+            elif "windmill" in structuresNames[i]["name"] or "barrack" in structuresNames[i]["name"]:
+                textVillagePresentationBook += ('Using the workshop, villagers built a '
+                                                f'{structuresNames[i]["name"]} \\\\n')
+            elif "tavern" in structuresNames[i]["name"]:
+                textVillagePresentationBook += ('Using the windmill and the farm, villagers built a '
+                                                f'{structuresNames[i]["name"]} \\\\n')
+            # else:
+            #     textVillagePresentationBook += (f'{structuresNames[i]["name"]} \\\\n')
     textVillagePresentationBook += ('\f')
     return textVillagePresentationBook
 
@@ -129,14 +185,14 @@ def createTextOfPresentationVillage(villageName, villagerNames, structuresNumber
 Return the text of the book of the villagers names and professions
 """
 def createTextForVillagersNames(listOfVillagers):
-    textVillagerNames = (' ')
+    textVillagerNames = ('Registry of living villagers \\\\n')
     for i in range(len(listOfVillagers)):
-        if i <= 6: 
+        if i <= 3: 
             textVillagerNames += ('-'
                 f'{listOfVillagers[i]}       \\\\n')
-        if i % 6 == 0 and i != 0:
+        if i % 4 == 0 and i != 0:
             textVillagerNames += ('\f')
-        if i > 6:
+        if i >= 4:
             textVillagerNames += ('-'
                 f'{listOfVillagers[i]}       \\\\n')
     textVillagerNames += ('\f')
@@ -146,25 +202,41 @@ def createTextForVillagersNames(listOfVillagers):
 Return the text of the book of the dead villagers names and professions
 """
 def createTextForDeadVillagers(listOfVillagers):
-    newList = listOfVillagers
-    textDeadVillagers = (' ')
-    random = rd.randint(0, len(newList) - 1)
-    # print("the dead villagers : ")
-    # print(random)
-    for i in range(random):
-        deadVillager = rd.choice(newList)
-        # print(deadVillager)
-        if i <= 6:
+    randomOfDeadVillagers = rd.randint(1, len(listOfVillagers) - 1)
+    villagerFirstNamesList = getFirstNamelist()
+    villagerLastNamesList = getLastNamelist()
+    
+    data = {}
+    data["listOfDeadVillagers"] = []
+    for i in range(randomOfDeadVillagers):
+        data["listOfDeadVillagers"].append(getRandomVillagerNames(villagerFirstNamesList, 1)[0] + " " + getRandomVillagerNames(villagerLastNamesList, 1)[0])
+    listOfDeadVillagersWithoutJob = [i.split(':', 1)[0] for i in listOfVillagers]
+    textDeadVillagers = ('Registry of dead villagers \\\\n')
+
+    for i in range(len(data["listOfDeadVillagers"])):
+        deadVillager = data["listOfDeadVillagers"][i]
+        randomDeath = rd.randint(0, len(REASON_OF_DEATHS) - 1)
+        if deadVillager in listOfDeadVillagersWithoutJob:
             textDeadVillagers += ('-'
-                f'{deadVillager} \\\\n')
-        if i % 6 == 0 and i != 0:
+                f'{deadVillager} Senior : '
+                f'{REASON_OF_DEATHS[randomDeath]} \\\\n')
+        if i <= 2:
+            if i == 2:
+                textDeadVillagers += ('-'
+                    f'{deadVillager} : '
+                    f'{REASON_OF_DEATHS[0]} \\\\n')
+            else:
+                textDeadVillagers += ('-'
+                    f'{deadVillager} : '
+                    f'{REASON_OF_DEATHS[randomDeath]} \\\\n')
+        if i % 3 == 0 and i != 0:
             textDeadVillagers += ('\f')
-        if i > 6:
+        if i >= 3:
             textDeadVillagers += ('-'
-                f'{deadVillager} \\\\n')
-        newList.remove(deadVillager)
+                f'{deadVillager} : '
+                f'{REASON_OF_DEATHS[randomDeath]} \\\\n')
     textDeadVillagers += ('\f')
-    return [textDeadVillagers, random]
+    return [textDeadVillagers, randomOfDeadVillagers]
 
 def addResourcesFromChunk(resources, settlementData, biome):
     if biome == "-1":
@@ -231,10 +303,7 @@ def spawnVillagerForStructure(settlementData, structureData, position):
             spawnVillager(position[0], position[1], position[2], "minecraft:villager", 
                 settlementData["villagerNames"][id], settlementData["villagerGameProfession"][id], randomProfessionLevel, settlementData["biomeName"])
 
-VILLAGER_NAME_PATH = "data/names/"
-NUMBER = 5
-MIN_SIZE = 4
-MAX_SIZE = 15
+
 
 # -------------------------------------------------------- generate random villagers names
 
