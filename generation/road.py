@@ -235,14 +235,13 @@ def initRoad(floodFill, settlementData, worldmodif,  materials):
 					z0 = z
 				z0 = entry1[1]
 				for block in path:
-					print(block)
 					z = z0
 					while not(floodFill.is_air(block[0], z+1, block[1])) or floodFill.is_air(block[0], z, block[1]):
 						if floodFill.is_air(block[0], z, block[1]):
 							z -=1
 						if not(floodFill.is_air(block[0], z+1, block[1])):
 							z += 1
-					if temp%12 == 0:
+					if temp%12 == 0 and temp<len(path):
 						if not([block[0]-1, block[1]] in path):
 							worldmodif.setBlock(block[0]-1, z-1, block[1], 'minecraft:cobblestone')
 							worldmodif.setBlock(block[0]-1, z, block[1], 'minecraft:cobblestone_wall')

@@ -55,14 +55,20 @@ class FloodFill:
     """
     To know if it's a air block (or leaves and stuff)
     """
-    def is_air(self, x, y, z):   
-        block = iu.getBlock(x, y - 1, z)
-        if block in FloodFill.IGNORED_BLOCKS:
-            #print("its air")
-            return True
-        else:
-            #print("itsnotair")
-            return False
+    def is_air(self, x, y, z):
+        try:
+            block = iu.getBlock(x, y - 1, z)
+            if block in FloodFill.IGNORED_BLOCKS:
+                #print("its air")
+                return True
+            else:
+                #print("itsnotair")
+                return False
+        except IndexError:
+            print("indexError")
+        return False
+
+        
 
 
 
@@ -73,12 +79,15 @@ class FloodFill:
         y2 = y - 1
         #print(is_air(x,y2+1,z,ws) and not(is_air(x,y2,z,ws)))
         """ and not(ws.getBlockAt(x, y2, z)=='minecraft:water') """
-        if iu.getBlock(x,y,z)=='minecraft:lava':
-            iu.setBlock(x,y,z,'minecraft:obsidian')
-        if iu.getBlock(x,y1,z)=='minecraft:lava':
-            iu.setBlock(x,y1,z,'minecraft:obsidian')
-        if iu.getBlock(x,y2,z)=='minecraft:lava':
-            iu.setBlock(x,y2,z,'minecraft:obsidian')
+        try:
+            if iu.getBlock(x,y,z)=='minecraft:lava':
+                iu.setBlock(x,y,z,'minecraft:obsidian')
+            if iu.getBlock(x,y1,z)=='minecraft:lava':
+                iu.setBlock(x,y1,z,'minecraft:obsidian')
+            if iu.getBlock(x,y2,z)=='minecraft:lava':
+                iu.setBlock(x,y2,z,'minecraft:obsidian')
+        except IndexError:
+            print("IndexError")
 
         if self.is_air(x, y2 + 1, z) and not(self.is_air(x, y2, z)) :
             return y2 
@@ -172,13 +181,12 @@ class FloodFill:
         listverifhouse = self.listHouse.copy()
         while listverifhouse:
             house = listverifhouse.pop()
-            print([house[0] + house[3][0], house[2] + house[3][1], house[0] + house[3][2], house[2] + house[3][3]])
             if _math.isPointInSquare(coord,[house[0] + house[3][0], house[2] + house[3][1], house[0] + house[3][2], house[2] + house[3][3]]):
                 return True
         return False
 
 
-    def decideMinMax():
+    def decideMinMax(self):
         listverifhouse = self.listHouse.copy()
         if listverifhouse:
             house = listverifhouse.pop()
@@ -196,21 +204,28 @@ class FloodFill:
                 xmax = house[0]
             if house[2] > zmax:
                 zmax = house[2]
+        print("range of the village is : ", xmin, xmax, zmin, zmax)
         return xmin, xmax, zmin, zmax
 
-    def placeDecorations():
-        xmin, xmax, zmin,zmax = decideMinMax()
+    def placeDecorations(self):
+        xmin, xmax, zmin,zmax = self.decideMinMax()
         decorationcoord = []
+        print(self.numberOfDecoration)
         for i in range(self.numberOfDecoration):
+            print("deco numero :" ,i)
             decoput = False
             debug = 15
-            while not decoputted and debug > 0:
+            while not decoput and debug > 0:
+
                 xrand = random.randint(xmin,xmax)
                 zrand = random.randint(zmin,zmax)
+                print("trying to place deco in ",xrand,zrand)
+                print(self.isInHouse([xrand,zrand]))
+                print(road.isInRoad([xrand,zrand]))
                 if not self.isInHouse([xrand,zrand]):
                     if not road.isInRoad([xrand,zrand]):
                         print("deco n :",i, "placed in ",xrand,zrand)
-                        decoputted = True
+                        decoput = True
                 debug -= 1
 
 
@@ -264,7 +279,6 @@ class FloodFill:
 
                 while not verifCorners and (debug>0):
                     xPos, yPos, zPos = self.takeNewPositionForHouse(sizeStruct)
-                    print(int(debug / 12),"try left")
                     #to get a random flip and rotation and to test if one is possible
                     if (iu.getBlock(xPos, yPos, zPos)=='minecraft:water'):  
                         continue
