@@ -95,7 +95,7 @@ if not args.remove:
     
     # Add books replacements
     settlementData["materialsReplacement"]["villageBook"] = books["villageNameBook"]
-    settlementData["materialsReplacement"]["villagerRegistry"] = books["villagerNamesList"]
+    settlementData["materialsReplacement"]["villagerRegistry"] = books["villagerNamesBook"]
     settlementData["materialsReplacement"]["deadVillagerRegistry"] = books["deadVillagersBook"]
 
     # Creates roads

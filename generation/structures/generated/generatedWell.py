@@ -4,6 +4,12 @@ from generation.structures.baseStructure import *
 class GeneratedWell(BaseStructure):
     def __init__(self) :
         super(BaseStructure, self).__init__()
+        self.uselessBlocks = [
+        'minecraft:air', 'minecraft:cave_air', 'minecraft:water', 'minecraft:lava'
+        'minecraft:oak_leaves',  'minecraft:leaves',  'minecraft:birch_leaves', 'minecraft:spruce_leaves'
+        'minecraft:oak_log',  'minecraft:spruce_log',  'minecraft:birch_log',  'minecraft:jungle_log', 'minecraft:acacia_log', 'minecraft:dark_oak_log',
+        'minecraft:grass', 'minecraft:snow', 'minecraft:poppy'
+        'minecraft:dead_bush', "minecraft:cactus", "minecraft:sugar_cane"]
 
 
     def setupInfoAndGetCorners(self):
@@ -43,6 +49,16 @@ class GeneratedWell(BaseStructure):
         
         self.plankType = "minecraft:" + woodType + "_planks"
     
+        position = self.returnWorldPosition(
+                        [self.entry[0], self.entry[1], self.entry[2]],
+                        buildingCondition["flip"], buildingCondition["rotation"], buildingCondition["referencePoint"],
+                        buildingCondition["position"])
+
+
+        self.addStoneBricks(worldModif, buildingCondition)
+        self.addStoneBrickStairs(worldModif, buildingCondition)
+        self.addWoodAroundTheWell(worldModif, buildingCondition)
+
         # Add water
         fromBlock = self.returnWorldPosition(
                         [2, int(self.size_y()), 2], buildingCondition["flip"], 
@@ -67,11 +83,10 @@ class GeneratedWell(BaseStructure):
         for i in range(len(positions)):
             localPosition = [positions[i][0], self.size_y() - 5, positions[i][1]] 
             position = self.returnWorldPosition(
-                        localPosition, buildingCondition["flip"], 
-                        buildingCondition["rotation"], buildingCondition["referencePoint"], buildingCondition["position"])
+                            localPosition, buildingCondition["flip"], 
+                            buildingCondition["rotation"], buildingCondition["referencePoint"], buildingCondition["position"])
             worldModif.setBlock(position[0], position[1], position[2], self.plankType)
-            
-         
+
 
     def addStoneBrickStairs(self, worldModif, buildingCondition):
         # Add stairs
@@ -83,6 +98,8 @@ class GeneratedWell(BaseStructure):
                 localPosition, buildingCondition["flip"], 
                 buildingCondition["rotation"], buildingCondition["referencePoint"], buildingCondition["position"])
             worldModif.setBlock(position[0], position[1], position[2], "minecraft:stone_brick_stairs[" + self.convertProperty('facing', orientations[i] )  + "]")
+            for k in range(1, 10):
+                worldModif.setBlock(position[0], position[1] - k, position[2], "minecraft:stone_bricks")
             for j in range(1, 3):
                 worldModif.setBlock(position[0], position[1] + 3, position[2], "minecraft:stone_brick_slab")
 
@@ -94,7 +111,8 @@ class GeneratedWell(BaseStructure):
             position = self.returnWorldPosition(
                 localPosition, buildingCondition["flip"], 
                 buildingCondition["rotation"], buildingCondition["referencePoint"], buildingCondition["position"]) 
-            worldModif.setBlock(position[0], position[1], position[2], "minecraft:chiseled_stone_bricks")
+            worldModif.setBlock(position[0], position[1], position[2], "minecraft:infested_chiseled_stone_bricks")
+            worldModif.setBlock(position[0], position[1] - 1, position[2], "minecraft:stone_bricks")
             for j in range(1, 3):
                 # Add cobblestone walls
                 worldModif.setBlock(position[0], position[1] + j, position[2], "minecraft:cobblestone_wall")
