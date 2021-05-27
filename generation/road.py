@@ -44,7 +44,9 @@ def comparenode(node1,node2):
 		return -1
 
 def isInClosedList(node, closedlist):
+	print("testing : ",node.point)
 	for i in closedlist:
+		print(i.point)
 		if node.point == i.point:
 			return True
 	return False
