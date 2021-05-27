@@ -52,15 +52,15 @@ def isInClosedList(node, closedlist):
 def isInListWithInferiorCost(node, list):
 	for i in list:
 		if node.point == i.point:
-			if i.H <= node.H:
+			if i.H < node.H:
 				return True
 	return False
 
 def isInRoad(coord):
 	for index in NODE_IN_ROAD:
-		if coord in NODE_IN_ROAD:
-			return False
-	return True
+		if coord in index:
+			return True
+	return False
 
 
 def Astar(startcoord,goalcoord,squarelist, floodFill):
@@ -104,6 +104,7 @@ def Astar(startcoord,goalcoord,squarelist, floodFill):
 
 			if notinsquare:
 				if not(isInClosedList(node, closedlist) or isInListWithInferiorCost(node, openlist)):
+					print(node.point)
 					node.cost = current.cost + 1
 					node.H = node.cost + manhattan(node,goal)
 					node.parent = current
@@ -205,7 +206,7 @@ def initRoad(floodFill, settlementData, worldmodif,  materials):
 			try:
 				path = Astar(start, goal, squarelist,floodFill)
 				print("Astar done : ", path)
-				temp = 0
+				temp = 1
 				z0 = entry1[1]
 				zgoal = entry2[1]
 				print("start is :", start)
@@ -241,7 +242,7 @@ def initRoad(floodFill, settlementData, worldmodif,  materials):
 							z -=1
 						if not(floodFill.is_air(block[0], z+1, block[1])):
 							z += 1
-					if temp%12 == 0 and temp<len(path):
+					if temp%12 == 0 and (temp )<(len(path)-3):
 						if not([block[0]-1, block[1]] in path):
 							worldmodif.setBlock(block[0]-1, z-1, block[1], 'minecraft:cobblestone')
 							worldmodif.setBlock(block[0]-1, z, block[1], 'minecraft:cobblestone_wall')

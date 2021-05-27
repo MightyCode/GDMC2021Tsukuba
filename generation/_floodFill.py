@@ -210,21 +210,17 @@ class FloodFill:
     def placeDecorations(self):
         xmin, xmax, zmin,zmax = self.decideMinMax()
         decorationcoord = []
-        print(self.numberOfDecoration)
         for i in range(self.numberOfDecoration):
-            print("deco numero :" ,i)
             decoput = False
             debug = 15
             while not decoput and debug > 0:
 
                 xrand = random.randint(xmin,xmax)
                 zrand = random.randint(zmin,zmax)
-                print("trying to place deco in ",xrand,zrand)
-                print(self.isInHouse([xrand,zrand]))
-                print(road.isInRoad([xrand,zrand]))
                 if not self.isInHouse([xrand,zrand]):
                     if not road.isInRoad([xrand,zrand]):
                         print("deco n :",i, "placed in ",xrand,zrand)
+                        iu.setBlock(xrand,self.getHeight(xrand,zrand),zrand,"minecraft:hay_block")
                         decoput = True
                 debug -= 1
 
