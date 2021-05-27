@@ -38,7 +38,7 @@ def createSettlementData(area, resources):
                 "farmer", "fisherman", "shepherd", "fletcher", "librarian", "cartographer", 
                 "cleric", "armorer", "weaponsmith", "toolsmith", "butcher", "leatherworker", "mason", "nitwit"]
     
-    settlementData["structuresNumberGoal"] = random.randint(15, 20)
+    settlementData["structuresNumberGoal"] = random.randint(15, 70)
 
     #structures contains "position", "rotation", "flip" "name", "type", "group" ->, "villagersId"
     settlementData["structures"] = []

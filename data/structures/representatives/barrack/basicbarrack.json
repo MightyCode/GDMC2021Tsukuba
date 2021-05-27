@@ -1,7 +1,7 @@
 {
     "mainEntry": {
       "facing" : "north",
-      "position" : [4, 1, 0]
+      "position" : [5, 1, 0]
     },
     "replacements" : {
       "minecraft:light_blue_bed" : { "type" : "bed", "state" : 1 },

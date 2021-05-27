@@ -26,6 +26,7 @@ class GeneratedWell(BaseStructure):
             "position" : self.info["mainEntry"]["position"], 
             "facing" : self.getFacingMainEntry(flip, rotation) 
         }
+        info["corner"] = self.getCornersLocalPositions(self.info["mainEntry"]["position"].copy(), flip, rotation)
 
         return info
 
@@ -48,11 +49,6 @@ class GeneratedWell(BaseStructure):
             woodType = "oak"
         
         self.plankType = "minecraft:" + woodType + "_planks"
-    
-        position = self.returnWorldPosition(
-                        [self.entry[0], self.entry[1], self.entry[2]],
-                        buildingCondition["flip"], buildingCondition["rotation"], buildingCondition["referencePoint"],
-                        buildingCondition["position"])
 
 
         self.addStoneBricks(worldModif, buildingCondition)

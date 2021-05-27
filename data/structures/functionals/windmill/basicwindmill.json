@@ -1,7 +1,7 @@
 {
   "mainEntry": {
     "facing" : "north",
-    "position" : [5, 1, 1]
+    "position" : [4, 1, 1]
   },
   "replacements" : {
     "oak" : { "type" : "woodType", "state" : 2 },
