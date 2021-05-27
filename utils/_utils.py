@@ -191,9 +191,10 @@ def createTextForDeadVillagers(listOfVillagers):
                 textDeadVillagers += ('-'
                     f'{deadVillager} : '
                     f'{REASON_OF_DEATHS[0]} \\\\n')
-            textDeadVillagers += ('-'
-                f'{deadVillager} : '
-                f'{REASON_OF_DEATHS[randomDeath]} \\\\n')
+            else:
+                textDeadVillagers += ('-'
+                    f'{deadVillager} : '
+                    f'{REASON_OF_DEATHS[randomDeath]} \\\\n')
         if i % 3 == 0 and i != 0:
             textDeadVillagers += ('\f')
         if i >= 3:

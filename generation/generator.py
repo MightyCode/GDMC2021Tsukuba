@@ -35,7 +35,7 @@ def createSettlementData(area, resources):
                 "farmer", "fisherman", "shepherd", "fletcher", "librarian", "cartographer", 
                 "cleric", "armorer", "weaponsmith", "toolsmith", "butcher", "leatherworker", "mason", "nitwit"]
     
-    settlementData["structuresNumberGoal"] = random.randint(15, 70)
+    settlementData["structuresNumberGoal"] = random.randint(15, 20)
 
     #structures contains "position", "rotation", "flip" "name", "type", "group" ->, "villagersId"
     settlementData["structures"] = []
@@ -54,29 +54,44 @@ def generateBooks(settlementData):
     for i in range(len(settlementData["villagerNames"])):
         strVillagers += settlementData["villagerNames"][i] + " : " + settlementData["villagerProfession"][i] + ";"
     listOfVillagers = strVillagers.split(";")
-    listOfDeadVillagers = [i.split(':', 1)[0] for i in listOfVillagers]
 
     textVillagersNames = _utils.createTextForVillagersNames(listOfVillagers)
-    textDeadVillagers = _utils.createTextForDeadVillagers(listOfDeadVillagers)
-    textVillagePresentationBook = _utils.createTextOfPresentationVillage(settlementData["villageName"], settlementData["villagerNames"], 
-                settlementData["structuresNumberGoal"], settlementData["structures"], textDeadVillagers[1])
+    textDeadVillagers = _utils.createTextForDeadVillagers(listOfVillagers)
+    textVillagePresentationBook = _utils.createTextOfPresentationVillage(settlementData["villageName"], 
+                settlementData["structuresNumberGoal"], settlementData["structures"], textDeadVillagers[1], listOfVillagers)
+    settlementData["textOfBooks"] = [textVillagersNames, textDeadVillagers]
     
     books = {}
     books["villageNameBook"] = toolbox.writeBook(textVillagePresentationBook, title="Village Presentation", author="Mayor", description="Presentation of the village")
-    books["villagerNamesList"] = toolbox.writeBook(textVillagersNames, title="List of all villagers", author="Mayor", description="List of all villagers")
+    books["villagerNamesBook"] = toolbox.writeBook(textVillagersNames, title="List of all villagers", author="Mayor", description="List of all villagers")
     books["deadVillagersBook"] = toolbox.writeBook(textDeadVillagers[0], title="List of all dead villagers", author="Mayor", description="List of all dead villagers")
-   
+
     return books
 
 
 def placeBooks(settlementData, books, floodFill, worldModif):
-    names = ["villageNameBook", "villagerNamesList", "deadVillagersBook"]
-    for i in range(3):
-        toolbox.placeLectern(
-            settlementData["center"][0], 
-            floodFill.getHeight(settlementData["center"][0], settlementData["center"][2]), 
-            settlementData["center"][2] + i, books[names[i]], worldModif, 'east')
 
+    # print(settlementData["center"])
+    settlementData["books"] = [books["villagerNamesBook"], books["deadVillagersBook"]]
+
+    items = []
+    for i in range(len(settlementData["books"])):
+        items += [["minecraft:written_book" + settlementData["books"][i], 1]]
+
+    # Set a chest for the books and place the books in the chest
+    worldModif.setBlock(settlementData["center"][0], 
+                        floodFill.getHeight(settlementData["center"][0], settlementData["center"][2]), 
+                        settlementData["center"][2], "minecraft:chest[facing=east]", placeImmediately=True)
+    _utils.addItemChest(settlementData["center"][0], 
+                        floodFill.getHeight(settlementData["center"][0], settlementData["center"][2]),
+                        settlementData["center"][2], items)
+
+
+    # Set a lectern for the book of village presentation
+    toolbox.placeLectern(
+        settlementData["center"][0], 
+        floodFill.getHeight(settlementData["center"][0], settlementData["center"][2]), 
+         settlementData["center"][2] + 1, books["villageNameBook"], worldModif, 'east')
 
 def generateStructure(structureData, settlementData, resources, worldModif, chestGeneration):
     print(structureData["name"])
