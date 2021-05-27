@@ -1,4 +1,5 @@
 import utils._math as _math
+import utils._utils as _utils
 import lib.interfaceUtils as interfaceUtils
 import generation._floodFill as floodFill
 import math
@@ -96,6 +97,7 @@ class BaseStructure:
         worldPosition[0] = int(worldPosition[0])                        - referencePoint[0]
         worldPosition[1] = worldStructurePosition[1] + worldPosition[1] - referencePoint[1] 
         worldPosition[2] = int(worldPosition[2])                        - referencePoint[2]
+
         return worldPosition 
 
     
@@ -163,6 +165,32 @@ class BaseStructure:
             self.computedOrientation["z"] = "x"
 
 
+    def parseSpecialRule(self, buildingCondition, worldModification):
+        if not "special" in self.info.keys():
+            return
+        
+        for key in self.info["special"].keys():
+            if key == "sign":
+                i = 0
+                for sign in self.info["special"][key]:
+                    signPosition = self.returnWorldPosition(
+                        sign["position"],
+                        buildingCondition["flip"], buildingCondition["rotation"], 
+                        buildingCondition["referencePoint"], buildingCondition["position"]
+                    )
+
+                    print(signPosition[0], signPosition[1] + 1, signPosition[2])
+                    worldModification.setBlock(signPosition[0], signPosition[1] + 1, signPosition[2], 
+                        "minecraft:" + buildingCondition["replacements"]["woodType"] + "_wall_sign[facing=" + self.computedOrientation[sign["orientation"]] + "]", 
+                        placeImmediately=True)
+                        
+                    interfaceUtils.setSignText(
+                        signPosition[0], signPosition[1] + 1, signPosition[2], 
+                        buildingCondition["special"]["sign"][i * 4], buildingCondition["special"]["sign"][i * 4 + 1],
+                        buildingCondition["special"]["sign"][i * 4 + 2], buildingCondition["special"]["sign"][i * 4 + 3])
+                    
+                    i += 1
+
     """
     Return position where reference position is the center of the local space
     referencePosition : the origin of the local space, what should be the 0, 0,  [0, 0, 0]
@@ -218,42 +246,8 @@ class BaseStructure:
         lines = ["", "", "", "", "", "", "", ""]
         lines[0] = "Tier " + str(self.info["sign"]["tier"])
         lines[1] = self.info["sign"]["name"]
-
-        currentLine = 2
-        for person in people:
-            partss = ("-" + person + "\n").split(" ")
-            parts = []
-
-            for i in range(len(partss)):
-                if len(partss[i]) > 15:
-                    parts.append(partss[i][0:14])
-                    parts.append(partss[i][15:])
-                else:
-                    parts.append(partss[i])
-
-            i = 0
-            while i < len(parts) and currentLine < len(lines):
-                jumpLine = False
-                if len(lines[currentLine]) > 0 :
-                    if len(parts[i]) + 1  <= 15 - len(lines[currentLine]):
-                        if "\n" in parts[i]:
-                            jumpLine = True
-                        lines[currentLine] += " " + parts[i].replace("\n", "")
-                        i += 1
-                    else :
-                        jumpLine = True
-
-                else :
-                    if len(parts[i])  <= 15 - len(lines[currentLine]):
-                        if "\n" in parts[i]:
-                            jumpLine = True
-                        lines[currentLine] += parts[i].replace("\n", "")
-                        i += 1
-                    else :
-                        jumpLine = True
-                
-                if jumpLine :
-                    currentLine += 1
+        
+        _utils.parseVillagerNameInLines(people, lines, 2)
 
         interfaceUtils.setSignText(
             position[0], position[1], position[2], 

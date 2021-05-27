@@ -124,8 +124,9 @@ def initRoad(floodFill, settlementData, worldmodif,  materials):
 		entrytemp.append(floodFill.listHouse[index][0])
 		entrytemp.append(floodFill.listHouse[index][1]-1)
 		entrytemp.append(floodFill.listHouse[index][2])
-		squarelist.append([entrytemp[0] + floodFill.listHouse[index][3][0] , entrytemp[2] + floodFill.listHouse[index][3][1], entrytemp[0] + floodFill.listHouse[index][3][2], entrytemp[2] + floodFill.listHouse[index][3][3]])
-	print(squarelist)
+		squarelist.append([entrytemp[0] + floodFill.listHouse[index][3][0] , entrytemp[2] + floodFill.listHouse[index][3][1], 
+			entrytemp[0] + floodFill.listHouse[index][3][2], entrytemp[2] + floodFill.listHouse[index][3][3]])
+	#print(squarelist)
 	for index in range(0,len(settlementData["structures"])):
 		#to knwo if the house doesn't have parent...
 		print("building path for house n :",index)
@@ -163,7 +164,7 @@ def initRoad(floodFill, settlementData, worldmodif,  materials):
 
 			#house parent
 			facingparent = settlementData["structures"][index2]["prebuildingInfo"]["entry"]["facing"]
-			print(facingparent)
+			#print(facingparent)
 			entry2 = []
 			entry2.append(floodFill.listHouse[index2][0])
 			entry2.append(floodFill.listHouse[index2][1]-1)
@@ -176,7 +177,7 @@ def initRoad(floodFill, settlementData, worldmodif,  materials):
 							y -=1
 						if not(floodFill.is_air(x, y+2, z)):
 							y += 1
-						print("stuck1")
+						#print("stuck1")
 			worldmodif.setBlock(x, y, z, "minecraft:grass_path")
 			x += ORIENTATION[facingparent][0]
 			z += ORIENTATION[facingparent][1]
@@ -185,7 +186,7 @@ def initRoad(floodFill, settlementData, worldmodif,  materials):
 							y -=1
 						if not(floodFill.is_air(x, y+2, z)):
 							y += 1
-						print("stuck2")
+						#print("stuck2")
 			worldmodif.setBlock(x, y, z, "minecraft:grass_path")
 			x += ORIENTATION[facingparent][0]
 			z += ORIENTATION[facingparent][1]
@@ -194,7 +195,7 @@ def initRoad(floodFill, settlementData, worldmodif,  materials):
 							y -=1
 						if not(floodFill.is_air(x, y+2, z)):
 							y += 1
-						print("stuck3")
+						#print("stuck3")
 			worldmodif.setBlock(x, y, z, "minecraft:grass_path")
 			x += ORIENTATION[facingparent][0]
 			z += ORIENTATION[facingparent][1]
@@ -236,6 +237,7 @@ def initRoad(floodFill, settlementData, worldmodif,  materials):
 					z0 = z
 				z0 = entry1[1]
 				for block in path:
+					#print(block)
 					z = z0
 					while not(floodFill.is_air(block[0], z+1, block[1])) or floodFill.is_air(block[0], z, block[1]):
 						if floodFill.is_air(block[0], z, block[1]):

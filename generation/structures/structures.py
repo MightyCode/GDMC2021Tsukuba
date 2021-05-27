@@ -136,8 +136,6 @@ class Structures(BaseStructure):
 
         # Air zone
         self.placeAirZones(worldModif, buildingCondition)
-        time.sleep(0.3)
-
         
         ## Computing : Modify from blocks
         for block in self.file["blocks"]:
@@ -189,6 +187,8 @@ class Structures(BaseStructure):
             signPosition[1] += 1
 
             self.generateSignatureSign(signPosition, worldModif, buildingCondition["replacements"]["woodType"], buildingCondition["villager"])
+
+        self.parseSpecialRule(buildingCondition, worldModif)
             
 
     def checkBeforePlacing(self, blockName):
