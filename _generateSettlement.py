@@ -1,3 +1,6 @@
+import time
+milliseconds = int(round(time.time() * 1000))
+
 from generation._resources import *
 from generation._chestGeneration import *
 from generation._structureManager import *
@@ -88,7 +91,7 @@ if not args.remove:
         structureMananager.checkDependencies()
         
     books = generator.generateBooks(settlementData)
-    generator.placeBooks(settlementData, books, floodFill, worldModif, ws)
+    generator.placeBooks(settlementData, books, floodFill, worldModif)
     
     # Add books replacements
     settlementData["materialsReplacement"]["villageBook"] = books["villageNameBook"]
@@ -96,14 +99,13 @@ if not args.remove:
     settlementData["materialsReplacement"]["deadVillagerRegistry"] = books["deadVillagersBook"]
 
     # Creates roads
-    road.initRoad(floodFill, settlementData, worldModif, ws)
+    road.initRoad(floodFill, settlementData, worldModif, settlementData["materialsReplacement"])
 
     #structureMananager.printStructureChoose()
 
     # Build after every computations
     for i in range(len(settlementData["structures"])) :
         generator.generateStructure(settlementData["structures"][i], settlementData, resources, worldModif, chestGeneration)
-        time.sleep(0.3)
         #_utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
     worldModif.saveToFile(file)  
 
@@ -114,3 +116,8 @@ else :
         worldModif.loadFromFile(args.remove)
     worldModif.undoAllModification()
 
+
+milliseconds2 = int(round(time.time() * 1000))
+result = milliseconds2 - milliseconds 
+
+print("Time took : ", result / 1000)
