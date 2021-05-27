@@ -219,13 +219,40 @@ def initRoad(floodFill, settlementData, worldmodif,  materials):
 						material = "minecraft:obsidian"
 					#here, we need to check if there is a tree above the path, and if yes, we want to remove it
 					#if 
-					
+					worldmodif.setBlock(block[0],z, block[1],"minecraft:air")
+					worldmodif.setBlock(block[0],z + 1, block[1],"minecraft:air")
 					worldmodif.setBlock(block[0],z - 1, block[1], material)
-					if temp%6 == 0:
-						worldmodif.setBlock(block[0], z, block[1], 'minecraft:torch')
-					temp += 1
-
 					z0 = z
+				z0 = entry1[1]
+				for block in path:
+					print(block)
+					z = z0
+					while not(floodFill.is_air(block[0], z+1, block[1])) or floodFill.is_air(block[0], z, block[1]):
+						if floodFill.is_air(block[0], z, block[1]):
+							z -=1
+						if not(floodFill.is_air(block[0], z+1, block[1])):
+							z += 1
+					if temp%12 == 0:
+						if not([block[0]-1, block[1]] in path):
+							worldmodif.setBlock(block[0]-1, z-1, block[1], 'minecraft:cobblestone')
+							worldmodif.setBlock(block[0]-1, z, block[1], 'minecraft:cobblestone_wall')
+							worldmodif.setBlock(block[0]-1, z+1, block[1], 'minecraft:redstone_lamp[lit=true]')
+						elif not([block[0], block[1] - 1] in path):
+							worldmodif.setBlock(block[0], z-1, block[1] - 1, 'minecraft:cobblestone')
+							worldmodif.setBlock(block[0], z, block[1] - 1, 'minecraft:cobblestone_wall')
+							worldmodif.setBlock(block[0], z+1, block[1] - 1, 'minecraft:redstone_lamp[lit=true]')
+						elif not([block[0] + 1, block[1]] in path):
+							worldmodif.setBlock(block[0] + 1, z-1, block[1], 'minecraft:cobblestone')
+							worldmodif.setBlock(block[0] + 1, z, block[1], 'minecraft:cobblestone_wall')
+							worldmodif.setBlock(block[0] + 1, z+1, block[1], 'minecraft:redstone_lamp[lit=true]')
+						elif not([block[0], block[1] + 1] in path):
+							worldmodif.setBlock(block[0], z-1, block[1] + 1, 'minecraft:cobblestone')
+							worldmodif.setBlock(block[0], z, block[1] + 1, 'minecraft:cobblestone_wall')
+							worldmodif.setBlock(block[0], z+1, block[1] + 1, 'minecraft:redstone_lamp[lit=true]')
+						
+					temp += 1
+					z0 = z
+					
 			except ValueError:
 				print("ValueError, path can't be implemented there")
 				continue
