@@ -3,6 +3,7 @@ import random
 import copy
 import lib.toolbox as toolbox
 from generation.structures.baseStructure import BaseStructure
+import generation.loremaker as loremaker
 
 def createSettlementData(area, resources):
     settlementData = {}
@@ -25,6 +26,8 @@ def createSettlementData(area, resources):
     for aProperty in resources.biomesBlocks[settlementData["biomeBlockId"]]:
         if aProperty in resources.biomesBlocks["rules"]["village"]:
             settlementData["materialsReplacement"][aProperty] = resources.biomesBlocks[settlementData["biomeBlockId"]][aProperty]
+
+    loremaker.fillSettlementDataWitholor(settlementData, "white")
 
     settlementData["villageName"] = _utils.generateVillageName()
 
