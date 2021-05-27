@@ -9,13 +9,11 @@ import generation.generator as generator
 import generation._resourcesLoader as resLoader
 import utils._utils as _utils
 from utils._worldModification import *
-from lib.worldLoader import WorldSlice
 import utils.argumentParser as argParser
 import generation.loremaker as loremaker
-import lib.toolbox as toolbox
 import generation.road as road
 import lib.interfaceUtils as iu
-import time
+from random import choice
 
 
 file = "temp.txt"
@@ -89,7 +87,11 @@ if not args.remove:
 
         loremaker.alterSettlementDataWithNewStructures(settlementData, i)
         structureMananager.checkDependencies()
-        
+
+    # Murderer
+    settlementData["murdererIndex"] = choice([i for i in range(0, len(settlementData["villagerNames"])) if settlementData["villagerProfession"][i] != "Mayor"])
+    settlementData["murdererTargetIndex"] = choice([i for i in range(0, len(settlementData["villagerNames"])) if i != settlementData["murdererIndex"]])
+
     books = generator.generateBooks(settlementData)
     generator.placeBooks(settlementData, books, floodFill, worldModif)
     
@@ -97,7 +99,7 @@ if not args.remove:
     settlementData["materialsReplacement"]["villageBook"] = books["villageNameBook"]
     settlementData["materialsReplacement"]["villagerRegistry"] = books["villagerNamesList"]
     settlementData["materialsReplacement"]["deadVillagerRegistry"] = books["deadVillagersBook"]
-
+    
     # Creates roads
     road.initRoad(floodFill, settlementData, worldModif, settlementData["materialsReplacement"])
 

@@ -16,6 +16,6 @@
     ["murderercache"]
   ],
   "special" : {
-    "specialSign" : [5, 2, 2]
+    "sign" : [{ "position" : [4, 2, 2], "orientation" : "south"}]
   } 
 }

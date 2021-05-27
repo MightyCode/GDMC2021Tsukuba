@@ -53,6 +53,42 @@ def getNameBiome(biome):
     value = int(lignes[int(biome)].split(":")[1])
     return value
 
+
+def parseVillagerNameInLines(names, lines, startIndex=0):
+    currentLine = startIndex
+    for person in names:
+        partss = ("-" + person + "\n").split(" ")
+        parts = []
+        for i in range(len(partss)):
+            if len(partss[i]) > 15:
+                parts.append(partss[i][0:14])
+                parts.append(partss[i][15:])
+            else:
+                parts.append(partss[i])
+        i = 0
+        while i < len(parts) and currentLine < len(lines):
+            jumpLine = False
+            if len(lines[currentLine]) > 0 :
+                if len(parts[i]) + 1  <= 15 - len(lines[currentLine]):
+                    if "\n" in parts[i]:
+                        jumpLine = True
+                    lines[currentLine] += " " + parts[i].replace("\n", "")
+                    i += 1
+                else :
+                    jumpLine = True
+            else :
+                if len(parts[i])  <= 15 - len(lines[currentLine]):
+                    if "\n" in parts[i]:
+                        jumpLine = True
+                    lines[currentLine] += parts[i].replace("\n", "")
+                    i += 1
+                else :
+                    jumpLine = True
+            
+            if jumpLine :
+                currentLine += 1
+
+
 """
 Return the text of the book of the village presentation
 """
