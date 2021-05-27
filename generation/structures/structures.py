@@ -1,6 +1,7 @@
 import utils._math as _math
 import utils._utils as _utils
 from generation.structures.baseStructure import *
+import time
 
 from nbt import nbt
 
@@ -135,6 +136,7 @@ class Structures(BaseStructure):
 
         # Air zone
         self.placeAirZones(worldModif, buildingCondition)
+        time.sleep(0.3)
 
         
         ## Computing : Modify from blocks
@@ -178,14 +180,15 @@ class Structures(BaseStructure):
             self.checkAfterPlacing(block, blockName, blockPosition, chestGeneration, buildingCondition)
 
         # Place sign
-        signPosition = self.returnWorldPosition(
-            self.info["sign"]["position"],
-            buildingCondition["flip"], buildingCondition["rotation"], 
-            buildingCondition["referencePoint"], buildingCondition["position"]
-        )
-        signPosition[1] += 1
+        if "sign" in self.info.keys():
+            signPosition = self.returnWorldPosition(
+                self.info["sign"]["position"],
+                buildingCondition["flip"], buildingCondition["rotation"], 
+                buildingCondition["referencePoint"], buildingCondition["position"]
+            )
+            signPosition[1] += 1
 
-        self.generateSignatureSign(signPosition, worldModif, buildingCondition["replacements"]["woodType"], buildingCondition["villager"])
+            self.generateSignatureSign(signPosition, worldModif, buildingCondition["replacements"]["woodType"], buildingCondition["villager"])
             
 
     def checkBeforePlacing(self, blockName):
@@ -196,28 +199,34 @@ class Structures(BaseStructure):
     def checkAfterPlacing(self, block, blockName, blockPosition, chestGeneration, buildingCondition):
         # If structure has loot tables and chest encounter
         if "chest" in blockName:
+            if not "lootTables" in self.info: 
+                return
+                
             if self.lootTable :
                 choosenLootTable = ""
                 for lootTable in self.info["lootTables"] :
                     if len(lootTable) == 1:
                         choosenLootTable = lootTable[0]
-                    elif _math.isPointInSquare([ block["pos"][0].value, block["pos"][1].value, block["pos"][2].value ], lootTable[1]) :
+                    elif _math.isPointInCube([ block["pos"][0].value, block["pos"][1].value, block["pos"][2].value ], lootTable[1]) :
                         choosenLootTable = lootTable[0]
                     
                 if choosenLootTable  != "":
                     chestGeneration.generate(blockPosition[0], blockPosition[1], blockPosition[2], choosenLootTable, buildingCondition["replacements"])
 
         if "lectern" in blockName:
-            if "lectern" in self.info:
-                for key in self.info["lectern"].keys():
-                    position = self.info["lectern"][key]
-                    if block["pos"][0].value == position[0] and block["pos"][1].value == position[1] and block["pos"][2].value == position[2]:
-                        result = _utils.changeNameWithBalise(key, buildingCondition)
-                        if result[0] >= 0:
-                            _utils.addBookToLectern(blockPosition[0], blockPosition[1], blockPosition[2], result[1])
-                        else :
-                            print("Can't add a book to a lectern at pos : " + str(blockPosition))
-                        break
+            if not "lectern" in self.info:
+                return
+
+            for key in self.info["lectern"].keys():
+                position = self.info["lectern"][key]
+                if block["pos"][0].value == position[0] and block["pos"][1].value == position[1] and block["pos"][2].value == position[2]:
+                    result = _utils.changeNameWithBalise(key, buildingCondition)
+                    if result[0] >= 0:
+                        _utils.addBookToLectern(blockPosition[0], blockPosition[1], blockPosition[2], result[1])
+                    else :
+                        print("Can't add a book to a lectern at pos : " + str(blockPosition))
+                    break
+
 
     def convertNbtBlockToStr(self, blockPalette, takeOriginalBlockName=False):
         

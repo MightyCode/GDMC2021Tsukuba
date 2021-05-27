@@ -284,7 +284,7 @@ def getLastNamelist():
 
 def getRandomVillagerNames(villagerNamesList, number):
     listOfRandomVillagers = []
-    listOfVillagers = villagerNamesList
+    listOfVillagers = villagerNamesList.copy()
     for i in range(number):
         # get a random name from the list of names
         randomName = rd.choice(listOfVillagers)
