@@ -104,6 +104,7 @@ class Structures(BaseStructure):
             "position" : self.info["mainEntry"]["position"].copy(), 
             "facing" : self.getFacingMainEntry(flip, rotation) }
         info["size"] = self.size
+        info["corner"] = self.getCornersLocalPositions(self.info["mainEntry"]["position"].copy(), flip, rotation)
 
         return info
 
