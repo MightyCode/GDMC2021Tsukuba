@@ -210,13 +210,13 @@ def createTextForDeadVillagers(listOfVillagers):
     data["listOfDeadVillagers"] = []
     for i in range(randomOfDeadVillagers):
         data["listOfDeadVillagers"].append(getRandomVillagerNames(villagerFirstNamesList, 1)[0] + " " + getRandomVillagerNames(villagerLastNamesList, 1)[0])
-    listOfDeadVillagersWithoutJob = [i.split(':', 1)[0] for i in listOfVillagers]
+    listOfVillagersWithoutJob = [i.split(':', 1)[0] for i in listOfVillagers]
     textDeadVillagers = ('Registry of dead villagers \\\\n')
 
     for i in range(len(data["listOfDeadVillagers"])):
         deadVillager = data["listOfDeadVillagers"][i]
         randomDeath = rd.randint(0, len(REASON_OF_DEATHS) - 1)
-        if deadVillager in listOfDeadVillagersWithoutJob:
+        if deadVillager in listOfVillagersWithoutJob:
             textDeadVillagers += ('-'
                 f'{deadVillager} Senior : '
                 f'{REASON_OF_DEATHS[randomDeath]} \\\\n')
@@ -236,7 +236,7 @@ def createTextForDeadVillagers(listOfVillagers):
                 f'{deadVillager} : '
                 f'{REASON_OF_DEATHS[randomDeath]} \\\\n')
     textDeadVillagers += ('\f')
-    return [textDeadVillagers, randomOfDeadVillagers]
+    return [textDeadVillagers, randomOfDeadVillagers, data["listOfDeadVillagers"]]
 
 def addResourcesFromChunk(resources, settlementData, biome):
     if biome == "-1":
