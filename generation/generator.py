@@ -53,8 +53,8 @@ def createSettlementData(area, resources):
 
 def generateBooks(settlementData):
     # Create books for the village
-    strVillagers = ""
-    for i in range(len(settlementData["villagerNames"])):
+    strVillagers = settlementData["villagerNames"][0] + " : " + settlementData["villagerProfession"][0] + ";"
+    for i in range(1, len(settlementData["villagerNames"])):
         strVillagers += settlementData["villagerNames"][i] + " : " + settlementData["villagerProfession"][i] + ";"
     listOfVillagers = strVillagers.split(";")
 
