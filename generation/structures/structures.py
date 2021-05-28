@@ -1,7 +1,7 @@
 import utils._math as _math
 import utils._utils as _utils
 from generation.structures.baseStructure import *
-import time
+import lib.toolbox as toolbox
 
 from nbt import nbt
 
@@ -221,7 +221,7 @@ class Structures(BaseStructure):
             for key in self.info["lectern"].keys():
                 position = self.info["lectern"][key]
                 if block["pos"][0].value == position[0] and block["pos"][1].value == position[1] and block["pos"][2].value == position[2]:
-                    result = _utils.changeNameWithBalise(key, buildingCondition)
+                    result = _utils.changeNameWithBalise(key, buildingCondition["replacements"])
                     if result[0] >= 0:
                         _utils.addBookToLectern(blockPosition[0], blockPosition[1], blockPosition[2], result[1])
                     else :

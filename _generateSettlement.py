@@ -95,6 +95,7 @@ if not args.remove:
     
     # Add books replacements
     settlementData["materialsReplacement"]["villageBook"] = "minecraft:written_book" + books["villageNameBook"]
+    settlementData["materialsReplacement"]["villageLecternBook"] = books["villageNameBook"]
     settlementData["materialsReplacement"]["villagerRegistry"] = "minecraft:written_book" + books["villagerNamesBook"]
     settlementData["materialsReplacement"]["deadVillagerRegistry"] = "minecraft:written_book" + books["deadVillagersBook"]
     
