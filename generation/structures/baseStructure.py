@@ -179,11 +179,14 @@ class BaseStructure:
                         buildingCondition["referencePoint"], buildingCondition["position"]
                     )
 
-                    print(signPosition[0], signPosition[1] + 1, signPosition[2])
                     worldModification.setBlock(signPosition[0], signPosition[1] + 1, signPosition[2], 
                         "minecraft:" + buildingCondition["replacements"]["woodType"] + "_wall_sign[facing=" + self.computedOrientation[sign["orientation"]] + "]", 
                         placeImmediately=True)
-                        
+
+                    if buildingCondition["special"]["sign"][i * 4] == "" and buildingCondition["special"]["sign"][i * 4 + 1] == "" :
+                        if buildingCondition["special"]["sign"][i * 4 + 2] == "" and buildingCondition["special"]["sign"][i * 4 + 3] == "":
+                            continue
+
                     interfaceUtils.setSignText(
                         signPosition[0], signPosition[1] + 1, signPosition[2], 
                         buildingCondition["special"]["sign"][i * 4], buildingCondition["special"]["sign"][i * 4 + 1],

@@ -60,6 +60,7 @@ def generateBooks(settlementData):
 
     textVillagersNames = _utils.createTextForVillagersNames(listOfVillagers)
     textDeadVillagers = _utils.createTextForDeadVillagers(listOfVillagers)
+    settlementData["villagerDeadName"] = textDeadVillagers[2]
     textVillagePresentationBook = _utils.createTextOfPresentationVillage(settlementData["villageName"], 
                 settlementData["structuresNumberGoal"], settlementData["structures"], textDeadVillagers[1], listOfVillagers)
     settlementData["textOfBooks"] = [textVillagersNames, textDeadVillagers]
@@ -130,7 +131,8 @@ def generateStructure(structureData, settlementData, resources, worldModif, ches
         if aProperty in resources.biomesBlocks["rules"]["structure"]:
             buildingCondition["replacements"][aProperty] = resources.biomesBlocks[structureBiomeBlockId][aProperty]
 
-    
+    modifyBuildingConditionDependingOnStructure(buildingCondition, settlementData, structure, structureData["name"])
+
     structure.build(worldModif,  buildingCondition, chestGeneration)
     
     """_utils.spawnVillagerForStructure(settlementData, structureData,
@@ -160,9 +162,7 @@ def buildMurdererHouse(structureData, settlementData, resources, worldModif, che
     buildingCondition["referencePoint"] = buildingInfo["entry"]["position"]
     buildingCondition["size"] = buildingInfo["size"]
 
-    buildingCondition["special"] = { "sign" : ["Next target :", "", "", ""] }
-    name = settlementData["villagerNames"][settlementData["murdererTargetIndex"]]
-    _utils.parseVillagerNameInLines([name], buildingCondition["special"]["sign"], 1)
+    modifyBuildingConditionDependingOnStructure(buildingCondition, settlementData, structureMurderer, "murderercache")
 
     structureMurderer.build(worldModif, buildingCondition, chestGeneration)
     facing = structureMurderer.getFacingMainEntry(buildingCondition["flip"], buildingCondition["rotation"])
@@ -171,3 +171,13 @@ def buildMurdererHouse(structureData, settlementData, resources, worldModif, che
     worldModif.setBlock(buildingCondition["position"][0], buildingCondition["position"][1] + 2, buildingCondition["position"][2], "minecraft:ladder[facing=" + facing + "]")
     worldModif.setBlock(buildingCondition["position"][0], buildingCondition["position"][1] + 3, buildingCondition["position"][2], 
         "minecraft:" + buildingCondition["replacements"]["woodType"] + "_trapdoor[half=bottom,facing=" + facing  +"]")
+
+
+
+def modifyBuildingConditionDependingOnStructure(buildingCondition, settlementData, structure, structureName):
+    if structureName == "basicgraveyard":
+        pass
+    elif structure == "murdererCache":
+        buildingCondition["special"] = { "sign" : ["Next target :", "", "", ""] }
+        name = settlementData["villagerNames"][settlementData["murdererTargetIndex"]]
+        _utils.parseVillagerNameInLines([name], buildingCondition["special"]["sign"], 1)

@@ -230,7 +230,6 @@ class Structures(BaseStructure):
 
 
     def convertNbtBlockToStr(self, blockPalette, takeOriginalBlockName=False):
-        
         if takeOriginalBlockName:
             block = blockPalette[Structures.CHANGE_ORIGINAL_BLOCK].value
         else:

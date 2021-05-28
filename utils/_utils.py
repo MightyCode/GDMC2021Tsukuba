@@ -236,7 +236,7 @@ def createTextForDeadVillagers(listOfVillagers):
                 f'{deadVillager} : '
                 f'{REASON_OF_DEATHS[randomDeath]} \\\\n')
     textDeadVillagers += ('\f')
-    return [textDeadVillagers, randomOfDeadVillagers]
+    return [textDeadVillagers, randomOfDeadVillagers, data["listOfDeadVillagers"]]
 
 def addResourcesFromChunk(resources, settlementData, biome):
     if biome == "-1":
