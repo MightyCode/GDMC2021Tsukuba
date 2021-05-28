@@ -326,10 +326,10 @@ class FloodFill:
         if debug <= 0:
             dictionnary = {"position" : [xPos, yPos, zPos] , "validPosition" : False , "flip" : rand1 , "rotation" : rand2, "corner" : choosenCorner }
             FloodFillValue = [xPos, yPos, zPos]
-            self.listHouse.append((xPos, yPos, zPos, choosenCorner, FloodFillValue, -1, False))
+            self.listHouse.append((xPos, yPos - 1, zPos, choosenCorner, FloodFillValue, -1, False))
             
             print("debug failed")
         else:
             self.listHouse.append((xPos, yPos, zPos, choosenCorner, FloodFillValue, self.previousStructure, True))
-            dictionnary = {"position" : [xPos, yPos, zPos],"validPosition" : True , "flip" : rand1 , "rotation" : rand2, "corner" : choosenCorner }
+            dictionnary = {"position" : [xPos, yPos - 1, zPos],"validPosition" : True , "flip" : rand1 , "rotation" : rand2, "corner" : choosenCorner }
         return dictionnary
