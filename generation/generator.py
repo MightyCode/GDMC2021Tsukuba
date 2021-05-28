@@ -38,7 +38,7 @@ def createSettlementData(area, resources):
                 "farmer", "fisherman", "shepherd", "fletcher", "librarian", "cartographer", 
                 "cleric", "armorer", "weaponsmith", "toolsmith", "butcher", "leatherworker", "mason", "nitwit"]
     
-    settlementData["structuresNumberGoal"] = random.randint(15, 20)
+    settlementData["structuresNumberGoal"] = random.randint(15, 70)
 
     #structures contains "position", "rotation", "flip" "name", "type", "group" ->, "villagersId"
     settlementData["structures"] = []
@@ -74,12 +74,9 @@ def generateBooks(settlementData):
 
 def placeBooks(settlementData, books, floodFill, worldModif):
 
-    # print(settlementData["center"])
-    settlementData["books"] = [books["villagerNamesBook"], books["deadVillagersBook"]]
-
     items = []
-    for i in range(len(settlementData["books"])):
-        items += [["minecraft:written_book" + settlementData["books"][i], 1]]
+    for key in books.keys():
+        items += [["minecraft:written_book" + books[key], 1]]
 
     # Set a chest for the books and place the books in the chest
     worldModif.setBlock(settlementData["center"][0], 
@@ -94,7 +91,8 @@ def placeBooks(settlementData, books, floodFill, worldModif):
     toolbox.placeLectern(
         settlementData["center"][0], 
         floodFill.getHeight(settlementData["center"][0], settlementData["center"][2]), 
-         settlementData["center"][2] + 1, books["villageNameBook"], worldModif, 'east')
+        settlementData["center"][2] + 1, books["villageNameBook"], worldModif, 'east')
+
 
 def generateStructure(structureData, settlementData, resources, worldModif, chestGeneration):
     print(structureData["name"])
@@ -153,8 +151,6 @@ def buildMurdererHouse(structureData, settlementData, resources, worldModif, che
     buildingCondition["position"] = structure.returnWorldPosition(
             info["villageInfo"]["murdererTrap"], buildingCondition["flip"], buildingCondition["rotation"], 
              buildingCondition["referencePoint"], buildingCondition["position"])
-
-    print(buildingCondition["position"][1])
 
     structureMurderer = resources.structures["murderercache"]
     buildingInfo = structureMurderer.setupInfoAndGetCorners()

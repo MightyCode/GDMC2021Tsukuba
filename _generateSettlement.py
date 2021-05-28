@@ -68,8 +68,6 @@ if not args.remove:
         settlementData["structures"][i]["validPosition"] = result["validPosition"]
 
         settlementData["structures"][i]["position"] = result["position"]
-        settlementData["structures"][i]["position"][1] -= 1
-
         settlementData["structures"][i]["flip"] = result["flip"]
         settlementData["structures"][i]["rotation"] = result["rotation"]
          
@@ -96,9 +94,10 @@ if not args.remove:
     generator.placeBooks(settlementData, books, floodFill, worldModif)
     
     # Add books replacements
-    settlementData["materialsReplacement"]["villageBook"] = books["villageNameBook"]
-    settlementData["materialsReplacement"]["villagerRegistry"] = books["villagerNamesBook"]
-    settlementData["materialsReplacement"]["deadVillagerRegistry"] = books["deadVillagersBook"]
+    settlementData["materialsReplacement"]["villageBook"] = "minecraft:written_book" + books["villageNameBook"]
+    settlementData["materialsReplacement"]["villageLecternBook"] = books["villageNameBook"]
+    settlementData["materialsReplacement"]["villagerRegistry"] = "minecraft:written_book" + books["villagerNamesBook"]
+    settlementData["materialsReplacement"]["deadVillagerRegistry"] = "minecraft:written_book" + books["deadVillagersBook"]
     
     # Creates roads
     road.initRoad(floodFill, settlementData, worldModif, settlementData["materialsReplacement"])
@@ -110,6 +109,7 @@ if not args.remove:
         generator.generateStructure(settlementData["structures"][i], settlementData, resources, worldModif, chestGeneration)
         #_utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
     worldModif.saveToFile(file)  
+    floodFill.placeDecorations()
 
 else : 
     if args.remove == "r" :   

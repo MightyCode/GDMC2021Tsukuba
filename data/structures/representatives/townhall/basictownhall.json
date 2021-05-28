@@ -16,10 +16,10 @@
       ]
     },
     "lootTables" : [
-      ["townhall"]
+      ["townhall"]    
     ],
     "lectern" : {
-      "*villageBook*" : [2, 1, 6]
+      "*villageLecternBook*" : [2, 1, 6]
     },
     "villageInfo" : {
       "villager" : 1,
