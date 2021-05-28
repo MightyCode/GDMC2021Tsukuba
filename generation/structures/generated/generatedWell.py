@@ -4,11 +4,17 @@ from generation.structures.baseStructure import *
 class GeneratedWell(BaseStructure):
     def __init__(self) :
         super(BaseStructure, self).__init__()
+        self.uselessBlocks = [
+        'minecraft:air', 'minecraft:cave_air', 'minecraft:water', 'minecraft:lava'
+        'minecraft:oak_leaves',  'minecraft:leaves',  'minecraft:birch_leaves', 'minecraft:spruce_leaves'
+        'minecraft:oak_log',  'minecraft:spruce_log',  'minecraft:birch_log',  'minecraft:jungle_log', 'minecraft:acacia_log', 'minecraft:dark_oak_log',
+        'minecraft:grass', 'minecraft:snow', 'minecraft:poppy'
+        'minecraft:dead_bush', "minecraft:cactus", "minecraft:sugar_cane"]
 
 
     def setupInfoAndGetCorners(self):
         self.setSize([6, 9, 6])
-        self.info["mainEntry"]["position"] = [int(self.size[0] / 2), self.size[1] - 6, 0]
+        self.info["mainEntry"]["position"] = [int(self.size[0] / 2), self.size[1] - 5, 0]
         return self.getCornersLocalPositionsAllFlipRotation(self.info["mainEntry"]["position"])
     
 
@@ -20,6 +26,7 @@ class GeneratedWell(BaseStructure):
             "position" : self.info["mainEntry"]["position"], 
             "facing" : self.getFacingMainEntry(flip, rotation) 
         }
+        info["corner"] = self.getCornersLocalPositions(self.info["mainEntry"]["position"].copy(), flip, rotation)
 
         return info
 
@@ -42,62 +49,66 @@ class GeneratedWell(BaseStructure):
             woodType = "oak"
         
         self.plankType = "minecraft:" + woodType + "_planks"
-    
-        position = self.returnWorldPosition(
-                        [self.entry[0], self.entry[1], self.entry[2]],
-                        buildingCondition["flip"], buildingCondition["rotation"], buildingCondition["referencePoint"],
-                        buildingCondition["position"])
-        # Add water
-        positions = [[0,0], [0,1], [1,1], [1,0]]
-        for i in range(len(positions)):
-            localPosition = [positions[i][0], int(self.size_y()/2) - 1, positions[i][1]] 
-            position = self.returnWorldPosition(
-                        localPosition, buildingCondition["flip"], 
-                        buildingCondition["rotation"], buildingCondition["referencePoint"], buildingCondition["position"])
-            worldModif.setBlock(position[0], position[1], position[2], "minecraft:water")
-        worldModif.fillBlocks(position[0], position[1], position[2], position[0]-1, position[1]-10, position[2]+1,"minecraft:air")
+
 
         self.addStoneBricks(worldModif, buildingCondition)
         self.addStoneBrickStairs(worldModif, buildingCondition)
         self.addWoodAroundTheWell(worldModif, buildingCondition)
 
+        # Add water
+        fromBlock = self.returnWorldPosition(
+                        [2, int(self.size_y()), 2], buildingCondition["flip"], 
+                        buildingCondition["rotation"], buildingCondition["referencePoint"], buildingCondition["position"])
+
+        toBlock =  self.returnWorldPosition(
+                        [3, int(self.size_y()), 3], buildingCondition["flip"], 
+                        buildingCondition["rotation"], buildingCondition["referencePoint"], buildingCondition["position"])              
+
+        worldModif.fillBlocks(fromBlock[0], fromBlock[1] - 3, fromBlock[2], toBlock[0], toBlock[1]- 7, toBlock[2],"minecraft:air")
+        worldModif.fillBlocks(fromBlock[0], fromBlock[1] - 6, fromBlock[2], toBlock[0], toBlock[1] - 5, toBlock[2], "minecraft:water")
+
+        self.addStoneBricks(worldModif, buildingCondition)
+        self.addStoneBrickStairs(worldModif, buildingCondition)
+        self.addWoodAroundTheWell(worldModif, buildingCondition)
 
         
     def addWoodAroundTheWell(self, worldModif, buildingCondition):
-        positions =[[ 0,-2], [1,-2], [3, 0], [3,1], [1,3], [0,3], [-2,0], [-2,1], [-2, -1], [3, -1], [3, 2], [-2, 2],
-                     [-1, -2], [2, -2], [2, 3], [-1, 3], [-2, -2], [3, -2], [3, 3], [-2, 3]]
+        positions = [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [1, 5], [2, 5], [3, 5], [4, 5], [5, 5], 
+        [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [5, 1], [5, 2], [5, 3], [5, 4]]
         # Add wood plank
         for i in range(len(positions)):
-            localPosition = [positions[i][0], int(self.size_y()/2) - 1, positions[i][1]] 
+            localPosition = [positions[i][0], self.size_y() - 5, positions[i][1]] 
             position = self.returnWorldPosition(
-                        localPosition, buildingCondition["flip"], 
-                        buildingCondition["rotation"], buildingCondition["referencePoint"], buildingCondition["position"])
+                            localPosition, buildingCondition["flip"], 
+                            buildingCondition["rotation"], buildingCondition["referencePoint"], buildingCondition["position"])
             worldModif.setBlock(position[0], position[1], position[2], self.plankType)
-            
-         
+
 
     def addStoneBrickStairs(self, worldModif, buildingCondition):
         # Add stairs
-        positions = [[0,-1], [1,-1], [2,0], [2,1], [1,2], [0,2], [-1,0], [-1,1]]
-        orientations = ["south", "south", "west", "west", "north", "north", "east", "east"]
+        positions = [[2, 4], [3, 4], [1, 2], [1, 3], [2, 1], [3, 1], [4, 2], [4, 3]]
+        orientations = ["north", "north", "east", "east", "south", "south", "west", "west"]
         for i in range(len(positions)):
-            localPosition = positions[i][0], int(self.size_y()/2), positions[i][1]
+            localPosition = positions[i][0],  self.size_y() - 4, positions[i][1]
             position = self.returnWorldPosition(
                 localPosition, buildingCondition["flip"], 
                 buildingCondition["rotation"], buildingCondition["referencePoint"], buildingCondition["position"])
             worldModif.setBlock(position[0], position[1], position[2], "minecraft:stone_brick_stairs[" + self.convertProperty('facing', orientations[i] )  + "]")
+            for k in range(1, 10):
+                worldModif.setBlock(position[0], position[1] - k, position[2], "minecraft:stone_bricks")
             for j in range(1, 3):
                 worldModif.setBlock(position[0], position[1] + 3, position[2], "minecraft:stone_brick_slab")
 
     def addStoneBricks(self, worldModif, buildingCondition):
         # Add stones to the corner
-        positions = [[-1, -1], [2, -1], [2, 2], [-1, 2]]
+        positions = [[1, 1], [1, 4], [4, 1], [4, 4]]
         for i in range(len(positions)):
-            localPosition = positions[i][0], int(self.size_y()/2), positions[i][1]
+            localPosition = positions[i][0], self.size_y() - 4, positions[i][1]
             position = self.returnWorldPosition(
                 localPosition, buildingCondition["flip"], 
                 buildingCondition["rotation"], buildingCondition["referencePoint"], buildingCondition["position"]) 
             worldModif.setBlock(position[0], position[1], position[2], "minecraft:infested_chiseled_stone_bricks")
+            worldModif.setBlock(position[0], position[1] - 1, position[2], "minecraft:stone_bricks")
             for j in range(1, 3):
                 # Add cobblestone walls
                 worldModif.setBlock(position[0], position[1] + j, position[2], "minecraft:cobblestone_wall")
@@ -105,10 +116,10 @@ class GeneratedWell(BaseStructure):
             worldModif.setBlock(position[0], position[1] + j + 1, position[2], "minecraft:stone_brick_slab")  
             
         # Add stones upside the well    
-        positions = [[0, 0], [0, 1], [1, 1], [1, 0]]
+        positions = [[2, 2], [2, 3], [3, 2], [3, 3]]
         for i in range(len(positions)):
-            localPosition = positions[i][0], int(self.size_y() - 2), positions[i][1]
+            localPosition = positions[i][0], self.size_y() - 1 , positions[i][1]
             position = self.returnWorldPosition(
                 localPosition, buildingCondition["flip"], 
                 buildingCondition["rotation"], buildingCondition["referencePoint"], buildingCondition["position"]) 
-            worldModif.setBlock(position[0], position[1], position[2], "minecraft:infested_chiseled_stone_bricks")
+            worldModif.setBlock(position[0], position[1], position[2], "minecraft:chiseled_stone_bricks")
