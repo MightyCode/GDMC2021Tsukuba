@@ -47,6 +47,18 @@
         [22, 10, 22, 13]
       ]
     },
+    "special" : {
+      "sign" : [
+          { "position" : [4, 1, 11], "orientation" : "east"},
+          { "position" : [7, 1, 11], "orientation" : "east"},
+          { "position" : [7, 1, 8], "orientation" : "east"},
+          { "position" : [7, 1, 6], "orientation" : "east"},
+          { "position" : [8, 1, 16], "orientation" : "east"},
+          { "position" : [11, 1, 19], "orientation" : "north"},
+          { "position" : [15, 1, 13], "orientation" : "west"},
+          { "position" : [15, 1, 13], "orientation" : "west"}
+        ]
+    }, 
     "sign" : {
       "position" : [9, 2, 0],
       "facing" : "north",

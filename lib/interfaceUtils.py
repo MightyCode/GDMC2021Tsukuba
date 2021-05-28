@@ -263,6 +263,8 @@ def makeBuildArea(width = 128, height = 128):
     x2 = buildArea["xTo"]
     z2 = buildArea["zTo"]
     return (x1, z1, x2 - x1, z2 - z1)
+
+    
 def setSignText(x, y, z, line1 = "", line2 = "", line3 = "", line4 = ""):
     l1 = 'Text1:\'{"text":"'+line1+'"}\''
     l2 = 'Text2:\'{"text":"'+line2+'"}\''
@@ -270,6 +272,8 @@ def setSignText(x, y, z, line1 = "", line2 = "", line3 = "", line4 = ""):
     l4 = 'Text4:\'{"text":"'+line4+'"}\''
     blockNBT = "{"+l1+","+l2+","+l3+","+l4+"}"
     return(runCommand("data merge block {} {} {} ".format(x, y, z) + blockNBT))
+
+
 def addItemChest(x, y, z, items, places=[]):
     if len(places) == 0:
         places = list(range(len(items)))

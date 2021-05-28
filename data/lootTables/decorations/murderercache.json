@@ -62,6 +62,20 @@
             "type": "item",
             "name": "minecraft:skeleton_skull",
             "weight": 5
+          },
+          {
+            "type" : "item",
+            "name" : "minecraft:emerald{display:{Name:'{\"text\":\"*villageName* currency\"}',Lore:['{\"text\":\"Currency used on that village to trade\",\"color\":\"dark_aqua\"}']}}",
+            "weight" : 10,
+            "functions": [
+              {
+                "function": "set_count",
+                "count": {
+                  "min": 1,
+                  "max": 3
+                }
+              }
+            ]
           }
         ]
       }

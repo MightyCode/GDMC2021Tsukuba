@@ -16,12 +16,6 @@
     ["murderercache"]
   ],
   "special" : {
-    "sign" : [
-        { "position" : [4, 1, 11], "orientation" : "east"},
-        { "position" : [7, 1, 11], "orientation" : "east"},
-        { "position" : [7, 1, 8], "orientation" : "east"},
-        { "position" : [7, 1, 6], "orientation" : "east"},
-          { "position" : [8, 1, 16], "orientation" : "east"}
-      ]
+    "sign" : [{ "position" : [4, 2, 2], "orientation" : "south"}]
   } 
 }

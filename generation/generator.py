@@ -1,9 +1,9 @@
 import utils._utils as _utils
-import random
-import copy
 import lib.toolbox as toolbox
 from generation.structures.baseStructure import BaseStructure
 import generation.loremaker as loremaker
+import random
+import copy
 
 def createSettlementData(area, resources):
     settlementData = {}
@@ -30,6 +30,7 @@ def createSettlementData(area, resources):
     loremaker.fillSettlementDataWitholor(settlementData, "white")
 
     settlementData["villageName"] = _utils.generateVillageName()
+    settlementData["materialsReplacement"]["villageName"] = settlementData["villageName"]
 
     settlementData["villagerNames"] = []
     settlementData["villagerProfession"] = []
@@ -60,7 +61,7 @@ def generateBooks(settlementData):
 
     textVillagersNames = _utils.createTextForVillagersNames(listOfVillagers)
     textDeadVillagers = _utils.createTextForDeadVillagers(listOfVillagers)
-    settlementData["villagerDeadName"] = textDeadVillagers[2]
+    settlementData["villagerDeadNames"] = textDeadVillagers[2]
     textVillagePresentationBook = _utils.createTextOfPresentationVillage(settlementData["villageName"], 
                 settlementData["structuresNumberGoal"], settlementData["structures"], textDeadVillagers[1], listOfVillagers)
     settlementData["textOfBooks"] = [textVillagersNames, textDeadVillagers]
@@ -163,6 +164,7 @@ def buildMurdererHouse(structureData, settlementData, resources, worldModif, che
     buildingCondition["size"] = buildingInfo["size"]
 
     modifyBuildingConditionDependingOnStructure(buildingCondition, settlementData, structureMurderer, "murderercache")
+    print(buildingCondition["special"])
 
     structureMurderer.build(worldModif, buildingCondition, chestGeneration)
     facing = structureMurderer.getFacingMainEntry(buildingCondition["flip"], buildingCondition["rotation"])
@@ -176,8 +178,28 @@ def buildMurdererHouse(structureData, settlementData, resources, worldModif, che
 
 def modifyBuildingConditionDependingOnStructure(buildingCondition, settlementData, structure, structureName):
     if structureName == "basicgraveyard":
-        pass
-    elif structure == "murdererCache":
+        number = 8
+
+        buildingCondition["special"] = { "sign" : [] }
+
+        listOfDead = settlementData["villagerDeadNames"].copy()
+        i = 0
+        while i < number:
+            buildingCondition["special"]["sign"].append("")
+            buildingCondition["special"]["sign"].append("")
+            buildingCondition["special"]["sign"].append("")
+            buildingCondition["special"]["sign"].append("")
+
+            if len(listOfDead) > 0:
+                index = random.randint(0, len(listOfDead) -1 )
+                name = listOfDead[index]
+                _utils.parseVillagerNameInLines([name], buildingCondition["special"]["sign"], i * 4)
+
+                del listOfDead[index]
+
+            i += 1
+
+    elif structureName == "murderercache":
         buildingCondition["special"] = { "sign" : ["Next target :", "", "", ""] }
         name = settlementData["villagerNames"][settlementData["murdererTargetIndex"]]
         _utils.parseVillagerNameInLines([name], buildingCondition["special"]["sign"], 1)
