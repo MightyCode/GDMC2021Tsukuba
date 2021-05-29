@@ -15,7 +15,7 @@ import utils._utils as _utils
 interface = interfaceUtils.Interface(buffering=True)
 worldModif = WorldModification(interface)
 args, parser = argParser.giveArgsAndParser()
-area = argParser.getBuildArea(interface, args)
+area = argParser.getBuildArea(args)
 
 if area == -1:
     exit()

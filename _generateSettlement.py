@@ -24,7 +24,7 @@ iu.setCaching(True)
 iu.setBuffering(True)
 worldModif = WorldModification(interface)
 args, parser = argParser.giveArgsAndParser()
-area = argParser.getBuildArea(interface, args)
+area = argParser.getBuildArea(args)
 
 if area == -1:
     exit()
