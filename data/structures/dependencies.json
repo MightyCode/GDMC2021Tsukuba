@@ -196,7 +196,7 @@
             "villagerNeeded" : { "min" : 2 },
             "previous" : [
                 { "name" : "basicWorkshop", "min" : 1 },
-                { "name" : "basicWindmill", "max" : 3 } 
+                { "name" : "basicWindmill", "max" : 1 } 
             ]
         }
     },
@@ -228,5 +228,32 @@
             ]
         },
         "priority" : "full"
+    },
+    "basicWeaverHouse" : {
+        "structures" : [
+            "basicweaverhouse"
+        ],
+        "type" : "functionals",
+        "conditions" : {
+            "villagerNeeded" : { "min" : 2 },
+            "previous" : [
+                { "name" : "basicWorkshop", "min" : 1 },
+                { "name" : "basicWeaverHouse", "max" : 3 } 
+            ]
+        }
+    },
+    "mediumWindmill" : {
+        "structures" : [
+            "mediumwindmill"
+        ],
+        "type" : "functionals",
+        "conditions" : {
+            "villagerNeeded" : { "min" : 2 },
+            "previous" : [
+                { "name" : "basicWeaverHouse", "min" : 1 },
+                { "name" : "basicWindmill", "min" : 1 },
+                { "name" : "mediumWindmill", "max" : 1 } 
+            ]
+        }
     }
 }

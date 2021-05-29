@@ -15,7 +15,7 @@ file = "temp.txt"
 interface = interfaceUtils.Interface(buffering=True)
 worldModif = WorldModification(interface)
 args, parser = argParser.giveArgsAndParser()
-area = argParser.getBuildArea(interface, args)
+area = argParser.getBuildArea(args)
 
 if area == -1:
     exit()
@@ -24,7 +24,7 @@ if not args.remove:
     resources = Resources()
     resLoader.loadAllResources(resources)
     chestGeneration = ChestGeneration(resources, interface)
-    structure = resources.structures["basichouse1"]
+    structure = resources.structures["basicweaverhouse"]
 
     info = structure.info
     buildingCondition = BaseStructure.createBuildingCondition()
@@ -32,7 +32,7 @@ if not args.remove:
     buildingCondition["flip"] = 0
     buildingCondition["rotation"] = 0
     buildingInfo = structure.getNextBuildingInformation( buildingCondition["flip"], buildingCondition["rotation"])
-    buildingCondition["position"] = [417, 63, -226]
+    buildingCondition["position"] = [3021, 90, 4031]
     buildingCondition["referencePoint"] = buildingInfo["entry"]["position"]
     buildingCondition["size"] = buildingInfo["size"]
 
@@ -48,6 +48,7 @@ if not args.remove:
         
     settlementData = {}
     settlementData["materialsReplacement"] = {}
+    settlementData["materialsReplacement"]["villageName"] = "TestLand"
     loremaker.voteForColor(settlementData)
     buildingCondition["replacements"] = copy.deepcopy(settlementData["materialsReplacement"])
 
@@ -63,26 +64,6 @@ if not args.remove:
 
     structure.build(worldModif, buildingCondition, chestGeneration)
     worldModif.saveToFile(file)
-
-    # Generate murderer trap
-    buildingCondition["position"] = structure.returnWorldPosition(info["villageInfo"]["murdererTrap"], buildingCondition["flip"], buildingCondition["rotation"], 
-        buildingCondition["referencePoint"], buildingCondition["position"])
-
-    print(buildingCondition["position"][1])
-    structureMurderer = resources.structures["murderercache"]
-    buildingInfo = structureMurderer.setupInfoAndGetCorners()
-    buildingCondition["flip"] = random.randint(0, 3)
-    buildingCondition["rotation"] = random.randint(0, 3)
-    buildingInfo = structureMurderer.getNextBuildingInformation( buildingCondition["flip"], buildingCondition["rotation"])
-    buildingCondition["referencePoint"] = buildingInfo["entry"]["position"]
-    buildingCondition["size"] = buildingInfo["size"]
-
-    structureMurderer.build(worldModif, buildingCondition, chestGeneration)
-    facing = structureMurderer.getFacingMainEntry(buildingCondition["flip"], buildingCondition["rotation"])
-
-    worldModif.setBlock(buildingCondition["position"][0], buildingCondition["position"][1] + 2, buildingCondition["position"][2], "minecraft:ladder[facing=" + facing + "]")
-    worldModif.setBlock(buildingCondition["position"][0], buildingCondition["position"][1] + 3, buildingCondition["position"][2], 
-        "minecraft:" + buildingCondition["replacements"]["woodType"] + "_trapdoor[half=bottom,facing=" + facing  +"]")
 
 else : 
     if args.remove == "r" :   

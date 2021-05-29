@@ -65,11 +65,13 @@ class GeneratedWell(BaseStructure):
                         buildingCondition["rotation"], buildingCondition["referencePoint"], buildingCondition["position"])              
 
         worldModif.fillBlocks(fromBlock[0], fromBlock[1] - 3, fromBlock[2], toBlock[0], toBlock[1]- 7, toBlock[2],"minecraft:air")
-        worldModif.fillBlocks(fromBlock[0], fromBlock[1] - 6, fromBlock[2], toBlock[0], toBlock[1] - 5, toBlock[2], "minecraft:water")
 
         self.addStoneBricks(worldModif, buildingCondition)
         self.addStoneBrickStairs(worldModif, buildingCondition)
         self.addWoodAroundTheWell(worldModif, buildingCondition)
+        
+        worldModif.fillBlocks(fromBlock[0], fromBlock[1] - 6, fromBlock[2], toBlock[0], toBlock[1] - 5, toBlock[2], "minecraft:water")
+        worldModif.fillBlocks(fromBlock[0], fromBlock[1] - 8, fromBlock[2], toBlock[0], toBlock[1] - 9, toBlock[2], "minecraft:stone_bricks")
 
         
     def addWoodAroundTheWell(self, worldModif, buildingCondition):
@@ -94,7 +96,7 @@ class GeneratedWell(BaseStructure):
                 localPosition, buildingCondition["flip"], 
                 buildingCondition["rotation"], buildingCondition["referencePoint"], buildingCondition["position"])
             worldModif.setBlock(position[0], position[1], position[2], "minecraft:stone_brick_stairs[" + self.convertProperty('facing', orientations[i] )  + "]")
-            for k in range(1, 10):
+            for k in range(1, 4):
                 worldModif.setBlock(position[0], position[1] - k, position[2], "minecraft:stone_bricks")
             for j in range(1, 3):
                 worldModif.setBlock(position[0], position[1] + 3, position[2], "minecraft:stone_brick_slab")
@@ -112,6 +114,7 @@ class GeneratedWell(BaseStructure):
             for j in range(1, 3):
                 # Add cobblestone walls
                 worldModif.setBlock(position[0], position[1] + j, position[2], "minecraft:cobblestone_wall")
+                
             # Add stone brick slabs
             worldModif.setBlock(position[0], position[1] + j + 1, position[2], "minecraft:stone_brick_slab")  
             

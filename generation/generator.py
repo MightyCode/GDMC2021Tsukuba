@@ -1,10 +1,10 @@
 import utils._utils as _utils
-import random
-import copy
 from math import *
 import lib.toolbox as toolbox
 from generation.structures.baseStructure import BaseStructure
 import generation.loremaker as loremaker
+import random
+import copy
 
 def createSettlementData(area, resources):
     settlementData = {}
@@ -31,6 +31,7 @@ def createSettlementData(area, resources):
     loremaker.fillSettlementDataWitholor(settlementData, "white")
 
     settlementData["villageName"] = _utils.generateVillageName()
+    settlementData["materialsReplacement"]["villageName"] = settlementData["villageName"]
 
     settlementData["villagerNames"] = []
     settlementData["villagerProfession"] = []
@@ -54,13 +55,14 @@ def createSettlementData(area, resources):
 
 def generateBooks(settlementData):
     # Create books for the village
-    strVillagers = ""
-    for i in range(len(settlementData["villagerNames"])):
+    strVillagers = settlementData["villagerNames"][0] + " : " + settlementData["villagerProfession"][0] + ";"
+    for i in range(1, len(settlementData["villagerNames"])):
         strVillagers += settlementData["villagerNames"][i] + " : " + settlementData["villagerProfession"][i] + ";"
     listOfVillagers = strVillagers.split(";")
 
     textVillagersNames = _utils.createTextForVillagersNames(listOfVillagers)
     textDeadVillagers = _utils.createTextForDeadVillagers(listOfVillagers)
+    settlementData["villagerDeadNames"] = textDeadVillagers[2]
     textVillagePresentationBook = _utils.createTextOfPresentationVillage(settlementData["villageName"], 
                 settlementData["structuresNumberGoal"], settlementData["structures"], textDeadVillagers[1], listOfVillagers)
     settlementData["textOfBooks"] = [textVillagersNames, textDeadVillagers]
@@ -136,7 +138,8 @@ def generateStructure(structureData, settlementData, resources, worldModif, ches
         if aProperty in resources.biomesBlocks["rules"]["structure"]:
             buildingCondition["replacements"][aProperty] = resources.biomesBlocks[structureBiomeBlockId][aProperty]
 
-    
+    modifyBuildingConditionDependingOnStructure(buildingCondition, settlementData, structure, structureData["name"])
+
     structure.build(worldModif,  buildingCondition, chestGeneration)
     
     """_utils.spawnVillagerForStructure(settlementData, structureData,
@@ -166,9 +169,8 @@ def buildMurdererHouse(structureData, settlementData, resources, worldModif, che
     buildingCondition["referencePoint"] = buildingInfo["entry"]["position"]
     buildingCondition["size"] = buildingInfo["size"]
 
-    buildingCondition["special"] = { "sign" : ["Next target :", "", "", ""] }
-    name = settlementData["villagerNames"][settlementData["murdererTargetIndex"]]
-    _utils.parseVillagerNameInLines([name], buildingCondition["special"]["sign"], 1)
+    modifyBuildingConditionDependingOnStructure(buildingCondition, settlementData, structureMurderer, "murderercache")
+    print(buildingCondition["special"])
 
     structureMurderer.build(worldModif, buildingCondition, chestGeneration)
     facing = structureMurderer.getFacingMainEntry(buildingCondition["flip"], buildingCondition["rotation"])
@@ -177,3 +179,33 @@ def buildMurdererHouse(structureData, settlementData, resources, worldModif, che
     worldModif.setBlock(buildingCondition["position"][0], buildingCondition["position"][1] + 2, buildingCondition["position"][2], "minecraft:ladder[facing=" + facing + "]")
     worldModif.setBlock(buildingCondition["position"][0], buildingCondition["position"][1] + 3, buildingCondition["position"][2], 
         "minecraft:" + buildingCondition["replacements"]["woodType"] + "_trapdoor[half=bottom,facing=" + facing  +"]")
+
+
+
+def modifyBuildingConditionDependingOnStructure(buildingCondition, settlementData, structure, structureName):
+    if structureName == "basicgraveyard":
+        number = 8
+
+        buildingCondition["special"] = { "sign" : [] }
+
+        listOfDead = settlementData["villagerDeadNames"].copy()
+        i = 0
+        while i < number:
+            buildingCondition["special"]["sign"].append("")
+            buildingCondition["special"]["sign"].append("")
+            buildingCondition["special"]["sign"].append("")
+            buildingCondition["special"]["sign"].append("")
+
+            if len(listOfDead) > 0:
+                index = random.randint(0, len(listOfDead) -1 )
+                name = listOfDead[index]
+                _utils.parseVillagerNameInLines([name], buildingCondition["special"]["sign"], i * 4)
+
+                del listOfDead[index]
+
+            i += 1
+
+    elif structureName == "murderercache":
+        buildingCondition["special"] = { "sign" : ["Next target :", "", "", ""] }
+        name = settlementData["villagerNames"][settlementData["murdererTargetIndex"]]
+        _utils.parseVillagerNameInLines([name], buildingCondition["special"]["sign"], 1)
