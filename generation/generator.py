@@ -1,6 +1,7 @@
 import utils._utils as _utils
 import random
 import copy
+from math import *
 import lib.toolbox as toolbox
 from generation.structures.baseStructure import BaseStructure
 import generation.loremaker as loremaker
@@ -71,6 +72,11 @@ def generateBooks(settlementData):
 
     return books
 
+def initnumberHouse(xSize,zSize):
+
+    numberOhHousemin = math.isqrt(xSize * zSize)/ 2.2
+    numberOhHousemax = math.isqrt(xSize * zSize)/ 1.8
+    return numberOhHousemin,numberOhHousemax
 
 def placeBooks(settlementData, books, floodFill, worldModif):
 
