@@ -7,14 +7,20 @@ class FloodFill:
     
     # Ignoreblockvalue is the list of block that we want to ignore when we read the field
     IGNORED_BLOCKS = [
-        'minecraft:void_air', 'minecraft:air', 'minecraft:cave_air', 'minecraft:water','minecraft:dark_oak_leaves','minecraft:redstone_lamp','minecraft:cobblestone_wall',
-        'minecraft:oak_leaves',  'minecraft:leaves',  'minecraft:birch_leaves', 'minecraft:spruce_leaves','minecraft:vine'
-        'minecraft:oak_log',  'minecraft:spruce_log',  'minecraft:birch_log',  'minecraft:jungle_log', 'minecraft:acacia_log', 'minecraft:dark_oak_log',
+        'minecraft:void_air', 'minecraft:air', 'minecraft:cave_air', 'minecraft:water','minecraft:dark_oak_leaves','minecraft:redstone_lamp','minecraft:cobblestone_wall','minecraft:lilac','minecraft:allium','minecraft:white_tulip','minecraft:pink_tulip',
+        'minecraft:oak_leaves',  'minecraft:leaves',  'minecraft:birch_leaves', 'minecraft:spruce_leaves','minecraft:vine','minecraft:peony','minecraft:pumpkin','minecraft:blue_orchid','minecraft:lily_pad','minecraft:orange_tulip','minecraft:azure_bluet',
+        'minecraft:oak_log',  'minecraft:spruce_log',  'minecraft:birch_log',  'minecraft:jungle_log', 'minecraft:acacia_log', 'minecraft:dark_oak_log','minecraft:red_tulip','minecraft:cornflower',
         'minecraft:grass', 'minecraft:snow','minecraft:acacia_leaves','minecraft:tall_grass','minecraft:poppy','minecraft:dandelion','minecraft:brown_mushroom_block','minecraft:mushroom_stem','minecraft:rose_bush','minecraft:red_mushroom_block',
-        'minecraft:dead_bush', "minecraft:cactus"]
+        'minecraft:dead_bush', 'minecraft:cactus','minecraft:bamboo','minecraft:red_mushroom','minecraft:brown_mushroom','minecraft:oxeye_daisy']
+
+    FLOWERS = ['allium','white_tulip','pink_tulip','blue_orchid','orange_tulip','oxeye_daisy',    
+    'azure_bluet','red_tulip','dandelion','cactus','poppy','bamboo','red_mushroom','brown_mushroom','cornflower']
+    SINGLE_BLOC = ['minecraft:cobweb','minecraft:bell','minecraft:note_block','minecraft:hay_block','minecraft:melon','minecraft:carved_pumpkin']
+    LIGHT_BLOC = ['minecraft:campfire','minecraft:lantern','minecraft:sea_lantern','minecraft:jack_o_lantern','minecraft:shroomlight']
+    DOUBLE_BLOC= ['minecraft:bee_nest','minecraft:torch','minecraft:redstone_torch','minecraft:target','minecraft:skeleton_skull','minecraft:zombie_head','minecraft:creeper_head']
 
     def __init__(self, area):
-        self.numberOfDecoration = 50
+        self.numberOfDecoration = 150
         self.listHouse = []
         random.seed(a=None, version=2)
         self.buildArea = area
@@ -136,7 +142,10 @@ class FloodFill:
 
     def verifHouse(self, xPos, yPos, zPos, CornerPos):
         for i,j in [[0, 1], [2, 1], [0, 3], [2, 3]]:
-            if self.is_ground(xPos + CornerPos[i], yPos, zPos + CornerPos[j]) == -1:
+            if _math.isPointInSquare([xPos,zPos], [self.buildArea[0], self.buildArea[2] , self.buildArea[3] , self.buildArea[5]]):
+                if self.is_ground(xPos + CornerPos[i], yPos, zPos + CornerPos[j]) == -1:
+                    return False
+            else:
                 return False
                 
         return True
@@ -207,21 +216,44 @@ class FloodFill:
         print("range of the village is : ", xmin, xmax, zmin, zmax)
         return xmin, xmax, zmin, zmax
 
-    def placeDecorations(self):
+    def placeDecorations(self,materials,worldmodif):
         xmin, xmax, zmin,zmax = self.decideMinMax()
         decorationcoord = []
         for i in range(self.numberOfDecoration):
             decoput = False
-            debug = 15
+            debug = 5
+            rand = random.randint(1,10)
             while not decoput and debug > 0:
 
                 xrand = random.randint(xmin,xmax)
                 zrand = random.randint(zmin,zmax)
-                if not self.isInHouse([xrand,zrand]):
-                    if not road.isInRoad([xrand,zrand]):
-                        print("deco n :",i, "placed in ",xrand,zrand)
-                        iu.setBlock(xrand,self.getHeight(xrand,zrand),zrand,"minecraft:hay_block")
-                        decoput = True
+                if not iu.getBlock(xPos, yPos, zPos) == 'minecraft:water':
+                    if not self.isInHouse([xrand,zrand]):
+                        if not road.isInRoad([xrand,zrand]):
+                            if not road.isInLantern([xrand,zrand]):
+                                if rand == 1:
+                                    height = self.getHeight(xrand,zrand)
+                                    worldmodif.setBlock(xrand,height,zrand,"minecraft:"+materials["woodType"]+"_fence")
+                                    randombloc = random.randint(0, len(FloodFill.DOUBLE_BLOC) - 1)
+                                    blocktoplace = FloodFill.DOUBLE_BLOC[randombloc]
+                                    if blocktoplace == 'minecraft:skeleton_skull' or blocktoplace == 'minecraft:zombie_head' or blocktoplace == 'minecraft:creeper_head':
+                                        orientation = random.randint(0,15)
+                                        blocktoplace = blocktoplace + '[rotation=' + str(orientation) + ']'
+                                    worldmodif.setBlock(xrand, height + 1,zrand,blocktoplace)
+                                    
+                                elif rand == 2 or rand == 3:
+                                    randombloc = random.randint(0, len(FloodFill.SINGLE_BLOC) - 1)
+                                    height = self.getHeight(xrand,zrand)
+                                    worldmodif.setBlock(xrand, height, zrand, FloodFill.SINGLE_BLOC[randombloc])
+                                elif rand == 4 or rand == 5:
+                                    randombloc = random.randint(0, len(FloodFill.LIGHT_BLOC) - 1)
+                                    height = self.getHeight(xrand,zrand)
+                                    worldmodif.setBlock(xrand, height, zrand, FloodFill.LIGHT_BLOC[randombloc])
+                                else:   
+                                    randombloc = random.randint(0, len(FloodFill.FLOWERS) - 1)
+                                    height = self.getHeight(xrand,zrand)
+                                    worldmodif.setBlock(xrand, height, zrand,'minecraft:potted_' + FloodFill.FLOWERS[randombloc])
+                            
                 debug -= 1
 
 
@@ -229,7 +261,8 @@ class FloodFill:
 
     def findPosHouse(self, CornerPos):
         sizeStruct = max(abs(CornerPos[0][0]) + abs(CornerPos[0][2]) + 1, abs(CornerPos[0][1]) + abs(CornerPos[0][3]) + 1)
-
+        if len(self.listHouse)%4 == 0:
+            self.floodfillHouseSpace +=1
         notFinded = True
         debug = 250 * 16
         debugNoHouse = 250 * 16

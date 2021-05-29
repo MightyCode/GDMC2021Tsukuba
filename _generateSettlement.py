@@ -109,7 +109,7 @@ if not args.remove:
         generator.generateStructure(settlementData["structures"][i], settlementData, resources, worldModif, chestGeneration)
         #_utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
     worldModif.saveToFile(file)  
-    floodFill.placeDecorations()
+    floodFill.placeDecorations(settlementData["materialsReplacement"],worldModif)
 
 else : 
     if args.remove == "r" :   
