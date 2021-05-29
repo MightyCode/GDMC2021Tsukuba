@@ -24,7 +24,7 @@ if not args.remove:
     resources = Resources()
     resLoader.loadAllResources(resources)
     chestGeneration = ChestGeneration(resources, interface)
-    structure = resources.structures["basicweaverhouse"]
+    structure = resources.structures["mediumwindmill"]
 
     info = structure.info
     buildingCondition = BaseStructure.createBuildingCondition()

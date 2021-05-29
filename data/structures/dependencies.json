@@ -150,7 +150,8 @@
     "mediumHouses" : {
         "structures" : [
             "mediumhouse1", 
-            "mediumhouse2"
+            "mediumhouse2",
+            "mediumhouse3"
         ],
         "type" : "houses",
         "conditions" : {

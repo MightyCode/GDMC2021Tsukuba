@@ -193,13 +193,13 @@ class Structures(BaseStructure):
             
 
     def checkBeforePlacing(self, blockName):
-        if "chest" in blockName or "shulker" in blockName or "lectern" in blockName:
+        if "chest" in blockName or "shulker" in blockName or "lectern" in blockName or "barrel" in blockName:
             self.placeImmediately = True
 
 
     def checkAfterPlacing(self, block, blockName, blockPosition, chestGeneration, buildingCondition):
         # If structure has loot tables and chest encounter
-        if "chest" in blockName:
+        if "chest" in blockName or "barrel" in blockName:
             if not "lootTables" in self.info: 
                 return
                 
