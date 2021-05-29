@@ -19,8 +19,8 @@ class FloodFill:
     LIGHT_BLOC = ['minecraft:campfire','minecraft:lantern','minecraft:sea_lantern','minecraft:jack_o_lantern','minecraft:shroomlight']
     DOUBLE_BLOC= ['minecraft:bee_nest','minecraft:torch','minecraft:redstone_torch','minecraft:target','minecraft:skeleton_skull','minecraft:zombie_head','minecraft:creeper_head']
 
-    def __init__(self, area):
-        self.numberOfDecoration = 150
+    def __init__(self, area):#, numberofHouse):
+        self.numberOfDecoration = 150 #int(numberofHouse * 1.5)
         self.listHouse = []
         random.seed(a=None, version=2)
         self.buildArea = area
@@ -259,7 +259,7 @@ class FloodFill:
     def findPosHouse(self, CornerPos):
         sizeStruct = max(abs(CornerPos[0][0]) + abs(CornerPos[0][2]) + 1, abs(CornerPos[0][1]) + abs(CornerPos[0][3]) + 1)
         if len(self.listHouse)%4 == 0:
-            self.floodfillHouseSpace +=1
+            self.floodfillHouseSpace += 1
         notFinded = True
         debug = 250 * 16
         debugNoHouse = 250 * 16
