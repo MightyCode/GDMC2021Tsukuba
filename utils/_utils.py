@@ -135,7 +135,7 @@ def createTextOfPresentationVillage(villageName, structuresNumber, structuresNam
             elif "farm" in structuresNames[i]["name"] or "quarry" in structuresNames[i]["name"] or "well" in structuresNames[i]["name"]:
                 textVillagePresentationBook += ('Using the lumberjack hut, villagers built a '
                                                 f'{structuresNames[i]["name"]} \\\\n')
-            elif "smeltery" in structuresNames[i]["name"] or "frunace" in structuresNames[i]["name"] or "stonecutter" in structuresNames[i]["name"]:
+            elif "smeltery" in structuresNames[i]["name"] or "furnace" in structuresNames[i]["name"] or "stonecutter" in structuresNames[i]["name"]:
                 textVillagePresentationBook += ('Using the quarry, villagers built a '
                                                 f'{structuresNames[i]["name"]} \\\\n')
             elif "workshop" in structuresNames[i]["name"] or "jail" in structuresNames[i]["name"] or "townhall" in structuresNames[i]["name"]:
@@ -150,8 +150,8 @@ def createTextOfPresentationVillage(villageName, structuresNumber, structuresNam
             elif "tavern" in structuresNames[i]["name"]:
                 textVillagePresentationBook += ('Using the windmill and the farm, villagers built a '
                                                 f'{structuresNames[i]["name"]} \\\\n')
-            # else:
-            #     textVillagePresentationBook += (f'{structuresNames[i]["name"]} \\\\n')
+            else:
+               textVillagePresentationBook += (f'{structuresNames[i]["name"]} \\\\n')
         if i % 3 == 0 and i != 0:
             textVillagePresentationBook += ('\f')
         if i >= 3:
@@ -161,7 +161,7 @@ def createTextOfPresentationVillage(villageName, structuresNumber, structuresNam
             elif "farm" in structuresNames[i]["name"] or "quarry" in structuresNames[i]["name"] or "well" in structuresNames[i]["name"]:
                 textVillagePresentationBook += ('Using the lumberjack hut, villagers built a '
                                                 f'{structuresNames[i]["name"]} \\\\n')
-            elif "smeltery" in structuresNames[i]["name"] or "frunace" in structuresNames[i]["name"] or "stonecutter" in structuresNames[i]["name"]:
+            elif "smeltery" in structuresNames[i]["name"] or "furnace" in structuresNames[i]["name"] or "stonecutter" in structuresNames[i]["name"]:
                 textVillagePresentationBook += ('Using the quarry, villagers built a '
                                                 f'{structuresNames[i]["name"]} \\\\n')
             elif "workshop" in structuresNames[i]["name"] or "jail" in structuresNames[i]["name"] or "townhall" in structuresNames[i]["name"]:
@@ -176,8 +176,8 @@ def createTextOfPresentationVillage(villageName, structuresNumber, structuresNam
             elif "tavern" in structuresNames[i]["name"]:
                 textVillagePresentationBook += ('Using the windmill and the farm, villagers built a '
                                                 f'{structuresNames[i]["name"]} \\\\n')
-            # else:
-            #     textVillagePresentationBook += (f'{structuresNames[i]["name"]} \\\\n')
+            else:
+               textVillagePresentationBook += (f'{structuresNames[i]["name"]} \\\\n')
     textVillagePresentationBook += ('\f')
     return textVillagePresentationBook
 

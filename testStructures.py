@@ -24,7 +24,7 @@ if not args.remove:
     resources = Resources()
     resLoader.loadAllResources(resources)
     chestGeneration = ChestGeneration(resources, interface)
-    structure = resources.structures["mediumwindmill"]
+    structure = resources.structures["adventurerhouse"]
 
     info = structure.info
     buildingCondition = BaseStructure.createBuildingCondition()
@@ -32,7 +32,7 @@ if not args.remove:
     buildingCondition["flip"] = 0
     buildingCondition["rotation"] = 0
     buildingInfo = structure.getNextBuildingInformation( buildingCondition["flip"], buildingCondition["rotation"])
-    buildingCondition["position"] = [3021, 90, 4031]
+    buildingCondition["position"] = [3100, 72, 4158]
     buildingCondition["referencePoint"] = buildingInfo["entry"]["position"]
     buildingCondition["size"] = buildingInfo["size"]
 

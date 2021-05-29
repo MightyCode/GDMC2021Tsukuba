@@ -51,7 +51,7 @@
             "dirtResources" : { "min" : 1},
             "previous" :  [ 
                 { "name" : "basicLumberJackHut", "min" : 1 },
-                { "name" : "basicFarm", "max" : 5 } 
+                { "name" : "basicFarm", "max" : 4 } 
             ]
         }
     },
@@ -188,6 +188,21 @@
         },
         "priority" : "full"
     },
+    "mediumFarm" : {
+        "structures" : [
+            "mediumfarm1"
+        ],
+        "type" : "functionals",
+        "conditions" : {
+            "villagerNeeded" : { "min" : 2 },
+            "dirtResources" : { "min" : 1},
+            "previous" :  [ 
+                { "name" : "basicStoneCutter", "min" : 1 },
+                { "name" : "basicFarm", "min" : 1 },
+                { "name" : "mediumFarm", "max" : 2 } 
+            ]
+        }
+    },
     "basicWindmill" : {
         "structures" : [
             "basicwindmill"
@@ -256,5 +271,18 @@
                 { "name" : "mediumWindmill", "max" : 1 } 
             ]
         }
+    },
+    "adventurerHouse" : {
+        "structures" : [
+            "adventurerhouse"
+        ],
+        "type" : "representatives",
+        "conditions" : {
+            "previous" : [
+                { "name" : "basicTavern", "min" : 1 },
+                { "name" : "adventurerHouse", "max" : 1 } 
+            ]
+        },
+        "priority" : "full"
     }
 }

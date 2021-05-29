@@ -74,11 +74,6 @@ class FloodFill:
             print("indexError")
         return False
 
-        
-
-
-
-
 
     def is_ground(self, x, y, z):
         y1 = y + 1
@@ -227,32 +222,34 @@ class FloodFill:
 
                 xrand = random.randint(xmin,xmax)
                 zrand = random.randint(zmin,zmax)
-                if not iu.getBlock(xPos, yPos, zPos) == 'minecraft:water':
+                height = self.getHeight(xrand,zrand)
+                if not iu.getBlock(xrand, height, zrand) == 'minecraft:water':
                     if not self.isInHouse([xrand,zrand]):
                         if not road.isInRoad([xrand,zrand]):
                             if not road.isInLantern([xrand,zrand]):
-                                if rand == 1:
-                                    height = self.getHeight(xrand,zrand)
-                                    worldmodif.setBlock(xrand,height,zrand,"minecraft:"+materials["woodType"]+"_fence")
-                                    randombloc = random.randint(0, len(FloodFill.DOUBLE_BLOC) - 1)
-                                    blocktoplace = FloodFill.DOUBLE_BLOC[randombloc]
-                                    if blocktoplace == 'minecraft:skeleton_skull' or blocktoplace == 'minecraft:zombie_head' or blocktoplace == 'minecraft:creeper_head':
-                                        orientation = random.randint(0,15)
-                                        blocktoplace = blocktoplace + '[rotation=' + str(orientation) + ']'
-                                    worldmodif.setBlock(xrand, height + 1,zrand,blocktoplace)
-                                    
-                                elif rand == 2 or rand == 3:
-                                    randombloc = random.randint(0, len(FloodFill.SINGLE_BLOC) - 1)
-                                    height = self.getHeight(xrand,zrand)
-                                    worldmodif.setBlock(xrand, height, zrand, FloodFill.SINGLE_BLOC[randombloc])
-                                elif rand == 4 or rand == 5:
-                                    randombloc = random.randint(0, len(FloodFill.LIGHT_BLOC) - 1)
-                                    height = self.getHeight(xrand,zrand)
-                                    worldmodif.setBlock(xrand, height, zrand, FloodFill.LIGHT_BLOC[randombloc])
-                                else:   
-                                    randombloc = random.randint(0, len(FloodFill.FLOWERS) - 1)
-                                    height = self.getHeight(xrand,zrand)
-                                    worldmodif.setBlock(xrand, height, zrand,'minecraft:potted_' + FloodFill.FLOWERS[randombloc])
+                                if not [xrand,zrand] in decorationcoord:
+                                    if rand == 1:
+                                        decorationcoord.append([xrand,zrand])
+                                        worldmodif.setBlock(xrand,height,zrand,"minecraft:"+materials["woodType"]+"_fence")
+                                        randombloc = random.randint(0, len(FloodFill.DOUBLE_BLOC) - 1)
+                                        blocktoplace = FloodFill.DOUBLE_BLOC[randombloc]
+                                        if blocktoplace == 'minecraft:skeleton_skull' or blocktoplace == 'minecraft:zombie_head' or blocktoplace == 'minecraft:creeper_head':
+                                            orientation = random.randint(0,15)
+                                            blocktoplace = blocktoplace + '[rotation=' + str(orientation) + ']'
+                                        worldmodif.setBlock(xrand, height + 1,zrand,blocktoplace)
+                                        
+                                    elif rand == 2 or rand == 3:
+                                        decorationcoord.append([xrand,zrand])
+                                        randombloc = random.randint(0, len(FloodFill.SINGLE_BLOC) - 1)
+                                        worldmodif.setBlock(xrand, height, zrand, FloodFill.SINGLE_BLOC[randombloc])
+                                    elif rand == 4 or rand == 5:
+                                        decorationcoord.append([xrand,zrand])
+                                        randombloc = random.randint(0, len(FloodFill.LIGHT_BLOC) - 1)
+                                        worldmodif.setBlock(xrand, height, zrand, FloodFill.LIGHT_BLOC[randombloc])
+                                    else:   
+                                        decorationcoord.append([xrand,zrand])
+                                        randombloc = random.randint(0, len(FloodFill.FLOWERS) - 1)
+                                        worldmodif.setBlock(xrand, height, zrand,'minecraft:potted_' + FloodFill.FLOWERS[randombloc])
                             
                 debug -= 1
 
