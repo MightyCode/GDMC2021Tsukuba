@@ -1,6 +1,6 @@
 import collections, numpy
 import random
-import utils._utils as utils
+import utils.utils as utils
 import math
 from generation.structures.baseStructure import * 
 

@@ -1,4 +1,4 @@
-import utils._utils as _utils
+import utils.utils as utils
 from math import *
 import lib.toolbox as toolbox
 from generation.structures.baseStructure import BaseStructure
@@ -16,7 +16,7 @@ def createSettlementData(area, resources):
     settlementData["materialsReplacement"] = {}
 
     # Biome 
-    settlementData["biomeId"] = _utils.getBiome(settlementData["center"][0], settlementData["center"][2], 1, 1) # TODO get mean
+    settlementData["biomeId"] = utils.getBiome(settlementData["center"][0], settlementData["center"][2], 1, 1) # TODO get mean
     settlementData["biomeName"] = resources.biomeMinecraftId[int(settlementData["biomeId"])]
     settlementData["biomeBlockId"] = str(resources.biomesBlockId[settlementData["biomeName"]])
     if settlementData["biomeBlockId"] == "-1": 
@@ -30,7 +30,7 @@ def createSettlementData(area, resources):
 
     loremaker.fillSettlementDataWitholor(settlementData, "white")
 
-    settlementData["villageName"] = _utils.generateVillageName()
+    settlementData["villageName"] = utils.generateVillageName()
     settlementData["materialsReplacement"]["villageName"] = settlementData["villageName"]
 
     settlementData["villagerNames"] = []
@@ -60,10 +60,10 @@ def generateBooks(settlementData):
         strVillagers += settlementData["villagerNames"][i] + " : " + settlementData["villagerProfession"][i] + ";"
     listOfVillagers = strVillagers.split(";")
 
-    textVillagersNames = _utils.createTextForVillagersNames(listOfVillagers)
-    textDeadVillagers = _utils.createTextForDeadVillagers(listOfVillagers)
+    textVillagersNames = utils.createTextForVillagersNames(listOfVillagers)
+    textDeadVillagers = utils.createTextForDeadVillagers(listOfVillagers)
     settlementData["villagerDeadNames"] = textDeadVillagers[2]
-    textVillagePresentationBook = _utils.createTextOfPresentationVillage(settlementData["villageName"], 
+    textVillagePresentationBook = utils.createTextOfPresentationVillage(settlementData["villageName"], 
                 settlementData["structuresNumberGoal"], settlementData["structures"], textDeadVillagers[1], listOfVillagers)
     settlementData["textOfBooks"] = [textVillagersNames, textDeadVillagers]
     
@@ -90,7 +90,7 @@ def placeBooks(settlementData, books, floodFill, worldModif):
     worldModif.setBlock(settlementData["center"][0], 
                         floodFill.getHeight(settlementData["center"][0], settlementData["center"][2]), 
                         settlementData["center"][2], "minecraft:chest[facing=east]", placeImmediately=True)
-    _utils.addItemChest(settlementData["center"][0], 
+    utils.addItemChest(settlementData["center"][0], 
                         floodFill.getHeight(settlementData["center"][0], settlementData["center"][2]),
                         settlementData["center"][2], items)
 
@@ -125,7 +125,7 @@ def generateStructure(structureData, settlementData, resources, worldModif, ches
     buildingCondition["referencePoint"] = structureData["prebuildingInfo"]["entry"]["position"]
     buildingCondition["size"] = structureData["prebuildingInfo"]["size"]
     buildingCondition["prebuildingInfo"] = structureData["prebuildingInfo"]
-    structureBiomeId = _utils.getBiome(buildingCondition["position"][0], buildingCondition["position"][2], 1, 1)
+    structureBiomeId = utils.getBiome(buildingCondition["position"][0], buildingCondition["position"][2], 1, 1)
     structureBiomeName = resources.biomeMinecraftId[int(structureBiomeId)]
     structureBiomeBlockId = str(resources.biomesBlockId[structureBiomeName])
 
@@ -142,7 +142,7 @@ def generateStructure(structureData, settlementData, resources, worldModif, ches
 
     structure.build(worldModif,  buildingCondition, chestGeneration)
     
-    """_utils.spawnVillagerForStructure(settlementData, structureData,
+    """utils.spawnVillagerForStructure(settlementData, structureData,
         [structureData["position"][0], 
          structureData["position"][1] + 1, 
          structureData["position"][2]])"""
@@ -199,7 +199,7 @@ def modifyBuildingConditionDependingOnStructure(buildingCondition, settlementDat
             if len(listOfDead) > 0:
                 index = random.randint(0, len(listOfDead) -1 )
                 name = listOfDead[index]
-                _utils.parseVillagerNameInLines([name], buildingCondition["special"]["sign"], i * 4)
+                utils.parseVillagerNameInLines([name], buildingCondition["special"]["sign"], i * 4)
 
                 del listOfDead[index]
 
@@ -208,4 +208,4 @@ def modifyBuildingConditionDependingOnStructure(buildingCondition, settlementDat
     elif structureName == "murderercache":
         buildingCondition["special"] = { "sign" : ["Next target :", "", "", ""] }
         name = settlementData["villagerNames"][settlementData["murdererTargetIndex"]]
-        _utils.parseVillagerNameInLines([name], buildingCondition["special"]["sign"], 1)
+        utils.parseVillagerNameInLines([name], buildingCondition["special"]["sign"], 1)

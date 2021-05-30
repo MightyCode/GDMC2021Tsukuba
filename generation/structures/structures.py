@@ -1,7 +1,6 @@
-import utils._math as _math
-import utils._utils as _utils
+import utils.projectMath as projectMath
+import utils.utils as utils
 from generation.structures.baseStructure import *
-import lib.toolbox as toolbox
 
 from nbt import nbt
 
@@ -149,7 +148,7 @@ class Structures(BaseStructure):
             if (blockPalette[Structures.CHANGE].value):
                 if (blockPalette[Structures.CHANGE_EXCLUDED_ZONES].value):
                     for zone in self.info["replacements"][blockPalette[Structures.CHANGE_REPLACEMENT_WORD].value]["excluded"] :
-                        if _math.isPointInSquare([ block["pos"][0].value, block["pos"][1].value, block["pos"][2].value], zone) :
+                        if projectMath.isPointInSquare([ block["pos"][0].value, block["pos"][1].value, block["pos"][2].value], zone) :
                             takeOriginalBlock = True
                             blockName = blockPalette[Structures.CHANGE_ORIGINAL_BLOCK].value
                             break
@@ -208,7 +207,7 @@ class Structures(BaseStructure):
                 for lootTable in self.info["lootTables"] :
                     if len(lootTable) == 1:
                         choosenLootTable = lootTable[0]
-                    elif _math.isPointInCube([ block["pos"][0].value, block["pos"][1].value, block["pos"][2].value ], lootTable[1]) :
+                    elif projectMath.isPointInCube([ block["pos"][0].value, block["pos"][1].value, block["pos"][2].value ], lootTable[1]) :
                         choosenLootTable = lootTable[0]
                     
                 if choosenLootTable  != "":
@@ -221,9 +220,9 @@ class Structures(BaseStructure):
             for key in self.info["lectern"].keys():
                 position = self.info["lectern"][key]
                 if block["pos"][0].value == position[0] and block["pos"][1].value == position[1] and block["pos"][2].value == position[2]:
-                    result = _utils.changeNameWithBalise(key, buildingCondition["replacements"])
+                    result = utils.changeNameWithBalise(key, buildingCondition["replacements"])
                     if result[0] >= 0:
-                        _utils.addBookToLectern(blockPosition[0], blockPosition[1], blockPosition[2], result[1])
+                        utils.addBookToLectern(blockPosition[0], blockPosition[1], blockPosition[2], result[1])
                     else :
                         print("Can't add a book to a lectern at pos : " + str(blockPosition))
                     break

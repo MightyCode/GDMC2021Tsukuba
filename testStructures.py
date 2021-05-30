@@ -1,18 +1,21 @@
-from generation._resources import *
-from generation._chestGeneration import *
+from generation.resources import *
+from generation.chestGeneration import *
 from generation.structures.structures import *
-from generation._structureManager import *
-from generation._floodFill import *
-import generation._resourcesLoader as resLoader
-import utils._utils as _utils
-from utils._worldModification import *
+from generation.structureManager import *
+from generation.floodFill import *
+import generation.resourcesLoader as resLoader
+import utils.utils as utils
+from utils.worldModification import *
 import utils.argumentParser as argParser
-import generation.loremaker as loremaker
+import lib.interfaceUtils as iu
 import copy
-import random
 
 file = "temp.txt"
-interface = interfaceUtils.Interface(buffering=True)
+interface = interfaceUtils.Interface(buffering=True, caching = True)
+interface.setCaching(True)
+interface.setBuffering(True)
+iu.setCaching(True)
+iu.setBuffering(True)
 worldModif = WorldModification(interface)
 args, parser = argParser.giveArgsAndParser()
 area = argParser.getBuildArea(args)
@@ -38,7 +41,7 @@ if not args.remove:
 
     buildingCondition["replaceAllAir"] = 3
 
-    structureBiomeId = _utils.getBiome(buildingCondition["position"][0], buildingCondition["position"][2], 1, 1)
+    structureBiomeId = utils.getBiome(buildingCondition["position"][0], buildingCondition["position"][2], 1, 1)
     structureBiomeName = resources.biomeMinecraftId[int(structureBiomeId)]
     
     structureBiomeBlockId = str(resources.biomesBlockId[structureBiomeName])

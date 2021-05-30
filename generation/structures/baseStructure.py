@@ -1,7 +1,7 @@
-import utils._math as _math
-import utils._utils as _utils
+import utils.projectMath as _math
+import utils.utils as utils
 import lib.interfaceUtils as interfaceUtils
-import generation._floodFill as floodFill
+import generation.floodFill as floodFill
 import math
 
 """ 
@@ -250,7 +250,7 @@ class BaseStructure:
         lines[0] = "Tier " + str(self.info["sign"]["tier"])
         lines[1] = self.info["sign"]["name"]
         
-        _utils.parseVillagerNameInLines(people, lines, 2)
+        utils.parseVillagerNameInLines(people, lines, 2)
 
         interfaceUtils.setSignText(
             position[0], position[1], position[2], 

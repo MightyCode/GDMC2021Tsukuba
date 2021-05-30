@@ -1,14 +1,14 @@
 import time
 milliseconds = int(round(time.time() * 1000))
 
-from generation._resources import *
-from generation._chestGeneration import *
-from generation._structureManager import *
-from generation._floodFill import *
+from generation.resources import *
+from generation.chestGeneration import *
+from generation.structureManager import *
+from generation.floodFill import *
 import generation.generator as generator
-import generation._resourcesLoader as resLoader
-import utils._utils as _utils
-from utils._worldModification import *
+import generation.resourcesLoader as resLoader
+import utils.utils as utils
+from utils.worldModification import *
 import utils.argumentParser as argParser
 import generation.loremaker as loremaker
 import generation.road as road
@@ -76,12 +76,12 @@ if not args.remove:
         # If new chunck discovererd, add new ressources
         chunk = [int(settlementData["structures"][i]["position"][0] / 16), int(settlementData["structures"][i]["position"][2] / 16)] 
         if not chunk in settlementData["discoveredChunk"] :
-            structureBiomeId = _utils.getBiome(settlementData["structures"][i]["position"][0], settlementData["structures"][i]["position"][2], 1, 1)
+            structureBiomeId = utils.getBiome(settlementData["structures"][i]["position"][0], settlementData["structures"][i]["position"][2], 1, 1)
             structureBiomeName = resources.biomeMinecraftId[int(structureBiomeId)]
             structureBiomeBlockId = str(resources.biomesBlockId[structureBiomeName])
 
             settlementData["discoveredChunk"].append(chunk)
-            _utils.addResourcesFromChunk(resources, settlementData, structureBiomeBlockId)
+            utils.addResourcesFromChunk(resources, settlementData, structureBiomeBlockId)
 
         loremaker.alterSettlementDataWithNewStructures(settlementData, i)
         structureMananager.checkDependencies()
@@ -107,7 +107,7 @@ if not args.remove:
     # Build after every computations
     for i in range(len(settlementData["structures"])) :
         generator.generateStructure(settlementData["structures"][i], settlementData, resources, worldModif, chestGeneration)
-        #_utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
+        #utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
     worldModif.saveToFile(file)  
     floodFill.placeDecorations(settlementData["materialsReplacement"],worldModif)
 

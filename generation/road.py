@@ -1,5 +1,4 @@
-import random
-import utils._math as _math
+import utils.projectMath as projectMath
 import lib.interfaceUtils as iu
 
 NODE_IN_ROAD = []
@@ -124,7 +123,7 @@ def Astar(startcoord,goalcoord,squarelist, floodFill):
 				openlist.append(node)
 			notinsquare = True
 			for squarehouse in squarelist:
-				if _math.isPointInSquare(node.point, squarehouse):
+				if projectMath.isPointInSquare(node.point, squarehouse):
 					notinsquare = False
 			#if abs(floodFill.getHeight(node.point[0],node.point[1],ws) - floodFill.getHeight(current.point[0],current.point[1],ws)) > 2:
 			#	notinsquare = False

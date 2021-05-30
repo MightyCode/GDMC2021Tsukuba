@@ -1,11 +1,9 @@
-from generation._resources import *
-from generation._chestGeneration import *
+from generation.resources import *
+from generation.chestGeneration import *
 from generation.structures.structures import *
-from generation._structureManager import *
-from generation._floodFill import *
-import generation._resourcesLoader as resLoader
-import utils._utils as _utils
-from utils._worldModification import *
+from generation.structureManager import *
+from generation.floodFill import *
+from utils.worldModification import *
 from lib.worldLoader import WorldSlice
 #seed testing : -2997648135289524795
 

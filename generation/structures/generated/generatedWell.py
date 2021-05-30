@@ -1,4 +1,4 @@
-import utils._utils as utils
+import utils.utils as utils
 from generation.structures.baseStructure import * 
 
 class GeneratedWell(BaseStructure):

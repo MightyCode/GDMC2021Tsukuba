@@ -1,4 +1,4 @@
-import utils._utils as _utils
+import utils.utils as utils
 import json
 import random
 
@@ -18,8 +18,8 @@ class StructureManager:
         for group in self.dependencies.keys():
             self.numberOfStructuresForEachGroup[group] = 0
 
-        self.villagerFirstNamesList = _utils.getFirstNamelist()
-        self.villagerLastNamesList = _utils.getLastNamelist()
+        self.villagerFirstNamesList = utils.getFirstNamelist()
+        self.villagerLastNamesList = utils.getLastNamelist()
 
         self.checkDependencies()
 
@@ -73,8 +73,8 @@ class StructureManager:
             size = len(self.settlementData["villagerNames"])
             for i in range(numberToAdd):
                 self.settlementData["villagerNames"].append(
-                            _utils.getRandomVillagerNames(self.villagerFirstNamesList, 1)[0] + 
-                            " " + _utils.getRandomVillagerNames(self.villagerLastNamesList, 1)[0]
+                            utils.getRandomVillagerNames(self.villagerFirstNamesList, 1)[0] + 
+                            " " + utils.getRandomVillagerNames(self.villagerLastNamesList, 1)[0]
                 )
                 
                 self.settlementData["villagerProfession"].append("Unemployed")
