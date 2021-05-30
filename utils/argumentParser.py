@@ -13,7 +13,11 @@ def giveArgsAndParser():
                     help="Build the settlement on the area defined by these coordinates")
 
     group.add_argument("-b", "--buildarea",
-                        help="Build the settlement using a pre-existing buildArea",
+                        help="Build the settlement using a pre-existing buildArea, no -p, -c or -b argument do the same thing",
+                    action="store_true")
+
+    group.add_argument("-d", "--default",
+                        help="Build the settlement using a the default buildArea, no -p, -c or -b argument do the same thing",
                     action="store_true")
 
     parser.add_argument("-a", "--radius", type=int, metavar="A",
@@ -37,10 +41,12 @@ def getBuildArea(args):
     elif (args.coordinates):
         x0, y0, z0, x1, y1, z1 = args.coordinates
         area = iu.setBuildArea(x0, y0, z0, x1, y1, z1)
+    elif(args.default):
+        area = iu.setBuildArea(0, 0, 0, size, 255, size)
     elif(args.buildarea):
         area = iu.requestBuildArea()
     else :
-        area = iu.setBuildArea(-size, 0, -size, size, 255, size)
+        area = iu.requestBuildArea()
 
     print("AREA :" + str(area))
     return area

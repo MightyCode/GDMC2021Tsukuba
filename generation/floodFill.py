@@ -1,4 +1,4 @@
-import utils._math as _math
+import utils.projectMath as projectMath
 import random
 import lib.interfaceUtils as iu
 import generation.road as road
@@ -104,7 +104,7 @@ class FloodFill:
     def floodfill(self, xi, yi, zi, size):
         validPositions = []
         # if floodfill start is in building area
-        if not _math.isPointInCube([xi, yi, zi], self.buildArea):
+        if not projectMath.isPointInCube([xi, yi, zi], self.buildArea):
             print("Out of build area i ", xi, yi, zi)
             return validPositions
 
@@ -122,13 +122,13 @@ class FloodFill:
                 x = Node[0] + add[0]
                 z = Node[2] + add[1]
                 y = Node[1]
-                if _math.isPointInCube([x, y, z], self.buildArea):
+                if projectMath.isPointInCube([x, y, z], self.buildArea):
                     try:
                         groundHeight = self.is_ground(x, y, z)
                     except IndexError:
                         print("indexerror")
                         print(x,y,z)
-                    if groundHeight != -1 and (x, groundHeight, z) not in validPositions and _math.isPointInCube([x, y, z], floodFillArea):
+                    if groundHeight != -1 and (x, groundHeight, z) not in validPositions and projectMath.isPointInCube([x, y, z], floodFillArea):
                         stack.append((x, groundHeight, z))
 
         return validPositions
@@ -137,7 +137,7 @@ class FloodFill:
 
     def verifHouse(self, xPos, yPos, zPos, CornerPos):
         for i,j in [[0, 1], [2, 1], [0, 3], [2, 3]]:
-            if _math.isPointInSquare([xPos,zPos], [self.buildArea[0], self.buildArea[2] , self.buildArea[3] , self.buildArea[5]]):
+            if projectMath.isPointInSquare([xPos,zPos], [self.buildArea[0], self.buildArea[2] , self.buildArea[3] , self.buildArea[5]]):
                 if self.is_ground(xPos + CornerPos[i], yPos, zPos + CornerPos[j]) == -1:
                     return False
             else:
@@ -169,7 +169,7 @@ class FloodFill:
             index = random.randint(0, len(indices)-1)
         
             # Test if new houses position is in build Area
-            if _math.isPointInSquare([self.listHouse[indices[index]][0], self.listHouse[indices[index]][2]], 
+            if projectMath.isPointInSquare([self.listHouse[indices[index]][0], self.listHouse[indices[index]][2]], 
                 [self.buildArea[0] + sizeStruct, self.buildArea[2] + sizeStruct, self.buildArea[3] - sizeStruct, self.buildArea[5] - sizeStruct]):
                 placeindex = random.randint(0, len(self.listHouse[indices[index]][4]) - 1)
 
@@ -185,7 +185,7 @@ class FloodFill:
         listverifhouse = self.listHouse.copy()
         while listverifhouse:
             house = listverifhouse.pop()
-            if _math.isPointInSquare(coord,[house[0] + house[3][0], house[2] + house[3][1], house[0] + house[3][2], house[2] + house[3][3]]):
+            if projectMath.isPointInSquare(coord,[house[0] + house[3][0], house[2] + house[3][1], house[0] + house[3][2], house[2] + house[3][3]]):
                 return True
         return False
 
@@ -326,7 +326,7 @@ class FloodFill:
                                     if not house[6]:
                                         continue
 
-                                    if not _math.isTwoRectOverlapse([xPos, zPos], choosenCorner, [house[0], house[2]], house[3], self.minDistanceHouse):
+                                    if not projectMath.isTwoRectOverlapse([xPos, zPos], choosenCorner, [house[0], house[2]], house[3], self.minDistanceHouse):
                                         verifOverlapseHouse = True
                                     else:
                                         """print("N " + str(xPos) + " " + str(zPos) + " " + str(choosenCorner) +  " : flip " + str(rand1) + 
@@ -341,7 +341,7 @@ class FloodFill:
                                     notFinded = False
 
                                     # If house is valid to create a floodfill
-                                    if _math.isPointInSquare([xPos, zPos], self.validHouseFloodFillPosition):
+                                    if projectMath.isPointInSquare([xPos, zPos], self.validHouseFloodFillPosition):
                                         FloodFillValue = self.floodfill(xPos, yPos, zPos,  sizeStruct + self.floodfillHouseSpace)
                                         
                                     else:

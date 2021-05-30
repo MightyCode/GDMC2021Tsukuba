@@ -1,5 +1,5 @@
 import lib.interfaceUtils as interfaceUtils
-import utils._utils as _utils
+import utils.utils as utils
 import random
 
 class ChestGeneration:
@@ -50,7 +50,7 @@ class ChestGeneration:
                                                             item["functions"][0]["count"]["max"])
                     
                     # Compute item's name if balise *, means that one word should change
-                    result = _utils.changeNameWithBalise(item["name"], changeItemName)
+                    result = utils.changeNameWithBalise(item["name"], changeItemName)
 
                     if result[0] >= 0:
                         items.append([result[1], numberOfItem ])

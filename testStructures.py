@@ -8,6 +8,7 @@ import utils.utils as utils
 from utils.worldModification import *
 import utils.argumentParser as argParser
 import lib.interfaceUtils as iu
+import generation.loremaker as loremaker
 import copy
 
 file = "temp.txt"
@@ -35,7 +36,7 @@ if not args.remove:
     buildingCondition["flip"] = 0
     buildingCondition["rotation"] = 0
     buildingInfo = structure.getNextBuildingInformation( buildingCondition["flip"], buildingCondition["rotation"])
-    buildingCondition["position"] = [3100, 72, 4158]
+    buildingCondition["position"] = [3220, 72, 4086]
     buildingCondition["referencePoint"] = buildingInfo["entry"]["position"]
     buildingCondition["size"] = buildingInfo["size"]
 
