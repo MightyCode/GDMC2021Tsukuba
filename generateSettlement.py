@@ -13,6 +13,7 @@ import utils.argumentParser as argParser
 import generation.loremaker as loremaker
 import generation.road as road
 import lib.interfaceUtils as iu
+import lib.toolbox as toolbox
 from random import choice
 
 
@@ -37,9 +38,10 @@ if not args.remove:
 
     chestGeneration = ChestGeneration(resources, interface)
     iu.makeGlobalSlice()
-    floodFill = FloodFill(area)
     
     settlementData = generator.createSettlementData(area, resources)
+
+    floodFill = FloodFill(area, settlementData["structuresNumberGoal"])
 
     structureMananager = StructureManager(settlementData, resources)
 
@@ -95,6 +97,24 @@ if not args.remove:
 
     books = generator.generateBooks(settlementData)
     generator.placeBooks(settlementData, books, floodFill, worldModif)
+
+    # Villager interaction
+    for i in range(len(settlementData["villagerNames"])):
+        settlementData["villagerDiary"].append([])
+        
+        available = True
+        for structureData in settlementData["structures"]:
+            if i in structureData["villagersId"]:
+                available = not "haybale" in structureData["name"]
+                break
+
+        if random.randint(1, 3) == 1 and available:
+            print("Genere diary of " + settlementData["villagerNames"][i])
+            settlementData["villagerDiary"][i] = book.createBookForVillager(settlementData, i)
+            settlementData["villagerDiary"][i][0] = "minecraft:written_book" + toolbox.writeBook(settlementData["villagerDiary"][i][0], 
+                title="Diary of " + settlementData["villagerNames"][i], author=settlementData["villagerNames"][i], description="Diary of " + settlementData["villagerNames"][i])
+            if settlementData["villagerDiary"][i][1] != "":
+                structureData["gift"] = settlementData["villagerDiary"][i][1]
     
     # Add books replacements
     settlementData["materialsReplacement"]["villageBook"] = "minecraft:written_book" + books["villageNameBook"]
@@ -112,7 +132,8 @@ if not args.remove:
         generator.generateStructure(settlementData["structures"][i], settlementData, resources, worldModif, chestGeneration)
         #util.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
     worldModif.saveToFile(file)  
-    floodFill.placeDecorations(settlementData["materialsReplacement"],worldModif)
+    
+    floodFill.placeDecorations(settlementData["materialsReplacement"], worldModif)
 
 else : 
     if args.remove == "r" :   

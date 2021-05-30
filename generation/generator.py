@@ -40,6 +40,9 @@ def createSettlementData(area, resources):
     settlementData["villagerProfessionList"] = [
                 "farmer", "fisherman", "shepherd", "fletcher", "librarian", "cartographer", 
                 "cleric", "armorer", "weaponsmith", "toolsmith", "butcher", "leatherworker", "mason", "nitwit"]
+
+    # 1 -> content, 2 -> isGift
+    settlementData["villagerDiary"] = []
     
     settlementData["structuresNumberGoal"] = random.randint(15, 70)
 
@@ -140,7 +143,7 @@ def generateStructure(structureData, settlementData, resources, worldModif, ches
         if aProperty in resources.biomesBlocks["rules"]["structure"]:
             buildingCondition["replacements"][aProperty] = resources.biomesBlocks[structureBiomeBlockId][aProperty]
 
-    modifyBuildingConditionDependingOnStructure(buildingCondition, settlementData, structure, structureData["name"])
+    modifyBuildingConditionDependingOnStructure(buildingCondition, settlementData, structureData, structureData["name"])
 
     structure.build(worldModif,  buildingCondition, chestGeneration)
     
@@ -176,8 +179,7 @@ def buildMurdererHouse(structureData, settlementData, resources, worldModif, che
     buildingCondition["referencePoint"] = buildingInfo["entry"]["position"]
     buildingCondition["size"] = buildingInfo["size"]
 
-    modifyBuildingConditionDependingOnStructure(buildingCondition, settlementData, structureMurderer, "murderercache")
-    print(buildingCondition["special"])
+    modifyBuildingConditionDependingOnStructure(buildingCondition, settlementData, { "type" : "decorations"}, "murderercache")
 
     structureMurderer.build(worldModif, buildingCondition, chestGeneration)
     facing = structureMurderer.getFacingMainEntry(buildingCondition["flip"], buildingCondition["rotation"])
@@ -189,7 +191,7 @@ def buildMurdererHouse(structureData, settlementData, resources, worldModif, che
 
 
 
-def modifyBuildingConditionDependingOnStructure(buildingCondition, settlementData, structure, structureName):
+def modifyBuildingConditionDependingOnStructure(buildingCondition, settlementData, structureData, structureName):
     if structureName == "basicgraveyard":
         number = 8
 
@@ -219,3 +221,24 @@ def modifyBuildingConditionDependingOnStructure(buildingCondition, settlementDat
 
     elif structureName == "adventurerhouse":
         buildingCondition["special"]["adventurerhouse"] = book.createBookForAdventurerHouse(buildingCondition["flip"])
+
+
+    if structureData["type"] == "houses":
+        for villagerIndex in structureData["villagersId"]:
+            if len(settlementData["villagerDiary"]) > 0 :
+                if not "bedroomhouse" in buildingCondition["special"]:
+                    buildingCondition["special"]["bedroomhouse"] = []
+
+                buildingCondition["special"]["bedroomhouse"].append(settlementData["villagerDiary"][villagerIndex])
+                print("add diary of", settlementData["villagerNames"][villagerIndex])
+
+
+def returnVillagerAvailableForGift(settlementData, exception):
+    available = []
+    for structureData in settlementData["structures"]:
+        if not "gift" in structureData.keys():
+            for index in structureData["villagersId"]:
+                if not index in exception:
+                    available.append(index)
+
+    return available

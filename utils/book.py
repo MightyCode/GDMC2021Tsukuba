@@ -1,3 +1,5 @@
+import generation.generator as generator
+
 import random as rd
 import pandas as pd
 import numpy as np
@@ -114,6 +116,7 @@ def createTextForVillagersNames(listOfVillagers):
     textVillagerNames += ('\f')
     return textVillagerNames
 
+
 """
 Return the text of the book of the dead villagers names and professions
 """
@@ -156,14 +159,23 @@ def createTextForDeadVillagers(listOfVillagers):
 
 
 def createBookForVillager(settlementData, villagerIndex):
-    categorie = ["monster", "decoration", "house", ""]
-    villagerName = settlementData["villagerName"][villagerIndex]
+    villagerName = settlementData["villagerNames"][villagerIndex]
+    gift = ""
+
+    # 1 / 2 chance to a gift
+    randomGift = rd.randint(1, 4)
+    if randomGift == 1:
+        gift = "minecraft:gold_block"
+    elif randomGift == 2:
+        gift = "minecraft:tnt"
+
+    giftPlace = rd.randint(1, 3)
+
     textDiaryVillager = (
             '\\\\s--------------\\\\n'
             '                      \\\\n'
             '                      \\\\n'
-            f'   {villagerName}      \\\\n'
-            '  diary               \\\\n'
+            f'{villagerName} diary  \\\\n'
             '                      \\\\n'
             '                      \\\\n'
             '                      \\\\n'
@@ -172,9 +184,37 @@ def createBookForVillager(settlementData, villagerIndex):
             '                      \\\\n'
             '                      \\\\n'
             '--------------')
-    textDiaryVillager += ('\f\\\\s---------------\\\\n')
+    textDiaryVillager += ('     \f')
 
-    return textDiaryVillager
+    numberPhrase = rd.randint(3, 7)
+    for i in range(numberPhrase):
+        # Gift phrase
+        if i == giftPlace:
+            availableIndices = generator.returnVillagerAvailableForGift(settlementData, [villagerIndex])
+            targetedVillager = availableIndices[rd.randint(0, len(availableIndices) - 1)]
+            if randomGift == 1:
+                if rd.randint(1, 2) == 1:
+                    textDiaryVillager += (f'I love {settlementData["villagerNames"][targetedVillager]}')
+                else : 
+                    textDiaryVillager += (f'{settlementData["villagerNames"][targetedVillager]} is my best friend')
+
+                if rd.randint(1, 2) == 1:
+                    textDiaryVillager += (', I left him a surprise under his door.\\\\n')
+                else : 
+                    textDiaryVillager += (', I hope he finds the gift I left him under his door.\\\\n')
+
+            continue
+        
+        if rd.randint(1, 2) == 1:
+            textDiaryVillager += ('                      \\\\n')
+            if rd.randint(1, 2) == 1:
+                textDiaryVillager += ('                      \\\\n')
+
+        textDiaryVillager += ('I love spider \\\\n') 
+
+    textDiaryVillager += ('\f')
+    print(textDiaryVillager)
+    return [textDiaryVillager, gift]
 
 
 def createBookForAdventurerHouse(flip):

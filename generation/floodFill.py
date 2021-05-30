@@ -19,8 +19,8 @@ class FloodFill:
     LIGHT_BLOC = ['minecraft:campfire','minecraft:lantern','minecraft:sea_lantern','minecraft:jack_o_lantern','minecraft:shroomlight']
     DOUBLE_BLOC= ['minecraft:bee_nest','minecraft:torch','minecraft:redstone_torch','minecraft:target','minecraft:skeleton_skull','minecraft:zombie_head','minecraft:creeper_head']
 
-    def __init__(self, area):#, numberofHouse):
-        self.numberOfDecoration = 150 #int(numberofHouse * 1.5)
+    def __init__(self, area, numberHouse):
+        self.numberOfDecoration = int(numberHouse * 1.5) # 150 
         self.listHouse = []
         random.seed(a=None, version=2)
         self.buildArea = area
@@ -211,8 +211,8 @@ class FloodFill:
         print("range of the village is : ", xmin, xmax, zmin, zmax)
         return xmin, xmax, zmin, zmax
 
-    def placeDecorations(self,materials,worldmodif):
-        xmin, xmax, zmin,zmax = self.decideMinMax()
+    def placeDecorations(self, materials, worldmodif):
+        xmin, xmax, zmin, zmax = self.decideMinMax()
         decorationcoord = []
         for i in range(self.numberOfDecoration):
             decoput = False
@@ -252,8 +252,6 @@ class FloodFill:
                                         worldmodif.setBlock(xrand, height, zrand,'minecraft:potted_' + FloodFill.FLOWERS[randombloc])
                             
                 debug -= 1
-
-
 
 
     def findPosHouse(self, CornerPos):

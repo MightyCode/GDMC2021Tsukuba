@@ -30,7 +30,7 @@ if not args.remove:
     resources = Resources()
     resLoader.loadAllResources(resources)
     chestGeneration = ChestGeneration(resources, interface)
-    structure = resources.structures["adventurerhouse"]
+    structure = resources.structures["basichouse1"]
 
     info = structure.info
     buildingCondition = BaseStructure.createBuildingCondition()
@@ -38,7 +38,7 @@ if not args.remove:
     buildingCondition["flip"] = 1
     buildingCondition["rotation"] = 0
     buildingInfo = structure.getNextBuildingInformation( buildingCondition["flip"], buildingCondition["rotation"])
-    buildingCondition["position"] = [2428, 69, 3981]
+    buildingCondition["position"] = [4787, 69, 6095]
     buildingCondition["referencePoint"] = buildingInfo["entry"]["position"]
     buildingCondition["size"] = buildingInfo["size"]
 
@@ -68,9 +68,17 @@ if not args.remove:
         if aProperty in resources.biomesBlocks["rules"]["structure"]:
             buildingCondition["replacements"][aProperty] = resources.biomesBlocks[structureBiomeBlockId][aProperty]
 
-    buildingCondition["special"]["adventurerhouse"] = ["minecraft:written_book" + toolbox.writeBook(
-                book.createBookForAdventurerHouse(buildingCondition["flip"]),
-                     title="Machine guide", author="Adventurer", description="Explains how to make the machine work" )]
+    settlementData = {
+        "villagerNames" : ["rodriguez sdfsd", "sdfsdfsdf"],
+        "structures" : [
+            {"name" : "basichouse1", "villagersId" : [0]},
+            {"name" : "basichouse1", "villagersId" : [1]}
+        ]
+    }
+
+    buildingCondition["special"]["bedroomhouse"] = ["minecraft:written_book" + toolbox.writeBook(
+                book.createBookForVillager(settlementData, 0)[0],
+                     title="jean ", author="SDQS", description="QSSDD" )]
 
     structure.build(worldModif, buildingCondition, chestGeneration)
     worldModif.saveToFile(file)
