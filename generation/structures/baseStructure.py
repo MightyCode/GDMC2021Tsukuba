@@ -1,5 +1,5 @@
 import utils.projectMath as _math
-import utils.utils as utils
+import utils.util as util
 import lib.interfaceUtils as interfaceUtils
 import generation.floodFill as floodFill
 import math
@@ -40,14 +40,17 @@ class BaseStructure:
 
     """
     Return a premake dictionnary required to build a structure
-    
     Flip is applied before rotation
+
+    size : size of the structure
+    position : the of the refencePoint in the real world
+    referencePoint : point x, z where the building will rotate around, the block at the reference point will be on position point
     flip : No flip = 0, Flip x = 1, flip z = 2, Flip xz = 3
     rotation : No rotation = 0, rotation 90° = 1, rotation 180° = 2, rotation 270° = 3
     replaceAllAir : 0 no air placed, 1 place all air block, 2 place all choosen air block, 3 take the prefered replacement air from info file
-    position : the center of the contruction
-    referencePoint : point x, z where the building will rotate around, the block at the reference point will be on position point
-    replacement : change one type of block to another
+    replacements : change one type of block to another
+    prebuildingInfo
+    special : dict to put very specific informations
     """
     def createBuildingCondition():
         return {
@@ -59,7 +62,8 @@ class BaseStructure:
             "replaceAllAir" : 0,
             "replacements" : {},
             "villager" : [],
-            "prebuildingInfo" : {}
+            "prebuildingInfo" : {},
+            "special" : {}
         }
 
 
@@ -250,7 +254,7 @@ class BaseStructure:
         lines[0] = "Tier " + str(self.info["sign"]["tier"])
         lines[1] = self.info["sign"]["name"]
         
-        utils.parseVillagerNameInLines(people, lines, 2)
+        util.parseVillagerNameInLines(people, lines, 2)
 
         interfaceUtils.setSignText(
             position[0], position[1], position[2], 

@@ -7,7 +7,7 @@ from generation.structureManager import *
 from generation.floodFill import *
 import generation.generator as generator
 import generation.resourcesLoader as resLoader
-import utils.utils as utils
+import utils.util as util
 from utils.worldModification import *
 import utils.argumentParser as argParser
 import generation.loremaker as loremaker
@@ -76,12 +76,12 @@ if not args.remove:
         # If new chunck discovererd, add new ressources
         chunk = [int(settlementData["structures"][i]["position"][0] / 16), int(settlementData["structures"][i]["position"][2] / 16)] 
         if not chunk in settlementData["discoveredChunk"] :
-            structureBiomeId = utils.getBiome(settlementData["structures"][i]["position"][0], settlementData["structures"][i]["position"][2], 1, 1)
+            structureBiomeId = util.getBiome(settlementData["structures"][i]["position"][0], settlementData["structures"][i]["position"][2], 1, 1)
             structureBiomeName = resources.biomeMinecraftId[int(structureBiomeId)]
             structureBiomeBlockId = str(resources.biomesBlockId[structureBiomeName])
 
             settlementData["discoveredChunk"].append(chunk)
-            utils.addResourcesFromChunk(resources, settlementData, structureBiomeBlockId)
+            util.addResourcesFromChunk(resources, settlementData, structureBiomeBlockId)
 
         loremaker.alterSettlementDataWithNewStructures(settlementData, i)
         structureMananager.checkDependencies()
@@ -89,6 +89,9 @@ if not args.remove:
     # Murderer
     settlementData["murdererIndex"] = choice([i for i in range(0, len(settlementData["villagerNames"])) if settlementData["villagerProfession"][i] != "Mayor"])
     settlementData["murdererTargetIndex"] = choice([i for i in range(0, len(settlementData["villagerNames"])) if i != settlementData["murdererIndex"]])
+    for structureData in settlementData["structures"]:
+        if settlementData["murdererTargetIndex"] in structureData["villagersId"]:
+            structureData["gift"] = "minecraft:tnt"
 
     books = generator.generateBooks(settlementData)
     generator.placeBooks(settlementData, books, floodFill, worldModif)
@@ -107,7 +110,7 @@ if not args.remove:
     # Build after every computations
     for i in range(len(settlementData["structures"])) :
         generator.generateStructure(settlementData["structures"][i], settlementData, resources, worldModif, chestGeneration)
-        #utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
+        #util.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
     worldModif.saveToFile(file)  
     floodFill.placeDecorations(settlementData["materialsReplacement"],worldModif)
 

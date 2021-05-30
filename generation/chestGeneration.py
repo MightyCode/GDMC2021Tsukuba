@@ -1,5 +1,5 @@
 import lib.interfaceUtils as interfaceUtils
-import utils.utils as utils
+import utils.util as util
 import random
 
 class ChestGeneration:
@@ -16,7 +16,7 @@ class ChestGeneration:
     lootTableName : name of the lootTable used
     changeItemName : indicates what ** balise should change, ex : *woodType*
     """
-    def generate(self, x, y, z, lootTableName, changeItemName={}):
+    def generate(self, x, y, z, lootTableName, changeItemName={}, additionalObject=[]):
         lootTable = self.resources.lootTables[lootTableName]["pools"][0]
 
         numberItem = 0
@@ -25,15 +25,27 @@ class ChestGeneration:
         else : 
             numberItem = lootTable["rolls"]
 
-        itemPlaces = self.generatePlaces(numberItem)
+        itemPlaces = self.generatePlaces(numberItem + len(additionalObject))
         itemPlaces.sort()
         items = []
+
+        additionalPlaces, additionalIndices = self.generateAdditionalPlacesIndices(itemPlaces.copy(), len(additionalObject))
 
         sumWeight = 0
         for item in lootTable["entries"]:
             sumWeight += item["weight"]
         
+        print(len(additionalPlaces))
+        j = 0
         for i in range(len(itemPlaces)):
+            if j < len(additionalPlaces):
+                print(itemPlaces[i], additionalPlaces[j])
+                if itemPlaces[i] == additionalPlaces[j]:
+                    print("appensdsdsdd")
+                    items.append([additionalObject[additionalIndices[j]], 1 ])
+                    j += 1
+                    continue
+
             currentWeight = random.randint(0, sumWeight)
 
             for item in lootTable["entries"]:  
@@ -50,7 +62,7 @@ class ChestGeneration:
                                                             item["functions"][0]["count"]["max"])
                     
                     # Compute item's name if balise *, means that one word should change
-                    result = utils.changeNameWithBalise(item["name"], changeItemName)
+                    result = util.changeNameWithBalise(item["name"], changeItemName)
 
                     if result[0] >= 0:
                         items.append([result[1], numberOfItem ])
@@ -78,4 +90,22 @@ class ChestGeneration:
                 places_b.append(places[index])
                 del places[index]
             return places_b
-     
+
+    
+    def generateAdditionalPlacesIndices(self, places, size):
+        indices = list(range(size))
+
+        additionnalPlaces = []
+        additionnalIndices = []
+
+        for i in range(size):
+            index = random.randint(0, len(indices) - 1 )
+            additionnalIndices.append(indices[index])
+            del indices[index]
+
+            index = random.randint(0, len(places) - 1 )
+            additionnalPlaces.append(places[index]) 
+            del places[index]
+
+        additionnalPlaces.sort()
+        return additionnalPlaces, additionnalIndices

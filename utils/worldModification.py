@@ -167,7 +167,6 @@ class WorldModification:
         with open(WorldModification.DEFAULT_PATH + file_name) as f:
             for line in f:
                 parts = line.split(WorldModification.PARTS_SEPARATOR)
-                print(parts)
                 before_parts = parts[0].split(WorldModification.BLOCK_SEPARATOR)
                 after_parts = parts[1].split(WorldModification.BLOCK_SEPARATOR)
                 self.before_modification.append([

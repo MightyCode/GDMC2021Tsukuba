@@ -4,11 +4,13 @@ from generation.structures.structures import *
 from generation.structureManager import *
 from generation.floodFill import *
 import generation.resourcesLoader as resLoader
-import utils.utils as utils
+import utils.util as util
 from utils.worldModification import *
 import utils.argumentParser as argParser
 import lib.interfaceUtils as iu
 import generation.loremaker as loremaker
+import utils.book as book
+import lib.toolbox as toolbox
 import copy
 
 file = "temp.txt"
@@ -33,16 +35,16 @@ if not args.remove:
     info = structure.info
     buildingCondition = BaseStructure.createBuildingCondition()
     buildingInfo = structure.setupInfoAndGetCorners()
-    buildingCondition["flip"] = 0
+    buildingCondition["flip"] = 1
     buildingCondition["rotation"] = 0
     buildingInfo = structure.getNextBuildingInformation( buildingCondition["flip"], buildingCondition["rotation"])
-    buildingCondition["position"] = [3220, 72, 4086]
+    buildingCondition["position"] = [2428, 69, 3981]
     buildingCondition["referencePoint"] = buildingInfo["entry"]["position"]
     buildingCondition["size"] = buildingInfo["size"]
 
     buildingCondition["replaceAllAir"] = 3
 
-    structureBiomeId = utils.getBiome(buildingCondition["position"][0], buildingCondition["position"][2], 1, 1)
+    structureBiomeId = util.getBiome(buildingCondition["position"][0], buildingCondition["position"][2], 1, 1)
     structureBiomeName = resources.biomeMinecraftId[int(structureBiomeId)]
     
     structureBiomeBlockId = str(resources.biomesBlockId[structureBiomeName])
@@ -65,6 +67,10 @@ if not args.remove:
     for aProperty in resources.biomesBlocks[structureBiomeBlockId]:
         if aProperty in resources.biomesBlocks["rules"]["structure"]:
             buildingCondition["replacements"][aProperty] = resources.biomesBlocks[structureBiomeBlockId][aProperty]
+
+    buildingCondition["special"]["adventurerhouse"] = ["minecraft:written_book" + toolbox.writeBook(
+                book.createBookForAdventurerHouse(buildingCondition["flip"]),
+                     title="Machine guide", author="Adventurer", description="Explains how to make the machine work" )]
 
     structure.build(worldModif, buildingCondition, chestGeneration)
     worldModif.saveToFile(file)

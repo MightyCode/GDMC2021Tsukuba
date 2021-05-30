@@ -267,7 +267,7 @@ class FloodFill:
         verifOverlapseHouse = False
         print("there is already", len(self.listHouse), "placed")
 
-        while notFinded and (debug>0) and (debugNoHouse>0) and not verifCorners:
+        while notFinded and (debug > 0) and (debugNoHouse > 0) and not verifCorners:
             if len(self.listHouse) == 0:
                 xPos, zPos = self.takeRandomPosition(sizeStruct)
 
@@ -311,11 +311,11 @@ class FloodFill:
                         
                     fliptest = [0, 1, 2, 3]
                     while fliptest and notFinded:
-                        rand1 = fliptest[random.randint(0,len(fliptest)-1)]
+                        rand1 = fliptest[random.randint(0, len(fliptest)-1)]
                         fliptest.remove(rand1)
                         rotationtest = [0, 1, 2, 3]
                         while rotationtest and notFinded: 
-                            rand2 = rotationtest[random.randint(0,len(rotationtest)-1)]
+                            rand2 = rotationtest[random.randint(0, len(rotationtest)-1)]
                             choosenCorner = CornerPos[rand1 * 4 + rand2]
                             rotationtest.remove(rand2)
                             if self.verifHouse(xPos, yPos, zPos, choosenCorner):

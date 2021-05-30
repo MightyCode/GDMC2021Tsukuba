@@ -1,5 +1,5 @@
 import utils.projectMath as projectMath
-import utils.utils as utils
+import utils.util as util
 from generation.structures.baseStructure import *
 
 from nbt import nbt
@@ -211,7 +211,12 @@ class Structures(BaseStructure):
                         choosenLootTable = lootTable[0]
                     
                 if choosenLootTable  != "":
-                    chestGeneration.generate(blockPosition[0], blockPosition[1], blockPosition[2], choosenLootTable, buildingCondition["replacements"])
+                    additionalObjects = []
+                    if choosenLootTable in buildingCondition["special"].keys():
+                        additionalObjects = buildingCondition["special"][choosenLootTable]
+                        del buildingCondition["special"][choosenLootTable]
+
+                    chestGeneration.generate(blockPosition[0], blockPosition[1], blockPosition[2], choosenLootTable, buildingCondition["replacements"], additionalObjects)
 
         if "lectern" in blockName:
             if not "lectern" in self.info:
@@ -220,9 +225,9 @@ class Structures(BaseStructure):
             for key in self.info["lectern"].keys():
                 position = self.info["lectern"][key]
                 if block["pos"][0].value == position[0] and block["pos"][1].value == position[1] and block["pos"][2].value == position[2]:
-                    result = utils.changeNameWithBalise(key, buildingCondition["replacements"])
+                    result = util.changeNameWithBalise(key, buildingCondition["replacements"])
                     if result[0] >= 0:
-                        utils.addBookToLectern(blockPosition[0], blockPosition[1], blockPosition[2], result[1])
+                        util.addBookToLectern(blockPosition[0], blockPosition[1], blockPosition[2], result[1])
                     else :
                         print("Can't add a book to a lectern at pos : " + str(blockPosition))
                     break

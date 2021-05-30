@@ -1,4 +1,4 @@
-import utils.utils as utils
+import utils.util as util
 from generation.structures.baseStructure import * 
 
 class GeneratedWell(BaseStructure):
@@ -42,7 +42,7 @@ class GeneratedWell(BaseStructure):
             buildingCondition["referencePoint"][2] = self.size[2] - 1 - buildingCondition["referencePoint"][2] 
             
         woodType = "*woodType*"
-        result = utils.changeNameWithBalise(woodType, buildingCondition["replacements"])
+        result = util.changeNameWithBalise(woodType, buildingCondition["replacements"])
         if result[0] >= 0:
             woodType = result[1]
         else :
