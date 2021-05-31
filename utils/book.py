@@ -80,7 +80,7 @@ def createTextOfPresentationVillage(villageName, structuresNumber, structuresNam
                                                 f'{structuresNames[i]["name"]} \\\\n')
             elif "adventurerhouse" in structuresNames[i]["name"]:
                 textVillagePresentationBook += ('Using the tavern, villagers built an '
-                                                f'{structuresNames[i]["name"]} \\n')
+                                                f'{structuresNames[i]["name"]} \\\\n')
         if i % 3 == 0 and i != 0:
             textVillagePresentationBook += ('\f')
         if i >= 3:
@@ -110,7 +110,7 @@ def createTextOfPresentationVillage(villageName, structuresNumber, structuresNam
                                                 f'{structuresNames[i]["name"]} \\\\n')
             elif "adventurerhouse" in structuresNames[i]["name"]:
                 textVillagePresentationBook += ('Using the tavern, villagers built an '
-                                                f'{structuresNames[i]["name"]} \\n')
+                                                f'{structuresNames[i]["name"]} \\\\n')
     return textVillagePresentationBook
 
 """
