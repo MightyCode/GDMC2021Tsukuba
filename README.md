@@ -25,7 +25,11 @@ Based on the size of the area the player has set, the program will decide if it 
 ### Future of this program:
 We want to work on interaction between villages, implement new houses, make more uniqueness villages based on more detailed ressources and use the interaction between villages to upgrade each villages "together" (or not if they are ennemies).
 ###Contact Information
+
 If you want to contact us for any question, you can do so via discord :
+
 Izzypizi#7987
+
 Tamalou-Max#0432
+
 Harckyl#0032
