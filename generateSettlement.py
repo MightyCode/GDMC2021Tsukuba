@@ -29,6 +29,8 @@ area = argParser.getBuildArea(args)
 
 if area == -1:
     exit()
+
+area = (area[0], area[1], area[2], area[3] - 1, area[4] - 1, area[5] - 1)
     
 # Three main steps : choose structures and find its positions, make road between these structures, and finaly build structures.
 if not args.remove:
@@ -41,11 +43,12 @@ if not args.remove:
     
     settlementData = generator.createSettlementData(area, resources)
 
-    floodFill = FloodFill(area, settlementData["structuresNumberGoal"])
+    floodFill = FloodFill(worldModif, area, settlementData["structuresNumberGoal"])
 
     structureMananager = StructureManager(settlementData, resources)
 
-    for i in range(settlementData["structuresNumberGoal"]) : 
+    i = 0
+    while i < settlementData["structuresNumberGoal"] : 
         # 0 -> normal, 1 -> replacement, 2 -> no more structure
         result = structureMananager.chooseOneStructure()
         structureMananager.printStructureChoose()
@@ -66,6 +69,12 @@ if not args.remove:
 
         corners = structure.setupInfoAndGetCorners()
         result = floodFill.findPosHouse(corners)
+        
+        if not result["validPosition"]:
+            settlementData["structuresNumberGoal"] -= 1 
+            structureMananager.removeLastStructure()
+            floodFill.setNumberHouse(settlementData["structuresNumberGoal"])
+            continue
 
         settlementData["structures"][i]["validPosition"] = result["validPosition"]
 
@@ -87,6 +96,7 @@ if not args.remove:
 
         loremaker.alterSettlementDataWithNewStructures(settlementData, i)
         structureMananager.checkDependencies()
+        i += 1
 
     # Murderer
     settlementData["murdererIndex"] = choice([i for i in range(0, len(settlementData["villagerNames"])) if settlementData["villagerProfession"][i] != "Mayor"])
@@ -133,7 +143,7 @@ if not args.remove:
         #util.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
     worldModif.saveToFile(file)  
     
-    floodFill.placeDecorations(settlementData["materialsReplacement"], worldModif)
+    floodFill.placeDecorations(settlementData["materialsReplacement"])
 
 else : 
     if args.remove == "r" :   

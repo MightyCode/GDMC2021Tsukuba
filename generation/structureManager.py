@@ -62,6 +62,7 @@ class StructureManager:
     def choosedStructure(self, structure):
         self.settlementData["structures"][-1]["name"] = structure["name"]
         self.settlementData["structures"][-1]["type"] = structure["type"]
+        self.settlementData["structures"][-1]["group"] = structure["group"]
         
         self.numberOfStructuresForEachGroup[structure["group"]] += 1
 
@@ -106,6 +107,31 @@ class StructureManager:
 
             self.settlementData["freeVillager"] -= numberToAttribute
     
+
+    def removeLastStructure(self):
+        group = self.settlementData["structures"][-1]["group"]
+        self.numberOfStructuresForEachGroup[group] -= 1
+
+        type = self.settlementData["structures"][-1]["type"]
+        if type == StructureManager.HOUSES:
+            number = len(self.settlementData["structures"][-1]["villagersId"])
+            for villagerIndex in self.settlementData["structures"][-1]["villagersId"]:
+                del self.settlementData["villagerNames"][villagerIndex]
+                del self.settlementData["villagerProfession"][villagerIndex]
+                del self.settlementData["villagerGameProfession"][villagerIndex]
+
+            self.settlementData["freeVillager"] -= number
+        elif type == StructureManager.REPRESENTATIVES or type == StructureManager.FUNCTIONALS:
+            number = len(self.settlementData["structures"][-1]["villagersId"])
+            for villagerIndex in self.settlementData["structures"][-1]["villagersId"]:
+                self.settlementData["villagerProfession"][villagerIndex] = "Unemployed"
+                self.settlementData["villagerGameProfession"][villagerIndex] = "nitwit"
+
+            self.settlementData["freeVillager"] += number
+        
+
+        del self.settlementData["structures"][-1]
+
 
     def checkDependencies(self):
         # Make arrays empty

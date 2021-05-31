@@ -1,7 +1,9 @@
 import utils.projectMath as _math
 import utils.util as util
+import utils.projectMath as projectMath
 import lib.interfaceUtils as interfaceUtils
 import generation.floodFill as floodFill
+import random
 import math
 
 """ 
@@ -222,6 +224,28 @@ class BaseStructure:
                 int(max(temp[1], temp1[1]))]
 
     
+    def returnFlipRotationThatIsInZone(self, position, mainEntryPosition, area):
+        flip = random.randint(0, 3)
+        rotations = list(range(4))
+        valid = False
+
+        while len(rotations) > 0 and not valid :
+            valid = True
+            index = random.randint(0, len(rotations) -1)
+            rotation = rotations[index]
+            del rotations[index]
+
+            corner = self.getCornersLocalPositions(mainEntryPosition, flip, rotation)
+
+            for i,j in [[0, 1], [2, 1], [0, 3], [2, 3]]:
+                if not projectMath.isPointInSquare(
+                    [position[0] + corner[i] , position[1] + corner[j]], 
+                    [area[0], area[2] , area[3] , area[5]]):
+                    valid = False
+                    break
+
+        return flip, rotation
+
     """
     Get corners of all possible flip and rotation
     """

@@ -213,7 +213,6 @@ def createBookForVillager(settlementData, villagerIndex):
         textDiaryVillager += ('I love spider \\\\n') 
 
     textDiaryVillager += ('\f')
-    print(textDiaryVillager)
     return [textDiaryVillager, gift]
 
 

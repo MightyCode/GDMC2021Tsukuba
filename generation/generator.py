@@ -9,6 +9,7 @@ import copy
 
 def createSettlementData(area, resources):
     settlementData = {}
+    settlementData["area"] = area
     settlementData["center"] = [int((area[0] + area[3]) / 2) , 82, int((area[2] + area[5]) / 2)]
     settlementData["size"] = [area[0] - area[2], area[1] - area[3]]
     settlementData["discoveredChunk"] = []
@@ -44,7 +45,7 @@ def createSettlementData(area, resources):
     # 1 -> content, 2 -> isGift
     settlementData["villagerDiary"] = []
     
-    settlementData["structuresNumberGoal"] = 9#random.randint(15, 70)
+    settlementData["structuresNumberGoal"] = random.randint(15, 70)
 
     #structures contains "position", "rotation", "flip" "name", "type", "group" ->, "villagersId", "gift"
     settlementData["structures"] = []
@@ -173,11 +174,15 @@ def buildMurdererHouse(structureData, settlementData, resources, worldModif, che
 
     structureMurderer = resources.structures["murderercache"]
     buildingInfo = structureMurderer.setupInfoAndGetCorners()
-    buildingCondition["flip"] = random.randint(0, 3)
-    buildingCondition["rotation"] = random.randint(0, 3)
+    # Temporary
+    buildingCondition["flip"] = 0
+    buildingCondition["rotation"] = 0  
+
     buildingInfo = structureMurderer.getNextBuildingInformation( buildingCondition["flip"], buildingCondition["rotation"])
     buildingCondition["referencePoint"] = buildingInfo["entry"]["position"]
     buildingCondition["size"] = buildingInfo["size"]
+    buildingCondition["flip"], buildingCondition["rotation"] = structureMurderer.returnFlipRotationThatIsInZone(buildingCondition["position"],
+                                 buildingCondition["referencePoint"], settlementData["area"])
 
     modifyBuildingConditionDependingOnStructure(buildingCondition, settlementData, { "type" : "decorations"}, "murderercache")
 
