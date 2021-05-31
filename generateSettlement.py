@@ -55,6 +55,12 @@ if not args.remove:
     xAdvencement = 0
     zAdvencement = 0
     while zAdvencement < numberZoneZ:
+        timeNow = int(round(time.time() * 1000)) - milliseconds
+        if timeNow / 1000 >= TIME_LIMIT - TIME_TO_BUILD_A_VILLAGE:
+            print("Abord immediatly not time to generate") 
+            zAdvencement = numberZoneZ
+            continue
+
         area = [
             buildArea[0] + xAdvencement * sizeZoneX, 
             buildArea[1], 
@@ -145,8 +151,13 @@ if not args.remove:
         print("\nGenerate lore")
 
         # Murderer
-        settlementData["murdererIndex"] = choice([i for i in range(0, len(settlementData["villagerNames"])) if settlementData["villagerProfession"][i] != "Mayor"])
-        settlementData["murdererTargetIndex"] = choice([i for i in range(0, len(settlementData["villagerNames"])) if i != settlementData["murdererIndex"]])
+        if len(settlementData["villagerNames"]) <= 1:
+            settlementData["murdererIndex"] = -1
+            settlementData["murdererTargetIndex"] = -1
+        else :
+            settlementData["murdererIndex"] = choice([i for i in range(0, len(settlementData["villagerNames"])) if settlementData["villagerProfession"][i] != "Mayor"])
+            settlementData["murdererTargetIndex"] = choice([i for i in range(0, len(settlementData["villagerNames"])) if i != settlementData["murdererIndex"]])
+
         for structureData in settlementData["structures"]:
             if settlementData["murdererTargetIndex"] in structureData["villagersId"]:
                 structureData["gift"] = "minecraft:tnt"
@@ -203,7 +214,10 @@ if not args.remove:
         print("Position of lectern for village", zAdvencement * numberZoneX, ":", [settlementData["center"][0], 
                 floodFill.getHeight(settlementData["center"][0], settlementData["center"][2]), settlementData["center"][1]])
         print("Position of first structure", [floodFill.listHouse[0][0], floodFill.listHouse[0][1], floodFill.listHouse[0][2]])
+        #iu.runCommand("tp {} {} {}".format(floodFill.listHouse[0][0], floodFill.listHouse[0][1], floodFill.listHouse[0][2]))
+        print("Time left :", TIME_LIMIT - (int(round(time.time() * 1000)) - milliseconds) / 1000, "s")
 
+    iu.setBuildArea(buildArea[0], buildArea[1], buildArea[2], buildArea[3] + 1, buildArea[4] + 1, buildArea[5] + 1)
 else : 
     if args.remove == "r" :   
         worldModif.loadFromFile(file)

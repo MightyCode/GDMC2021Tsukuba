@@ -12,7 +12,8 @@
   "air" : {
     "preferedAirMode" : 2,
     "replacements" : [
-      [1, 0, 1, 6, 5, 7]
+      [1, 0, 1, 6, 5, 7],
+      [3, 0, 0, 3, 2, 0]
     ]
   },
   "villageInfo" : {
