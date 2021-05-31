@@ -55,6 +55,12 @@ if not args.remove:
     xAdvencement = 0
     zAdvencement = 0
     while zAdvencement < numberZoneZ:
+        timeNow = int(round(time.time() * 1000)) - milliseconds
+        if timeNow / 1000 < TIME_LIMIT - TIME_TO_BUILD_A_VILLAGE:
+            print("Abord immediatly not time to generate") 
+            zAdvencement = numberZoneZ
+            continue
+
         area = [
             buildArea[0] + xAdvencement * sizeZoneX, 
             buildArea[1], 
@@ -145,7 +151,7 @@ if not args.remove:
         print("\nGenerate lore")
 
         # Murderer
-        if len(settlementData["villagerNames"]) == 0:
+        if len(settlementData["villagerNames"]) <= 1:
             settlementData["murdererIndex"] = -1
             settlementData["murdererTargetIndex"] = -1
         else :
