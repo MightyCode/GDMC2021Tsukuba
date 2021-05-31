@@ -73,9 +73,8 @@ class WorldModification:
                         self.before_modification.append([x, y, z, previousBlock])
                         self.after_modificaton.append([x, y, z, block])
         
-        interfaceUtils.fill(from_x, from_y, from_z, to_x, to_y, to_z, block)
-
-        """
+        #interfaceUtils.fill(from_x, from_y, from_z, to_x, to_y, to_z, block)
+        
         interfaceUtils.runCommand("fill " +  
             str(from_x) + " " + 
             str(from_y) + " " +
@@ -83,7 +82,7 @@ class WorldModification:
             str(to_x) + " " + 
             str(to_y) + " " + 
             str(to_z) + " " +  
-            block + " replace")"""
+            block + " replace")
 
 
     def undoLastModification(self):

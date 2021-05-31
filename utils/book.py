@@ -7,12 +7,12 @@ import numpy as np
 REASON_OF_DEATHS = ["murdered", "died because of old age", "died of creeper attack", "died of skeleton attack", "died of spider attack (he did not became Spider-Man)",
                     "died of zombie attack", "died of witch attack", "died suffocating from sand falling" , "died eating too much cake", "died crushing by a rock" 
                     , "died suffocating from gravel falling"]
-DIARY_TEXTS_WITHOUT_TARGETS = [" I really like the color of the village ", " I really like the name of the village ", " I hate the color of the village ", " I hate the name of the village "
-               " I am afraid of spiders ", " I am afraid of creppers ", " I am afraid of zombies ", " I am afraid of skeletons ",
-               " I don't like the facade of my house ", " I don't like the flower of the village ",
-               " I really like the flower of the village ", " I really like the mayor ", " I hate the flower of the village ", " I hate the mayor ",
-               " I would like to have a better house ", " I hope he finds the gift I left him under his door ",
-               " I really like pigs ", " I really like cows", " I am interested about sheeps ", " I am interested about chickens "]
+DIARY_TEXTS_WITHOUT_TARGETS = [" I really like the color of the village. ", " I really like the name of the village. ", " I hate the color of the village.", 
+               " I am afraid of spiders. ", " I am afraid of creppers. ", " I am afraid of zombies. ", " I am afraid of skeletons. ",
+               " I don't like the facade of my house. ", " I don't like the flower of the village. ",
+               " I really like the flower of the village. ", " I really like the mayor. ", " I hate the flower of the village. ", " I hate the mayor. ",
+               " I would like to have a better house. ", " I hope he finds the gift I left him under his door. ",
+               " I really like pigs. ", " I really like cows. ", " I am interested about sheeps.  ", " I am interested about chickens. "]
 DIARY_TEXTS_WITH_TARGETS = [" I am sad since the death of ", " I am happy since the death of ", " I used to hate ", " I once hit "] 
 
 VILLAGER_NAME_PATH = "data/names/"
@@ -242,7 +242,7 @@ def createBookForVillager(settlementData, villagerIndex):
         
         # Murderer suspicion
         if rd.randint(1, 5) == 1 and not murdererSuspicious and settlementData["murdererIndex"] != -1 :
-            textDiaryVillager += (f'I think that {settlementData["villagerNames"][settlementData["murdererIndex"]]} \\\\n')
+            textDiaryVillager += (f'I think that {settlementData["villagerNames"][settlementData["murdererIndex"]]} is really strange. \\\\n')
             murdererSuspicious = True
             continue
 
@@ -254,12 +254,12 @@ def createBookForVillager(settlementData, villagerIndex):
             if rd.randint(1, 5) == 1:
                 secondRandomProfession = rd.randint(0, len(settlementData["villagerProfessionList"]) - 1)
                 if secondRandomProfession != randomProfession:
-                    textDiaryVillager += (f'I would like to work as a {settlementData["villagerProfessionList"][secondRandomProfession]}\\\\n')
+                    textDiaryVillager += (f'I would like to work as a {settlementData["villagerProfessionList"][secondRandomProfession]}.\\\\n')
         elif random == 2 and not targetTextDone: 
             randomDiaryTextWithTarget = rd.randint(0, len(newDiaryTextWithTarget) - 1)
             targeted = settlementData["villagerDeadNames"][rd.randint(0, len(settlementData["villagerDeadNames"]) - 1)]
             textDiaryVillager += (f'{newDiaryTextWithTarget[randomDiaryTextWithTarget]}'
-                                          f'{targeted}  \\\\n')
+                                          f'{targeted}.  \\\\n')
             newDiaryTextWithTarget.remove(newDiaryTextWithTarget[randomDiaryTextWithTarget])
             targetTextDone = True
         else: 
