@@ -7,6 +7,13 @@ import numpy as np
 REASON_OF_DEATHS = ["murdered", "died because of old age", "died of creeper attack", "died of skeleton attack", "died of spider attack (he did not became Spider-Man)",
                     "died of zombie attack", "died of witch attack", "died suffocating from sand falling" , "died eating too much cake", "died crushing by a rock" 
                     , "died suffocating from gravel falling"]
+DIARY_TEXTS_WITHOUT_TARGETS = [" I really like the color of the village ", " I really like the name of the village ", " I hate the color of the village ", " I hate the name of the village "
+               " I am afraid of spiders ", " I am afraid of creppers ", " I am afraid of zombies ", " I am afraid of skeletons ",
+               " I don't like the facade of my house ", " I don't like the flower of the village ",
+               " I really like the flower of the village ", " I really like the mayor ", " I hate the flower of the village ", " I hate the mayor ",
+               " I would like to have a better house ", " I hope he finds the gift I left him under his door ",
+               " I really like pigs ", " I really like cows", " I am interested about sheeps ", " I am interested about chickens "]
+DIARY_TEXTS_WITH_TARGETS = [" I am sad since the death of ", " I am happy since the death of ", " I used to hate ", " I once hit "] 
 
 VILLAGER_NAME_PATH = "data/names/"
 
@@ -39,7 +46,7 @@ def createTextOfPresentationVillage(villageName, structuresNumber, structuresNam
             numberOfHouse += 1
     textVillagePresentationBook += (f'{len(listOfVillagers)} villagers arrived in '
                                     f'{numberOfHouse} houses \\\\n')
-    textVillagePresentationBook += (f'{deadVillagersNumber} villagers are dead. \\\\n')
+    textVillagePresentationBook += (f'{deadVillagersNumber} villagers have died since their arrival. \\\\n')
     textVillagePresentationBook += (''
                       'There are '
                       f'{structuresNumber} structures. \\\\n')
@@ -50,53 +57,54 @@ def createTextOfPresentationVillage(villageName, structuresNumber, structuresNam
             if "lumberjachut" in structuresNames[i]["name"]:
                 textVillagePresentationBook += ('Villagers built a '
                                                 f'{structuresNames[i]["name"]} \\\\n')
-            elif "farm" in structuresNames[i]["name"] or "quarry" in structuresNames[i]["name"] or "well" in structuresNames[i]["name"]:
+            elif "quarry" in structuresNames[i]["name"] or "well" in structuresNames[i]["name"] or "basichouse" in structuresNames[i]["name"]:
                 textVillagePresentationBook += ('Using the lumberjack hut, villagers built a '
                                                 f'{structuresNames[i]["name"]} \\\\n')
             elif "smeltery" in structuresNames[i]["name"] or "furnace" in structuresNames[i]["name"] or "stonecutter" in structuresNames[i]["name"]:
                 textVillagePresentationBook += ('Using the quarry, villagers built a '
                                                 f'{structuresNames[i]["name"]} \\\\n')
-            elif "workshop" in structuresNames[i]["name"] or "jail" in structuresNames[i]["name"] or "townhall" in structuresNames[i]["name"]:
+            elif "workshop" in structuresNames[i]["name"] or "jail" in structuresNames[i]["name"] or "townhall" in structuresNames[i]["name"] or "farm" in structuresNames[i]["name"] or "mediumhouse" in structuresNames[i]["name"]:
                 textVillagePresentationBook += ('Using the stone cutter, villagers built a '
                                                 f'{structuresNames[i]["name"]} \\\\n')
             elif "graveyard" in structuresNames[i]["name"]:
                 textVillagePresentationBook += ('Using the furnace, villagers built a '
                                                 f'{structuresNames[i]["name"]} \\\\n')
-            elif "windmill" in structuresNames[i]["name"] or "barrack" in structuresNames[i]["name"]:
+            elif "basicwindmill" in structuresNames[i]["name"] or "barrack" in structuresNames[i]["name"] or "weaverhouse" in structuresNames[i]["name"] or "observatory" in structuresNames[i]["name"]:
                 textVillagePresentationBook += ('Using the workshop, villagers built a '
                                                 f'{structuresNames[i]["name"]} \\\\n')
-            elif "tavern" in structuresNames[i]["name"]:
-                textVillagePresentationBook += ('Using the windmill and the farm, villagers built a '
+            elif "mediumwindmill" in structuresNames[i]["name"]:
+                textVillagePresentationBook += ('Using the windmill and the weaver house, villagers built a '
                                                 f'{structuresNames[i]["name"]} \\\\n')
-            else:
-               textVillagePresentationBook += (f'{structuresNames[i]["name"]} \\\\n')
+            elif "tavern" in structuresNames[i]["name"]:
+                textVillagePresentationBook += ('Using the windmill, the farm and the furnace, villagers built a '
+                                                f'{structuresNames[i]["name"]} \\\\n')
         if i % 3 == 0 and i != 0:
             textVillagePresentationBook += ('\f')
         if i >= 3:
             if "lumberjachut" in structuresNames[i]["name"]:
                 textVillagePresentationBook += ('Villagers built a '
                                                 f'{structuresNames[i]["name"]} \\\\n')
-            elif "farm" in structuresNames[i]["name"] or "quarry" in structuresNames[i]["name"] or "well" in structuresNames[i]["name"]:
+            elif "quarry" in structuresNames[i]["name"] or "well" in structuresNames[i]["name"] or "basichouse" in structuresNames[i]["name"]:
                 textVillagePresentationBook += ('Using the lumberjack hut, villagers built a '
                                                 f'{structuresNames[i]["name"]} \\\\n')
             elif "smeltery" in structuresNames[i]["name"] or "furnace" in structuresNames[i]["name"] or "stonecutter" in structuresNames[i]["name"]:
                 textVillagePresentationBook += ('Using the quarry, villagers built a '
                                                 f'{structuresNames[i]["name"]} \\\\n')
-            elif "workshop" in structuresNames[i]["name"] or "jail" in structuresNames[i]["name"] or "townhall" in structuresNames[i]["name"]:
+            elif "workshop" in structuresNames[i]["name"] or "jail" in structuresNames[i]["name"] or "townhall" in structuresNames[i]["name"] or "farm" in structuresNames[i]["name"] or "mediumhouse" in structuresNames[i]["name"]:
                 textVillagePresentationBook += ('Using the stone cutter, villagers built a '
                                                 f'{structuresNames[i]["name"]} \\\\n')
             elif "graveyard" in structuresNames[i]["name"]:
                 textVillagePresentationBook += ('Using the furnace, villagers built a '
                                                 f'{structuresNames[i]["name"]} \\\\n')
-            elif "windmill" in structuresNames[i]["name"] or "barrack" in structuresNames[i]["name"]:
+            elif "basicwindmill" in structuresNames[i]["name"] or "barrack" in structuresNames[i]["name"] or "weaverhouse" in structuresNames[i]["name"] or "observatory" in structuresNames[i]["name"]:
                 textVillagePresentationBook += ('Using the workshop, villagers built a '
                                                 f'{structuresNames[i]["name"]} \\\\n')
-            elif "tavern" in structuresNames[i]["name"]:
-                textVillagePresentationBook += ('Using the windmill and the farm, villagers built a '
+            elif "mediumwindmill" in structuresNames[i]["name"]:
+                textVillagePresentationBook += ('Using the windmill and the weaver house, villagers built a '
                                                 f'{structuresNames[i]["name"]} \\\\n')
-            else:
-               textVillagePresentationBook += (f'{structuresNames[i]["name"]} \\\\n')
-    textVillagePresentationBook += ('\f')
+            elif "tavern" in structuresNames[i]["name"]:
+                textVillagePresentationBook += ('Using the windmill, the farm and the furnace, villagers built a '
+                                                f'{structuresNames[i]["name"]} \\\\n')
     return textVillagePresentationBook
 
 """
@@ -185,34 +193,50 @@ def createBookForVillager(settlementData, villagerIndex):
             '                      \\\\n'
             '--------------')
     textDiaryVillager += ('     \f')
+    
+    newDiaryTextWithoutTarget = DIARY_TEXTS_WITHOUT_TARGETS
+    newDiaryTextWithTarget = DIARY_TEXTS_WITH_TARGETS
+    randomDiaryTextWithoutTarget = rd.randint(0, len(newDiaryTextWithoutTarget) - 1)
+    randomDiaryTextWithTarget = rd.randint(0, len(newDiaryTextWithTarget) - 1)
 
     numberPhrase = rd.randint(3, 7)
     for i in range(numberPhrase):
         # Gift phrase
+
         if i == giftPlace:
             availableIndices = generator.returnVillagerAvailableForGift(settlementData, [villagerIndex])
             targetedVillager = availableIndices[rd.randint(0, len(availableIndices) - 1)]
             if randomGift == 1:
-                if rd.randint(1, 2) == 1:
-                    textDiaryVillager += (f'I love {settlementData["villagerNames"][targetedVillager]}')
+                random = rd.randint(1, 2)
+                if random == 1:
+                    textDiaryVillager += (f'I love {settlementData["villagerNames"][targetedVillager]} \\\\n')
+                    newDiaryTextWithTarget.remove(newDiaryTextWithTarget[1])
                 else : 
-                    textDiaryVillager += (f'{settlementData["villagerNames"][targetedVillager]} is my best friend')
+                    textDiaryVillager += (f'{settlementData["villagerNames"][targetedVillager]} is my best friend \\\\n')
 
-                if rd.randint(1, 2) == 1:
-                    textDiaryVillager += (', I left him a surprise under his door.\\\\n')
-                else : 
-                    textDiaryVillager += (', I hope he finds the gift I left him under his door.\\\\n')
+                random = rd.randint(1, 5)
+                if random == 1:
+                    textDiaryVillager += (f'{newDiaryTextWithTarget[randomDiaryTextWithTarget]}'
+                                          f'{settlementData["villagerNames"][targetedVillager]}  \\\\n')
+                    newDiaryTextWithTarget.remove(newDiaryTextWithTarget[randomDiaryTextWithTarget])
+                else: 
+                    textDiaryVillager += (f'{newDiaryTextWithoutTarget[randomDiaryTextWithoutTarget]}   \\\\n')
+                    newDiaryTextWithoutTarget.remove(newDiaryTextWithoutTarget[randomDiaryTextWithoutTarget])
+                                    
 
             continue
         
-        if rd.randint(1, 2) == 1:
-            textDiaryVillager += ('                      \\\\n')
-            if rd.randint(1, 2) == 1:
-                textDiaryVillager += ('                      \\\\n')
+        if rd.randint(1, 5) == 1:
+            randomProfession = rd.randint(0, len(settlementData["villagerProfessionList"]) - 1)
+            textDiaryVillager += (f'I hate all {settlementData["villagerProfessionList"][randomProfession]} \\\\n')
+            if rd.randint(1, 5) == 1:
+                secondRandomProfession = rd.randint(0, len(settlementData["villagerProfessionList"]) - 1)
+                if secondRandomProfession != randomProfession:
+                    textDiaryVillager += (f'I would like to work as a {settlementData["villagerProfessionList"][secondRandomProfession]}\\\\n')
 
-        textDiaryVillager += ('I love spider \\\\n') 
+        if i == 4:
+            textDiaryVillager += (' \f')
 
-    textDiaryVillager += ('\f')
     print(textDiaryVillager)
     return [textDiaryVillager, gift]
 
@@ -277,7 +301,7 @@ def initialize():
         for i in range(words.shape[0]):
             words[i] = words[i] + ' '
 
-        # Cleaning de la data en remplacant les caractères spéciaux ou rares par des caractères plus communs
+
         # Cleaning of the data by replacing specials or rare chars by common chars
         clean_words = []
         for word in words:

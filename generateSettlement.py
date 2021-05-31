@@ -108,7 +108,7 @@ if not args.remove:
                 available = not "haybale" in structureData["name"]
                 break
 
-        if random.randint(1, 3) == 1 and available:
+        if random.randint(1, 1) == 1 and available:
             print("Genere diary of " + settlementData["villagerNames"][i])
             settlementData["villagerDiary"][i] = book.createBookForVillager(settlementData, i)
             settlementData["villagerDiary"][i][0] = "minecraft:written_book" + toolbox.writeBook(settlementData["villagerDiary"][i][0], 
