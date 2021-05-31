@@ -256,7 +256,7 @@ class Interface():
         #------------ caranha functions
 
 def makeBuildArea(width = 128, height = 128):
-    runCommand("execute at @p run setbuildarea ~{} 0 ~{} ~{} 255 ~{}".format(int(-1*width/2), int(-1*height/2), int(width/2), int(height/2)))
+    runCommand("execute at @p run setbuildarea ~{} 0 ~{} ~{} 256 ~{}".format(int(-1*width/2), int(-1*height/2), int(width/2), int(height/2)))
     buildArea = requestBuildArea()
     x1 = buildArea["xFrom"]
     z1 = buildArea["zFrom"]
@@ -332,7 +332,7 @@ def requestPlayerArea(dx=128, dz=128):
     dx -= 1
     dz -= 1
     runCommand("execute at @p run setbuildarea "
-               f"~{-dx//2} 0 ~{-dz//2} ~{dx//2} 255 ~{dz//2}")
+               f"~{-dx//2} 0 ~{-dz//2} ~{dx//2} 256 ~{dz//2}")
     return requestBuildArea()
 
 

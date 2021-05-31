@@ -222,8 +222,16 @@ def createBookForVillager(settlementData, villagerIndex):
                 else: 
                     textDiaryVillager += (f'{newDiaryTextWithoutTarget[randomDiaryTextWithoutTarget]}   \\\\n')
                     newDiaryTextWithoutTarget.remove(newDiaryTextWithoutTarget[randomDiaryTextWithoutTarget])
-                                    
+            elif randomGift == 2:
+                if rd.randint(1, 2) == 1:
+                    textDiaryVillager += (f'I hate {settlementData["villagerNames"][targetedVillager]}\\\\n')
+                else : 
+                    textDiaryVillager += (f'{settlementData["villagerNames"][targetedVillager]} is a jerk\\\\n')
 
+                if rd.randint(1, 2) == 1:
+                    textDiaryVillager += (', I placed a tnt under the door.\\\\n')
+                else : 
+                    textDiaryVillager += (', I put a deadly trap under the door.\\\\n')
             continue
         
         if rd.randint(1, 5) == 1:
@@ -236,8 +244,7 @@ def createBookForVillager(settlementData, villagerIndex):
 
         if i == 4:
             textDiaryVillager += (' \f')
-
-    print(textDiaryVillager)
+            
     return [textDiaryVillager, gift]
 
 

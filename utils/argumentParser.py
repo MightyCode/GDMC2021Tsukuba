@@ -42,7 +42,7 @@ def getBuildArea(args):
         x0, y0, z0, x1, y1, z1 = args.coordinates
         area = iu.setBuildArea(x0, y0, z0, x1, y1, z1)
     elif(args.default):
-        area = iu.setBuildArea(0, 0, 0, size, 255, size)
+        area = iu.setBuildArea(0, 0, 0, size, 256, size)
     elif(args.buildarea):
         area = iu.requestBuildArea()
     else :

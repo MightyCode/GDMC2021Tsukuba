@@ -9,8 +9,9 @@ import copy
 
 def createSettlementData(area, resources):
     settlementData = {}
+    settlementData["area"] = area
     settlementData["center"] = [int((area[0] + area[3]) / 2) , 82, int((area[2] + area[5]) / 2)]
-    settlementData["size"] = [area[0] - area[2], area[1] - area[3]]
+    settlementData["size"] = [area[3] - area[0] + 1, area[5] - area[2] + 1]
     settlementData["discoveredChunk"] = []
 
     # Materials replacement
@@ -44,7 +45,7 @@ def createSettlementData(area, resources):
     # 1 -> content, 2 -> isGift
     settlementData["villagerDiary"] = []
     
-    settlementData["structuresNumberGoal"] = 9#random.randint(15, 70)
+    settlementData["structuresNumberGoal"] = random.randint(15, 70)
 
     #structures contains "position", "rotation", "flip" "name", "type", "group" ->, "villagersId", "gift"
     settlementData["structures"] = []
@@ -86,8 +87,8 @@ def initnumberHouse(xSize, zSize):
 
 
 def placeBooks(settlementData, books, floodFill, worldModif):
-
     items = []
+    
     for key in books.keys():
         items += [["minecraft:written_book" + books[key], 1]]
 
@@ -108,8 +109,8 @@ def placeBooks(settlementData, books, floodFill, worldModif):
 
 
 def generateStructure(structureData, settlementData, resources, worldModif, chestGeneration):
-    print(structureData["name"])
-    print(structureData["validPosition"])
+    #print(structureData["name"])
+    #print(structureData["validPosition"])
     structure = resources.structures[structureData["name"]]
     info = structure.info
 
@@ -162,7 +163,7 @@ def generateStructure(structureData, settlementData, resources, worldModif, ches
 
 
 def buildMurdererHouse(structureData, settlementData, resources, worldModif, chestGeneration, buildingCondition):
-    print("Build a house hosting a murderer")
+    #print("Build a house hosting a murderer")
     structure = resources.structures[structureData["name"]]
     info = structure.info
 
@@ -173,11 +174,15 @@ def buildMurdererHouse(structureData, settlementData, resources, worldModif, che
 
     structureMurderer = resources.structures["murderercache"]
     buildingInfo = structureMurderer.setupInfoAndGetCorners()
-    buildingCondition["flip"] = random.randint(0, 3)
-    buildingCondition["rotation"] = random.randint(0, 3)
+    # Temporary
+    buildingCondition["flip"] = 0
+    buildingCondition["rotation"] = 0  
+
     buildingInfo = structureMurderer.getNextBuildingInformation( buildingCondition["flip"], buildingCondition["rotation"])
     buildingCondition["referencePoint"] = buildingInfo["entry"]["position"]
     buildingCondition["size"] = buildingInfo["size"]
+    buildingCondition["flip"], buildingCondition["rotation"] = structureMurderer.returnFlipRotationThatIsInZone(buildingCondition["position"],
+                                 buildingCondition["referencePoint"], settlementData["area"])
 
     modifyBuildingConditionDependingOnStructure(buildingCondition, settlementData, { "type" : "decorations"}, "murderercache")
 
@@ -230,7 +235,7 @@ def modifyBuildingConditionDependingOnStructure(buildingCondition, settlementDat
                     buildingCondition["special"]["bedroomhouse"] = []
 
                 buildingCondition["special"]["bedroomhouse"].append(settlementData["villagerDiary"][villagerIndex][0])
-                print("add diary of", settlementData["villagerNames"][villagerIndex])
+                #print("add diary of", settlementData["villagerNames"][villagerIndex])
 
 
 def returnVillagerAvailableForGift(settlementData, exception):
