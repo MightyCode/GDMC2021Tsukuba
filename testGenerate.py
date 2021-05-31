@@ -1,12 +1,12 @@
 from generation.structures.generated.generatedWell import *
 import sys
 import lib.interfaceUtils as interfaceUtils
-import utils._utils as _utils
+import utils.utils as _utils
 from generation.structures.structures import *
 from generation.structures.generated.generatedQuarry import *
-from utils._worldModification import *
-from generation._resources import *
-from generation._chestGeneration import *
+from utils.worldModification import *
+from generation.resources import *
+from generation.chestGeneration import *
 
 
 file = "temp.txt"

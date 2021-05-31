@@ -256,13 +256,15 @@ class Interface():
         #------------ caranha functions
 
 def makeBuildArea(width = 128, height = 128):
-    runCommand("execute at @p run setbuildarea ~{} 0 ~{} ~{} 255 ~{}".format(int(-1*width/2), int(-1*height/2), int(width/2), int(height/2)))
+    runCommand("execute at @p run setbuildarea ~{} 0 ~{} ~{} 256 ~{}".format(int(-1*width/2), int(-1*height/2), int(width/2), int(height/2)))
     buildArea = requestBuildArea()
     x1 = buildArea["xFrom"]
     z1 = buildArea["zFrom"]
     x2 = buildArea["xTo"]
     z2 = buildArea["zTo"]
     return (x1, z1, x2 - x1, z2 - z1)
+
+    
 def setSignText(x, y, z, line1 = "", line2 = "", line3 = "", line4 = ""):
     l1 = 'Text1:\'{"text":"'+line1+'"}\''
     l2 = 'Text2:\'{"text":"'+line2+'"}\''
@@ -270,6 +272,8 @@ def setSignText(x, y, z, line1 = "", line2 = "", line3 = "", line4 = ""):
     l4 = 'Text4:\'{"text":"'+line4+'"}\''
     blockNBT = "{"+l1+","+l2+","+l3+","+l4+"}"
     return(runCommand("data merge block {} {} {} ".format(x, y, z) + blockNBT))
+
+
 def addItemChest(x, y, z, items, places=[]):
     if len(places) == 0:
         places = list(range(len(items)))
@@ -328,7 +332,7 @@ def requestPlayerArea(dx=128, dz=128):
     dx -= 1
     dz -= 1
     runCommand("execute at @p run setbuildarea "
-               f"~{-dx//2} 0 ~{-dz//2} ~{dx//2} 255 ~{dz//2}")
+               f"~{-dx//2} 0 ~{-dz//2} ~{dx//2} 256 ~{dz//2}")
     return requestBuildArea()
 
 

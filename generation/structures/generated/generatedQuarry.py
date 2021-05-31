@@ -1,6 +1,6 @@
 import collections, numpy
 import random
-import utils._utils as utils
+import utils.util as util
 import math
 from generation.structures.baseStructure import * 
 
@@ -53,7 +53,7 @@ class GeneratedQuarry(BaseStructure):
             buildingCondition["referencePoint"][2] = self.size[2] - 1 - buildingCondition["referencePoint"][2] 
 
         woodType = "*woodType*"
-        result = utils.changeNameWithBalise(woodType, buildingCondition["replacements"])
+        result = util.changeNameWithBalise(woodType, buildingCondition["replacements"])
         if result[0] >= 0:
             woodType = result[1]
         else :
@@ -132,7 +132,7 @@ class GeneratedQuarry(BaseStructure):
                 sublist.append(i[0])
                 sublist.append(i[1])
                 itemsList.append(sublist)
-        utils.addItemChest(position[0], position[1], position[2], itemsList)
+        util.addItemChest(position[0], position[1], position[2], itemsList)
         
 
     def addFencesToQuarry(self, worldModif, buildingCondition):
@@ -153,7 +153,7 @@ class GeneratedQuarry(BaseStructure):
                     
                     block = worldModif.interface.getBlock(position[0], position[1], position[2])
                     if  block in self.uselessBlocks or y == fenceSideUpperPosition - 1:
-                        worldModif.setBlock(position[0], position[1], position[2], self.fenceType)
+                        worldModif.setBlock(position[0], position[1], position[2], self.fenceType + "[waterlogged=false]")
 
     
     def addFenceGateToQuarry(self, worldModif, buildingCondition):
@@ -175,7 +175,7 @@ class GeneratedQuarry(BaseStructure):
                             self.entry[2]],
                         buildingCondition["flip"], buildingCondition["rotation"], buildingCondition["referencePoint"],
                         buildingCondition["position"])
-            worldModif.setBlock(position[0], position[1], position[2], self.fenceType)
+            worldModif.setBlock(position[0], position[1], position[2], self.fenceType + "[waterlogged=false]")
         
         positions = [ [-1, 4], [0, 4], [1, 4]]
         for pos in positions:
@@ -202,7 +202,7 @@ class GeneratedQuarry(BaseStructure):
                 buildingCondition["flip"], buildingCondition["rotation"], buildingCondition["referencePoint"],
                 buildingCondition["position"])
        
-            worldModif.setBlock(position[0], position[1], position[2], "minecraft:ladder[" + self.convertProperty("facing", "south")  + "]")
+            worldModif.setBlock(position[0], position[1], position[2], "minecraft:ladder[" + self.convertProperty("facing", "south")  +  ",waterlogged=false]")
     
-        print("Finish building : basicQuarry")
+        #print("Finish building : basicQuarry")
         
