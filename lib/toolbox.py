@@ -169,7 +169,7 @@ def writeBook(text, title="Chronicle", author=__author__,
         if pages_left < 1:
             break
         if page[:3] == '\\\\s':
-            print(page[3:])
+            #print(page[3:])
             bookData += page[3:]
             newpage()
             continue

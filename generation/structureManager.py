@@ -116,10 +116,8 @@ class StructureManager:
         if type == StructureManager.HOUSES:
             number = len(self.settlementData["structures"][-1]["villagersId"])
             for villagerIndex in self.settlementData["structures"][-1]["villagersId"]:
-                del self.settlementData["villagerNames"][villagerIndex]
-                del self.settlementData["villagerProfession"][villagerIndex]
-                del self.settlementData["villagerGameProfession"][villagerIndex]
-
+                self.removeOneVillager(villagerIndex)
+                
             self.settlementData["freeVillager"] -= number
         elif type == StructureManager.REPRESENTATIVES or type == StructureManager.FUNCTIONALS:
             number = len(self.settlementData["structures"][-1]["villagersId"])
@@ -131,7 +129,17 @@ class StructureManager:
         
 
         del self.settlementData["structures"][-1]
+    
 
+    def removeOneVillager(self, index):
+        del self.settlementData["villagerNames"][index]
+        del self.settlementData["villagerProfession"][index]
+        del self.settlementData["villagerGameProfession"][index]
+
+        for structureData in self.settlementData["structures"]:
+            for i in range(len(structureData["villagersId"])):
+                if structureData["villagersId"][i] > index:
+                    structureData["villagersId"][i] -= 1
 
     def checkDependencies(self):
         # Make arrays empty

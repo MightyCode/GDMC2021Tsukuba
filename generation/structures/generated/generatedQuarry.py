@@ -153,7 +153,7 @@ class GeneratedQuarry(BaseStructure):
                     
                     block = worldModif.interface.getBlock(position[0], position[1], position[2])
                     if  block in self.uselessBlocks or y == fenceSideUpperPosition - 1:
-                        worldModif.setBlock(position[0], position[1], position[2], self.fenceType)
+                        worldModif.setBlock(position[0], position[1], position[2], self.fenceType + "[waterlogged=false]")
 
     
     def addFenceGateToQuarry(self, worldModif, buildingCondition):
@@ -175,7 +175,7 @@ class GeneratedQuarry(BaseStructure):
                             self.entry[2]],
                         buildingCondition["flip"], buildingCondition["rotation"], buildingCondition["referencePoint"],
                         buildingCondition["position"])
-            worldModif.setBlock(position[0], position[1], position[2], self.fenceType)
+            worldModif.setBlock(position[0], position[1], position[2], self.fenceType + "[waterlogged=false]")
         
         positions = [ [-1, 4], [0, 4], [1, 4]]
         for pos in positions:
@@ -202,7 +202,7 @@ class GeneratedQuarry(BaseStructure):
                 buildingCondition["flip"], buildingCondition["rotation"], buildingCondition["referencePoint"],
                 buildingCondition["position"])
        
-            worldModif.setBlock(position[0], position[1], position[2], "minecraft:ladder[" + self.convertProperty("facing", "south")  + "]")
+            worldModif.setBlock(position[0], position[1], position[2], "minecraft:ladder[" + self.convertProperty("facing", "south")  +  ",waterlogged=false]")
     
         #print("Finish building : basicQuarry")
         

@@ -87,8 +87,8 @@ if not args.remove:
         structureMananager = StructureManager(settlementData, resources)
 
         i = 0
-        print("Generate position")
         while i < settlementData["structuresNumberGoal"] : 
+            print("Generate position " + str(i+1) + "/" + str(settlementData["structuresNumberGoal"]) + "  ", end="\r")
             # 0 -> normal, 1 -> replacement, 2 -> no more structure
             result = structureMananager.chooseOneStructure()
 
@@ -132,8 +132,8 @@ if not args.remove:
             loremaker.alterSettlementDataWithNewStructures(settlementData, i)
 
             timeNow = int(round(time.time() * 1000)) - milliseconds
-            print(timeNow / 100)
-            if timeNow / 100 < TIME_LIMIT - TIME_TO_BUILD_A_VILLAGE: 
+
+            if timeNow / 1000 < TIME_LIMIT - TIME_TO_BUILD_A_VILLAGE: 
                 structureMananager.checkDependencies()
                 i += 1
             else:
@@ -142,7 +142,7 @@ if not args.remove:
                 print("Abort finding position and adding structures due to time expired")
                 break
                 
-        print("Generate lore")
+        print("\nGenerate lore")
 
         # Murderer
         settlementData["murdererIndex"] = choice([i for i in range(0, len(settlementData["villagerNames"])) if settlementData["villagerProfession"][i] != "Mayor"])
@@ -183,24 +183,26 @@ if not args.remove:
 
         #structureMananager.printStructureChoose()
 
-        print("Build structures")
         # Build after every computations
         i = 0
         timeNow = int(round(time.time() * 1000)) - milliseconds
-        while i < len(settlementData["structures"]) and timeNow / 100 < TIME_LIMIT :
+        while i < len(settlementData["structures"]) and timeNow / 1000 < TIME_LIMIT :
+            print("Build structure " + str(i + 1) + "/" + str(settlementData["structuresNumberGoal"]) + "  ", end="\r")
             generator.generateStructure(settlementData["structures"][i], settlementData, resources, worldModif, chestGeneration)
             util.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
             timeNow = int(round(time.time() * 1000)) - milliseconds
+            i += 1
+
         worldModif.saveToFile(file)  
         
         if i < len(settlementData["structures"]):
-            print("Abort building due time expired")
+            print("\nAbort building due time expired")
 
-        print("Build decoration")
+        print("\nBuild decoration")
         floodFill.placeDecorations(settlementData["materialsReplacement"])
-        print("Position of lectern for village", zAdvencement * numberZoneX, ":", settlementData["center"])
+        print("Position of lectern for village", zAdvencement * numberZoneX, ":", [settlementData["center"][0], 
+                floodFill.getHeight(settlementData["center"][0], settlementData["center"][2]), settlementData["center"][1]])
         print("Position of first structure", [floodFill.listHouse[0][0], floodFill.listHouse[0][1], floodFill.listHouse[0][2]])
-        print("-----------")
 
 else : 
     if args.remove == "r" :   

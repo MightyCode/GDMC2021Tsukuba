@@ -152,7 +152,7 @@ def spawnVillagerForStructure(settlementData, structureData, position):
             # get a random level for the profession of the villager (2: Apprentice, 3: Journeyman, 4: Expert, 5: Master)
             randomProfessionLevel = rd.randint(2, 5)
 
-            spawnVillager(position[0], position[1], position[2], "minecraft:villager", 
+            spawnVillager(position[0], position[1] + 1, position[2], "minecraft:villager", 
                 settlementData["villagerNames"][id], settlementData["villagerGameProfession"][id], randomProfessionLevel, settlementData["biomeName"])
 
 

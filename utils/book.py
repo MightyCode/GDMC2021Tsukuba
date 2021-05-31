@@ -194,34 +194,33 @@ def createBookForVillager(settlementData, villagerIndex):
             '--------------')
     textDiaryVillager += ('     \f')
     
-    newDiaryTextWithoutTarget = DIARY_TEXTS_WITHOUT_TARGETS
-    newDiaryTextWithTarget = DIARY_TEXTS_WITH_TARGETS
-    randomDiaryTextWithoutTarget = rd.randint(0, len(newDiaryTextWithoutTarget) - 1)
-    randomDiaryTextWithTarget = rd.randint(0, len(newDiaryTextWithTarget) - 1)
+    newDiaryTextWithoutTarget = DIARY_TEXTS_WITHOUT_TARGETS.copy()
+    newDiaryTextWithTarget = DIARY_TEXTS_WITH_TARGETS.copy()
+    targetTextDone = False
 
     numberPhrase = rd.randint(3, 7)
     for i in range(numberPhrase):
-        # Gift phrase
+        # Spaces
+        if rd.randint(1, 2) == 1:
+            textDiaryVillager += ('                      \\\\n')
+            if rd.randint(1, 2) == 1:
+                textDiaryVillager += ('                      \\\\n')
 
+        # Gift phrase
         if i == giftPlace:
             availableIndices = generator.returnVillagerAvailableForGift(settlementData, [villagerIndex])
             targetedVillager = availableIndices[rd.randint(0, len(availableIndices) - 1)]
             if randomGift == 1:
-                random = rd.randint(1, 2)
-                if random == 1:
-                    textDiaryVillager += (f'I love {settlementData["villagerNames"][targetedVillager]} \\\\n')
-                    newDiaryTextWithTarget.remove(newDiaryTextWithTarget[1])
+                if rd.randint(1, 2) == 1:
+                    textDiaryVillager += (f'I love {settlementData["villagerNames"][targetedVillager]}\\\\n')
                 else : 
-                    textDiaryVillager += (f'{settlementData["villagerNames"][targetedVillager]} is my best friend \\\\n')
+                    textDiaryVillager += (f'{settlementData["villagerNames"][targetedVillager]} is my best friend\\\\n')
 
-                random = rd.randint(1, 5)
-                if random == 1:
-                    textDiaryVillager += (f'{newDiaryTextWithTarget[randomDiaryTextWithTarget]}'
-                                          f'{settlementData["villagerNames"][targetedVillager]}  \\\\n')
-                    newDiaryTextWithTarget.remove(newDiaryTextWithTarget[randomDiaryTextWithTarget])
-                else: 
-                    textDiaryVillager += (f'{newDiaryTextWithoutTarget[randomDiaryTextWithoutTarget]}   \\\\n')
-                    newDiaryTextWithoutTarget.remove(newDiaryTextWithoutTarget[randomDiaryTextWithoutTarget])
+                if rd.randint(1, 2) == 1:
+                    textDiaryVillager += (', I left a surprise under the door.\\\\n')
+                else : 
+                    textDiaryVillager += (', I hope my lover will finds the gift I left him under the door.\\\\n')
+                    
             elif randomGift == 2:
                 if rd.randint(1, 2) == 1:
                     textDiaryVillager += (f'I hate {settlementData["villagerNames"][targetedVillager]}\\\\n')
@@ -234,15 +233,29 @@ def createBookForVillager(settlementData, villagerIndex):
                     textDiaryVillager += (', I put a deadly trap under the door.\\\\n')
             continue
         
-        if rd.randint(1, 5) == 1:
+
+        # Other phrase    
+        random = rd.randint(1, 5)
+        if random == 1:
             randomProfession = rd.randint(0, len(settlementData["villagerProfessionList"]) - 1)
             textDiaryVillager += (f'I hate all {settlementData["villagerProfessionList"][randomProfession]} \\\\n')
             if rd.randint(1, 5) == 1:
                 secondRandomProfession = rd.randint(0, len(settlementData["villagerProfessionList"]) - 1)
                 if secondRandomProfession != randomProfession:
                     textDiaryVillager += (f'I would like to work as a {settlementData["villagerProfessionList"][secondRandomProfession]}\\\\n')
+        elif random == 2 and not targetTextDone: 
+            randomDiaryTextWithTarget = rd.randint(0, len(newDiaryTextWithTarget) - 1)
+            targeted = settlementData["villagerDeadNames"][rd.randint(0, len(settlementData["villagerDeadNames"]) - 1)]
+            textDiaryVillager += (f'{newDiaryTextWithTarget[randomDiaryTextWithTarget]}'
+                                          f'{targeted}  \\\\n')
+            newDiaryTextWithTarget.remove(newDiaryTextWithTarget[randomDiaryTextWithTarget])
+            targetTextDone = True
+        else: 
+            randomDiaryTextWithoutTarget = rd.randint(0, len(newDiaryTextWithoutTarget) - 1)
+            textDiaryVillager += (f'{newDiaryTextWithoutTarget[randomDiaryTextWithoutTarget]}   \\\\n')
+            newDiaryTextWithoutTarget.remove(newDiaryTextWithoutTarget[randomDiaryTextWithoutTarget])
 
-        if i == 4:
+        if i % 4 == 0:
             textDiaryVillager += (' \f')
             
     return [textDiaryVillager, gift]

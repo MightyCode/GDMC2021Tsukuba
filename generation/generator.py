@@ -88,7 +88,7 @@ def initnumberHouse(xSize, zSize):
 
 def placeBooks(settlementData, books, floodFill, worldModif):
     items = []
-    
+
     for key in books.keys():
         items += [["minecraft:written_book" + books[key], 1]]
 
