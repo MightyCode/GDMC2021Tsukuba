@@ -40,7 +40,8 @@ if not args.remove:
 
     chestGeneration = ChestGeneration(resources, interface)
     iu.makeGlobalSlice()
-    
+
+
     settlementData = generator.createSettlementData(area, resources)
 
     floodFill = FloodFill(worldModif, area, settlementData["structuresNumberGoal"])

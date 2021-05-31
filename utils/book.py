@@ -194,15 +194,25 @@ def createBookForVillager(settlementData, villagerIndex):
             targetedVillager = availableIndices[rd.randint(0, len(availableIndices) - 1)]
             if randomGift == 1:
                 if rd.randint(1, 2) == 1:
-                    textDiaryVillager += (f'I love {settlementData["villagerNames"][targetedVillager]}')
+                    textDiaryVillager += (f'I love {settlementData["villagerNames"][targetedVillager]}\\\\n')
                 else : 
-                    textDiaryVillager += (f'{settlementData["villagerNames"][targetedVillager]} is my best friend')
+                    textDiaryVillager += (f'{settlementData["villagerNames"][targetedVillager]} is my best friend\\\\n')
 
                 if rd.randint(1, 2) == 1:
-                    textDiaryVillager += (', I left him a surprise under his door.\\\\n')
+                    textDiaryVillager += (', I left a surprise under the door.\\\\n')
                 else : 
-                    textDiaryVillager += (', I hope he finds the gift I left him under his door.\\\\n')
+                    textDiaryVillager += (', I hope my lover will finds the gift I left him under the door.\\\\n')
 
+            elif randomGift == 2:
+                if rd.randint(1, 2) == 1:
+                    textDiaryVillager += (f'I hate {settlementData["villagerNames"][targetedVillager]}\\\\n')
+                else : 
+                    textDiaryVillager += (f'{settlementData["villagerNames"][targetedVillager]} is a jerk\\\\n')
+
+                if rd.randint(1, 2) == 1:
+                    textDiaryVillager += (', I placed a tnt under the door.\\\\n')
+                else : 
+                    textDiaryVillager += (', I put a deadly trap under the door.\\\\n')
             continue
         
         if rd.randint(1, 2) == 1:
