@@ -56,7 +56,7 @@ if not args.remove:
     zAdvencement = 0
     while zAdvencement < numberZoneZ:
         timeNow = int(round(time.time() * 1000)) - milliseconds
-        if timeNow / 1000 < TIME_LIMIT - TIME_TO_BUILD_A_VILLAGE:
+        if timeNow / 1000 >= TIME_LIMIT - TIME_TO_BUILD_A_VILLAGE:
             print("Abord immediatly not time to generate") 
             zAdvencement = numberZoneZ
             continue
