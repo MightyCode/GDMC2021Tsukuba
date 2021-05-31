@@ -141,7 +141,7 @@ if not args.remove:
                 floodFill.setNumberHouse(settlementData["structuresNumberGoal"])
                 print("Abort finding position and adding structures due to time expired")
                 break
-
+                
         print("Generate lore")
 
         # Murderer
