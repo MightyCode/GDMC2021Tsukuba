@@ -204,5 +204,5 @@ class GeneratedQuarry(BaseStructure):
        
             worldModif.setBlock(position[0], position[1], position[2], "minecraft:ladder[" + self.convertProperty("facing", "south")  + "]")
     
-        print("Finish building : basicQuarry")
+        #print("Finish building : basicQuarry")
         

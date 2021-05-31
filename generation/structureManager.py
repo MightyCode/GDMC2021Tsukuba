@@ -38,7 +38,7 @@ class StructureManager:
         for structure in self.allStructures :
             if "priority" in self.dependencies[structure["group"]] :
                 if self.dependencies[structure["group"]]["priority"] == "full":
-                    print("priority to " + structure["name"])
+                    #print("priority to " + structure["name"])
                     self.choosedStructure(structure)
                     # Normal exit
                     return 0

@@ -11,7 +11,7 @@ def createSettlementData(area, resources):
     settlementData = {}
     settlementData["area"] = area
     settlementData["center"] = [int((area[0] + area[3]) / 2) , 82, int((area[2] + area[5]) / 2)]
-    settlementData["size"] = [area[0] - area[2], area[1] - area[3]]
+    settlementData["size"] = [area[3] - area[0] + 1, area[5] - area[2] + 1]
     settlementData["discoveredChunk"] = []
 
     # Materials replacement
@@ -87,8 +87,8 @@ def initnumberHouse(xSize, zSize):
 
 
 def placeBooks(settlementData, books, floodFill, worldModif):
-
     items = []
+    
     for key in books.keys():
         items += [["minecraft:written_book" + books[key], 1]]
 
@@ -109,8 +109,8 @@ def placeBooks(settlementData, books, floodFill, worldModif):
 
 
 def generateStructure(structureData, settlementData, resources, worldModif, chestGeneration):
-    print(structureData["name"])
-    print(structureData["validPosition"])
+    #print(structureData["name"])
+    #print(structureData["validPosition"])
     structure = resources.structures[structureData["name"]]
     info = structure.info
 
@@ -163,7 +163,7 @@ def generateStructure(structureData, settlementData, resources, worldModif, ches
 
 
 def buildMurdererHouse(structureData, settlementData, resources, worldModif, chestGeneration, buildingCondition):
-    print("Build a house hosting a murderer")
+    #print("Build a house hosting a murderer")
     structure = resources.structures[structureData["name"]]
     info = structure.info
 
@@ -235,7 +235,7 @@ def modifyBuildingConditionDependingOnStructure(buildingCondition, settlementDat
                     buildingCondition["special"]["bedroomhouse"] = []
 
                 buildingCondition["special"]["bedroomhouse"].append(settlementData["villagerDiary"][villagerIndex][0])
-                print("add diary of", settlementData["villagerNames"][villagerIndex])
+                #print("add diary of", settlementData["villagerNames"][villagerIndex])
 
 
 def returnVillagerAvailableForGift(settlementData, exception):

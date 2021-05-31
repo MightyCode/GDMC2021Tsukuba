@@ -19,18 +19,18 @@ class FloodFill:
     LIGHT_BLOC = ['minecraft:campfire','minecraft:lantern','minecraft:sea_lantern','minecraft:jack_o_lantern','minecraft:shroomlight']
     DOUBLE_BLOC= ['minecraft:bee_nest','minecraft:torch','minecraft:redstone_torch','minecraft:target','minecraft:skeleton_skull','minecraft:zombie_head','minecraft:creeper_head']
 
-    def __init__(self, worldModification, area, numberHouse):
+    def __init__(self, worldModification, settlementData):
         self.worldModif = worldModification
-        self.setNumberHouse(numberHouse)
+        self.setNumberHouse(settlementData["structuresNumberGoal"])
         self.listHouse = []
         random.seed(a=None, version=2)
-        self.buildArea = area
         self.startPosRange = [0.89, 0.89]
 
         self.distanceFirstHouse = 40
         self.distanceFirstHouseIncrease = 3
 
-        self.size = [area[3] - area[0], area[5] - area[2]]
+        self.buildArea = settlementData["area"]
+        self.size = settlementData["size"]
         self.validHouseFloodFillPosition = [ self.buildArea[0] + self.size[0]/10, 
                                     self.buildArea[2] + self.size[1]/10, 
                                     self.buildArea[3] - self.size[0]/10,
@@ -125,8 +125,9 @@ class FloodFill:
                     try:
                         groundHeight = self.is_ground(x, y, z)
                     except IndexError:
-                        print("indexerror")
-                        print(x,y,z)
+                        pass
+                        #print("indexerror")
+                        #print(x,y,z)
                     if groundHeight != -1 and (x, groundHeight, z) not in validPositions and projectMath.isPointInCube([x, y, z], floodFillArea):
                         stack.append((x, groundHeight, z))
 
@@ -144,6 +145,7 @@ class FloodFill:
                 return False
                 
         return True
+
 
     def takeRandomPosition(self, sizeStructure):
         xRange = 1 - self.startPosRange[0]
@@ -200,7 +202,7 @@ class FloodFill:
         debugNoHouse = 250 * 16
         verifCorners = False
         verifOverlapseHouse = False
-        print("there is already", len(self.listHouse), "placed")
+        #print("there is already", len(self.listHouse), "placed")
 
         while notFinded and (debug > 0) and (debugNoHouse > 0) and not verifCorners:
             if len(self.listHouse) == 0:
@@ -210,7 +212,7 @@ class FloodFill:
                 if (iu.getBlock(xPos, yPos, zPos) == 'minecraft:water'):
                     continue
 
-                print("starting position :" ,xPos, yPos, zPos)
+                #print("starting position :" ,xPos, yPos, zPos)
 
                 fliptest = [0, 1, 2, 3]
                 while fliptest and notFinded:
@@ -271,8 +273,8 @@ class FloodFill:
                                         debug -= 1
 
                                 if verifCorners and verifOverlapseHouse:
-                                    print("Y " + str(xPos) + " " + str(zPos) + " " + str(choosenCorner) + " : flip " + str(rand1) + 
-                                        ", rot " + str(rand2) + " ::" + str(house[0]) + " " + str(house[2]))
+                                    """print("Y " + str(xPos) + " " + str(zPos) + " " + str(choosenCorner) + " : flip " + str(rand1) + 
+                                        ", rot " + str(rand2) + " ::" + str(house[0]) + " " + str(house[2]))"""
                                     notFinded = False
 
                                     # If house is valid to create a floodfill
@@ -293,7 +295,7 @@ class FloodFill:
             FloodFillValue = [xPos, yPos, zPos]
             #self.listHouse.append((xPos, yPos - 1, zPos, choosenCorner, FloodFillValue, -1, False))
             
-            print("debug failed")
+            #print("debug failed")
         else:
             self.listHouse.append((xPos, yPos, zPos, choosenCorner, FloodFillValue, self.previousStructure, True))
             dictionnary = {"position" : [xPos, yPos - 1, zPos], "validPosition" : True , "flip" : rand1 , "rotation" : rand2, "corner" : choosenCorner }
@@ -318,7 +320,7 @@ class FloodFill:
                 xmax = house[0]
             if house[2] > zmax:
                 zmax = house[2]
-        print("range of the village is : ", xmin, xmax, zmin, zmax)
+        #print("range of the village is : ", xmin, xmax, zmin, zmax)
         return xmin, xmax, zmin, zmax
 
 

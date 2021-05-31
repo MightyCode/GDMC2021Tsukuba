@@ -120,7 +120,7 @@ def Astar(startcoord,goalcoord,squarelist, floodFill):
 			#test here if the children is in a house
 			#print(node.point)
 			if node.point == goalcoord:
-				print("TROUVE")
+				#print("TROUVE")
 				openlist.append(node)
 			notinsquare = True
 			for squarehouse in squarelist:
@@ -139,6 +139,8 @@ def Astar(startcoord,goalcoord,squarelist, floodFill):
 	raise ValueError('No Path Found')
 
 def initRoad(floodFill, settlementData, worldmodif,  materials):
+	NODE_IN_ROAD.clear()
+	POS_OF_LANTERN.clear()
 	CORNER_PROJECTION = { "north" : [ 0, 1, 0, 0], "south" : [ 0, 0, 0, 1 ], "west" : [ 1, 0, 0, 0 ], "east" : [ 0, 0, 1, 0 ] }
 	#to 
 	squarelist= []
@@ -152,7 +154,7 @@ def initRoad(floodFill, settlementData, worldmodif,  materials):
 	#print(squarelist)
 	for index in range(0,len(settlementData["structures"])):
 		#to knwo if the house doesn't have parent...
-		print("building path for house n :",index + 1)
+		#print("building path for house n :",index + 1)
 		start=[0, 0]
 		goal=[0, 0]
 		index2 = floodFill.listHouse[index][5]
@@ -195,17 +197,15 @@ def initRoad(floodFill, settlementData, worldmodif,  materials):
 						if not(floodFill.is_air(x, y+2, z)):
 							y += 1
 						#print("stuck1")
-			print("start : ",start)
-			print("goal : ",goal)
-
-			
+			#print("start : ",start)
+			#print("goal : ",goal)
 
 
 			#generating the path among 2 houses
 			try:
 				#print(squarelist,start,goal)
 				path = Astar(start, goal, squarelist,floodFill)
-				print("Astar done : ", path)
+				#print("Astar done : ", path)
 				temp = 1
 				z0 = entry1[1]
 				#print("start is :", start)
