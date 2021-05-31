@@ -1,6 +1,6 @@
 import collections, numpy
 import random
-import utils._utils as utils
+import utils.util as util
 import math
 from generation.structures.baseStructure import * 
 
@@ -53,7 +53,7 @@ class GeneratedQuarry(BaseStructure):
             buildingCondition["referencePoint"][2] = self.size[2] - 1 - buildingCondition["referencePoint"][2] 
 
         woodType = "*woodType*"
-        result = utils.changeNameWithBalise(woodType, buildingCondition["replacements"])
+        result = util.changeNameWithBalise(woodType, buildingCondition["replacements"])
         if result[0] >= 0:
             woodType = result[1]
         else :
@@ -132,7 +132,7 @@ class GeneratedQuarry(BaseStructure):
                 sublist.append(i[0])
                 sublist.append(i[1])
                 itemsList.append(sublist)
-        utils.addItemChest(position[0], position[1], position[2], itemsList)
+        util.addItemChest(position[0], position[1], position[2], itemsList)
         
 
     def addFencesToQuarry(self, worldModif, buildingCondition):

@@ -1,6 +1,5 @@
-from generation._resources import *
-from generation.structures import *
-from utils._worldModification import *
+from generation.resources import *
+from utils.worldModification import *
 import lib.interfaceUtils as interfaceUtils
 from nbt.nbt import *
 

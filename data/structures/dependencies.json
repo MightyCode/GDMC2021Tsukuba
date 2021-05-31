@@ -51,7 +51,7 @@
             "dirtResources" : { "min" : 1},
             "previous" :  [ 
                 { "name" : "basicLumberJackHut", "min" : 1 },
-                { "name" : "basicFarm", "max" : 5 } 
+                { "name" : "basicFarm", "max" : 4 } 
             ]
         }
     },
@@ -150,7 +150,8 @@
     "mediumHouses" : {
         "structures" : [
             "mediumhouse1", 
-            "mediumhouse2"
+            "mediumhouse2",
+            "mediumhouse3"
         ],
         "type" : "houses",
         "conditions" : {
@@ -187,6 +188,21 @@
         },
         "priority" : "full"
     },
+    "mediumFarm" : {
+        "structures" : [
+            "mediumfarm1"
+        ],
+        "type" : "functionals",
+        "conditions" : {
+            "villagerNeeded" : { "min" : 2 },
+            "dirtResources" : { "min" : 1},
+            "previous" :  [ 
+                { "name" : "basicStoneCutter", "min" : 1 },
+                { "name" : "basicFarm", "min" : 1 },
+                { "name" : "mediumFarm", "max" : 2 } 
+            ]
+        }
+    },
     "basicWindmill" : {
         "structures" : [
             "basicwindmill"
@@ -196,7 +212,7 @@
             "villagerNeeded" : { "min" : 2 },
             "previous" : [
                 { "name" : "basicWorkshop", "min" : 1 },
-                { "name" : "basicWindmill", "max" : 3 } 
+                { "name" : "basicWindmill", "max" : 1 } 
             ]
         }
     },
@@ -225,6 +241,46 @@
                 { "name" : "basicFarm", "min" : 2 },
                 { "name" : "basicFurnace", "min" : 1 },
                 { "name" : "basicTavern", "max" : 1 } 
+            ]
+        },
+        "priority" : "full"
+    },
+    "basicWeaverHouse" : {
+        "structures" : [
+            "basicweaverhouse"
+        ],
+        "type" : "functionals",
+        "conditions" : {
+            "villagerNeeded" : { "min" : 2 },
+            "previous" : [
+                { "name" : "basicWorkshop", "min" : 1 },
+                { "name" : "basicWeaverHouse", "max" : 3 } 
+            ]
+        }
+    },
+    "mediumWindmill" : {
+        "structures" : [
+            "mediumwindmill"
+        ],
+        "type" : "functionals",
+        "conditions" : {
+            "villagerNeeded" : { "min" : 2 },
+            "previous" : [
+                { "name" : "basicWeaverHouse", "min" : 1 },
+                { "name" : "basicWindmill", "min" : 1 },
+                { "name" : "mediumWindmill", "max" : 1 } 
+            ]
+        }
+    },
+    "adventurerHouse" : {
+        "structures" : [
+            "adventurerhouse"
+        ],
+        "type" : "representatives",
+        "conditions" : {
+            "previous" : [
+                { "name" : "basicTavern", "min" : 1 },
+                { "name" : "adventurerHouse", "max" : 1 } 
             ]
         },
         "priority" : "full"

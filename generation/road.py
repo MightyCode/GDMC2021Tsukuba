@@ -1,8 +1,8 @@
-import random
-import utils._math as _math
+import utils.projectMath as projectMath
 import lib.interfaceUtils as iu
 
 NODE_IN_ROAD = []
+POS_OF_LANTERN = []
 
 
 class Node:
@@ -65,6 +65,14 @@ def isInRoad(coord):
 		if coord in index:
 			return True
 	return False
+
+def isInLantern(coord):
+	for index in POS_OF_LANTERN:
+		if coord in index:
+			return True
+	return False
+
+
 def findClosestNodeInRoad(coordstart,coordgoal):
 	closestdistance = manhattanForCoord(coordstart,coordgoal)
 	coordclosestdistance = coordgoal
@@ -109,9 +117,13 @@ def Astar(startcoord,goalcoord,squarelist, floodFill):
 		#for every neighbourg of current node
 		for node in children(current):
 			#test here if the children is in a house
+			print(node.point)
+			if node.point == goalcoord:
+				print("TROUVE")
+				openlist.append(node)
 			notinsquare = True
 			for squarehouse in squarelist:
-				if _math.isPointInSquare(node.point, squarehouse):
+				if projectMath.isPointInSquare(node.point, squarehouse):
 					notinsquare = False
 			#if abs(floodFill.getHeight(node.point[0],node.point[1],ws) - floodFill.getHeight(current.point[0],current.point[1],ws)) > 2:
 			#	notinsquare = False
@@ -129,11 +141,10 @@ LOGNAME = ['minecrat:oak_log','minecraft:spruce_log','minecraft:jungle_log','min
 
 
 def initRoad(floodFill, settlementData, worldmodif,  materials):
-	CORNER_PROJECTION = CORNER_PROJECTION = { "north" : [ 0, 1, 0, 0], "south" : [ 0, 0, 0, 1 ], "west" : [ 1, 0, 0, 0 ], "east" : [ 0, 0, 1, 0 ] }
+	CORNER_PROJECTION = { "north" : [ 0, 1, 0, 0], "south" : [ 0, 0, 0, 1 ], "west" : [ 1, 0, 0, 0 ], "east" : [ 0, 0, 1, 0 ] }
 	#to 
 	squarelist= []
 	for index in range(0, len(settlementData["structures"])):
-		print(floodFill.listHouse[index][0],floodFill.listHouse[index][1],floodFill.listHouse[index][2],floodFill.listHouse[index][3])
 		entrytemp = []
 		entrytemp.append(floodFill.listHouse[index][0])
 		entrytemp.append(floodFill.listHouse[index][1])
@@ -235,20 +246,27 @@ def initRoad(floodFill, settlementData, worldmodif,  materials):
 							z -=1
 						if not(floodFill.is_air(block[0], z+1, block[1])):
 							z += 1
+					while iu.getBlock(block[0], z, block[1]) == 'minecraft:water' or iu.getBlock(block[0], z, block[1]) == 'minecraft:lava':
+						z = z + 1
+
 					if temp%12 == 0 and (temp )<(len(path)-3):
 						if not([block[0]-1, block[1]] in path) and not(floodFill.isInHouse([block[0] - 1,block[1]])) and not(isInRoad([block[0] - 1,block[1]])):
+							POS_OF_LANTERN.append([block[0],block[1]])
 							worldmodif.setBlock(block[0]-1, z-1, block[1], 'minecraft:cobblestone')
 							worldmodif.setBlock(block[0]-1, z, block[1], 'minecraft:cobblestone_wall')
 							worldmodif.setBlock(block[0]-1, z+1, block[1], 'minecraft:redstone_lamp[lit=true]')
 						elif not([block[0], block[1] - 1] in path) and not(floodFill.isInHouse([block[0],block[1] - 1])) and not(isInRoad([block[0],block[1] - 1])):
+							POS_OF_LANTERN.append([block[0],block[1]])
 							worldmodif.setBlock(block[0], z-1, block[1] - 1, 'minecraft:cobblestone')
 							worldmodif.setBlock(block[0], z, block[1] - 1, 'minecraft:cobblestone_wall')
 							worldmodif.setBlock(block[0], z+1, block[1] - 1, 'minecraft:redstone_lamp[lit=true]')
 						elif not([block[0] + 1, block[1]] in path) and not(floodFill.isInHouse([block[0] + 1,block[1]])) and not(isInRoad([block[0] + 1,block[1]])):
+							POS_OF_LANTERN.append([block[0],block[1]])
 							worldmodif.setBlock(block[0] + 1, z-1, block[1], 'minecraft:cobblestone')
 							worldmodif.setBlock(block[0] + 1, z, block[1], 'minecraft:cobblestone_wall')
 							worldmodif.setBlock(block[0] + 1, z+1, block[1], 'minecraft:redstone_lamp[lit=true]')
 						elif not([block[0], block[1] + 1] in path) and not(floodFill.isInHouse([block[0],block[1] + 1])) and not(isInRoad([block[0],block[1] + 1])):
+							POS_OF_LANTERN.append([block[0],block[1]])
 							worldmodif.setBlock(block[0], z-1, block[1] + 1, 'minecraft:cobblestone')
 							worldmodif.setBlock(block[0], z, block[1] + 1, 'minecraft:cobblestone_wall')
 							worldmodif.setBlock(block[0], z+1, block[1] + 1, 'minecraft:redstone_lamp[lit=true]')

@@ -1,18 +1,19 @@
 import time
 milliseconds = int(round(time.time() * 1000))
 
-from generation._resources import *
-from generation._chestGeneration import *
-from generation._structureManager import *
-from generation._floodFill import *
+from generation.resources import *
+from generation.chestGeneration import *
+from generation.structureManager import *
+from generation.floodFill import *
 import generation.generator as generator
-import generation._resourcesLoader as resLoader
-import utils._utils as _utils
-from utils._worldModification import *
+import generation.resourcesLoader as resLoader
+import utils.util as util
+from utils.worldModification import *
 import utils.argumentParser as argParser
 import generation.loremaker as loremaker
 import generation.road as road
 import lib.interfaceUtils as iu
+import lib.toolbox as toolbox
 from random import choice
 
 
@@ -24,7 +25,7 @@ iu.setCaching(True)
 iu.setBuffering(True)
 worldModif = WorldModification(interface)
 args, parser = argParser.giveArgsAndParser()
-area = argParser.getBuildArea(interface, args)
+area = argParser.getBuildArea(args)
 
 if area == -1:
     exit()
@@ -37,9 +38,10 @@ if not args.remove:
 
     chestGeneration = ChestGeneration(resources, interface)
     iu.makeGlobalSlice()
-    floodFill = FloodFill(area)
     
     settlementData = generator.createSettlementData(area, resources)
+
+    floodFill = FloodFill(area, settlementData["structuresNumberGoal"])
 
     structureMananager = StructureManager(settlementData, resources)
 
@@ -76,12 +78,12 @@ if not args.remove:
         # If new chunck discovererd, add new ressources
         chunk = [int(settlementData["structures"][i]["position"][0] / 16), int(settlementData["structures"][i]["position"][2] / 16)] 
         if not chunk in settlementData["discoveredChunk"] :
-            structureBiomeId = _utils.getBiome(settlementData["structures"][i]["position"][0], settlementData["structures"][i]["position"][2], 1, 1)
+            structureBiomeId = util.getBiome(settlementData["structures"][i]["position"][0], settlementData["structures"][i]["position"][2], 1, 1)
             structureBiomeName = resources.biomeMinecraftId[int(structureBiomeId)]
             structureBiomeBlockId = str(resources.biomesBlockId[structureBiomeName])
 
             settlementData["discoveredChunk"].append(chunk)
-            _utils.addResourcesFromChunk(resources, settlementData, structureBiomeBlockId)
+            util.addResourcesFromChunk(resources, settlementData, structureBiomeBlockId)
 
         loremaker.alterSettlementDataWithNewStructures(settlementData, i)
         structureMananager.checkDependencies()
@@ -89,9 +91,30 @@ if not args.remove:
     # Murderer
     settlementData["murdererIndex"] = choice([i for i in range(0, len(settlementData["villagerNames"])) if settlementData["villagerProfession"][i] != "Mayor"])
     settlementData["murdererTargetIndex"] = choice([i for i in range(0, len(settlementData["villagerNames"])) if i != settlementData["murdererIndex"]])
+    for structureData in settlementData["structures"]:
+        if settlementData["murdererTargetIndex"] in structureData["villagersId"]:
+            structureData["gift"] = "minecraft:tnt"
 
     books = generator.generateBooks(settlementData)
     generator.placeBooks(settlementData, books, floodFill, worldModif)
+
+    # Villager interaction
+    for i in range(len(settlementData["villagerNames"])):
+        settlementData["villagerDiary"].append([])
+        
+        available = True
+        for structureData in settlementData["structures"]:
+            if i in structureData["villagersId"]:
+                available = not "haybale" in structureData["name"]
+                break
+
+        if random.randint(1, 3) == 1 and available:
+            print("Genere diary of " + settlementData["villagerNames"][i])
+            settlementData["villagerDiary"][i] = book.createBookForVillager(settlementData, i)
+            settlementData["villagerDiary"][i][0] = "minecraft:written_book" + toolbox.writeBook(settlementData["villagerDiary"][i][0], 
+                title="Diary of " + settlementData["villagerNames"][i], author=settlementData["villagerNames"][i], description="Diary of " + settlementData["villagerNames"][i])
+            if settlementData["villagerDiary"][i][1] != "":
+                structureData["gift"] = settlementData["villagerDiary"][i][1]
     
     # Add books replacements
     settlementData["materialsReplacement"]["villageBook"] = "minecraft:written_book" + books["villageNameBook"]
@@ -107,9 +130,10 @@ if not args.remove:
     # Build after every computations
     for i in range(len(settlementData["structures"])) :
         generator.generateStructure(settlementData["structures"][i], settlementData, resources, worldModif, chestGeneration)
-        #_utils.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
+        #util.spawnVillagerForStructure(settlementData, settlementData["structures"][i], settlementData["structures"][i]["position"])
     worldModif.saveToFile(file)  
-    floodFill.placeDecorations()
+    
+    floodFill.placeDecorations(settlementData["materialsReplacement"], worldModif)
 
 else : 
     if args.remove == "r" :   

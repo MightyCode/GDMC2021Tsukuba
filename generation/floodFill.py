@@ -1,4 +1,4 @@
-import utils._math as _math
+import utils.projectMath as projectMath
 import random
 import lib.interfaceUtils as iu
 import generation.road as road
@@ -7,14 +7,20 @@ class FloodFill:
     
     # Ignoreblockvalue is the list of block that we want to ignore when we read the field
     IGNORED_BLOCKS = [
-        'minecraft:void_air', 'minecraft:air', 'minecraft:cave_air', 'minecraft:water','minecraft:dark_oak_leaves','minecraft:redstone_lamp','minecraft:cobblestone_wall',
-        'minecraft:oak_leaves',  'minecraft:leaves',  'minecraft:birch_leaves', 'minecraft:spruce_leaves','minecraft:vine'
-        'minecraft:oak_log',  'minecraft:spruce_log',  'minecraft:birch_log',  'minecraft:jungle_log', 'minecraft:acacia_log', 'minecraft:dark_oak_log',
+        'minecraft:void_air', 'minecraft:air', 'minecraft:cave_air', 'minecraft:water','minecraft:dark_oak_leaves','minecraft:redstone_lamp','minecraft:cobblestone_wall','minecraft:lilac','minecraft:allium','minecraft:white_tulip','minecraft:pink_tulip',
+        'minecraft:oak_leaves',  'minecraft:leaves',  'minecraft:birch_leaves', 'minecraft:spruce_leaves','minecraft:vine','minecraft:peony','minecraft:pumpkin','minecraft:blue_orchid','minecraft:lily_pad','minecraft:orange_tulip','minecraft:azure_bluet',
+        'minecraft:oak_log',  'minecraft:spruce_log',  'minecraft:birch_log',  'minecraft:jungle_log', 'minecraft:acacia_log', 'minecraft:dark_oak_log','minecraft:red_tulip','minecraft:cornflower',
         'minecraft:grass', 'minecraft:snow','minecraft:acacia_leaves','minecraft:tall_grass','minecraft:poppy','minecraft:dandelion','minecraft:brown_mushroom_block','minecraft:mushroom_stem','minecraft:rose_bush','minecraft:red_mushroom_block',
-        'minecraft:dead_bush', "minecraft:cactus"]
+        'minecraft:dead_bush', 'minecraft:cactus','minecraft:bamboo','minecraft:red_mushroom','minecraft:brown_mushroom','minecraft:oxeye_daisy']
 
-    def __init__(self, area):
-        self.numberOfDecoration = 50
+    FLOWERS = ['allium','white_tulip','pink_tulip','blue_orchid','orange_tulip','oxeye_daisy',    
+    'azure_bluet','red_tulip','dandelion','cactus','poppy','bamboo','red_mushroom','brown_mushroom','cornflower']
+    SINGLE_BLOC = ['minecraft:cobweb','minecraft:bell','minecraft:note_block','minecraft:hay_block','minecraft:melon','minecraft:carved_pumpkin']
+    LIGHT_BLOC = ['minecraft:campfire','minecraft:lantern','minecraft:sea_lantern','minecraft:jack_o_lantern','minecraft:shroomlight']
+    DOUBLE_BLOC= ['minecraft:bee_nest','minecraft:torch','minecraft:redstone_torch','minecraft:target','minecraft:skeleton_skull','minecraft:zombie_head','minecraft:creeper_head']
+
+    def __init__(self, area, numberHouse):
+        self.numberOfDecoration = int(numberHouse * 1.5) # 150 
         self.listHouse = []
         random.seed(a=None, version=2)
         self.buildArea = area
@@ -68,11 +74,6 @@ class FloodFill:
             print("indexError")
         return False
 
-        
-
-
-
-
 
     def is_ground(self, x, y, z):
         y1 = y + 1
@@ -103,7 +104,7 @@ class FloodFill:
     def floodfill(self, xi, yi, zi, size):
         validPositions = []
         # if floodfill start is in building area
-        if not _math.isPointInCube([xi, yi, zi], self.buildArea):
+        if not projectMath.isPointInCube([xi, yi, zi], self.buildArea):
             print("Out of build area i ", xi, yi, zi)
             return validPositions
 
@@ -121,13 +122,13 @@ class FloodFill:
                 x = Node[0] + add[0]
                 z = Node[2] + add[1]
                 y = Node[1]
-                if _math.isPointInCube([x, y, z], self.buildArea):
+                if projectMath.isPointInCube([x, y, z], self.buildArea):
                     try:
                         groundHeight = self.is_ground(x, y, z)
                     except IndexError:
                         print("indexerror")
                         print(x,y,z)
-                    if groundHeight != -1 and (x, groundHeight, z) not in validPositions and _math.isPointInCube([x, y, z], floodFillArea):
+                    if groundHeight != -1 and (x, groundHeight, z) not in validPositions and projectMath.isPointInCube([x, y, z], floodFillArea):
                         stack.append((x, groundHeight, z))
 
         return validPositions
@@ -136,7 +137,10 @@ class FloodFill:
 
     def verifHouse(self, xPos, yPos, zPos, CornerPos):
         for i,j in [[0, 1], [2, 1], [0, 3], [2, 3]]:
-            if self.is_ground(xPos + CornerPos[i], yPos, zPos + CornerPos[j]) == -1:
+            if projectMath.isPointInSquare([xPos,zPos], [self.buildArea[0], self.buildArea[2] , self.buildArea[3] , self.buildArea[5]]):
+                if self.is_ground(xPos + CornerPos[i], yPos, zPos + CornerPos[j]) == -1:
+                    return False
+            else:
                 return False
                 
         return True
@@ -165,7 +169,7 @@ class FloodFill:
             index = random.randint(0, len(indices)-1)
         
             # Test if new houses position is in build Area
-            if _math.isPointInSquare([self.listHouse[indices[index]][0], self.listHouse[indices[index]][2]], 
+            if projectMath.isPointInSquare([self.listHouse[indices[index]][0], self.listHouse[indices[index]][2]], 
                 [self.buildArea[0] + sizeStruct, self.buildArea[2] + sizeStruct, self.buildArea[3] - sizeStruct, self.buildArea[5] - sizeStruct]):
                 placeindex = random.randint(0, len(self.listHouse[indices[index]][4]) - 1)
 
@@ -181,7 +185,7 @@ class FloodFill:
         listverifhouse = self.listHouse.copy()
         while listverifhouse:
             house = listverifhouse.pop()
-            if _math.isPointInSquare(coord,[house[0] + house[3][0], house[2] + house[3][1], house[0] + house[3][2], house[2] + house[3][3]]):
+            if projectMath.isPointInSquare(coord,[house[0] + house[3][0], house[2] + house[3][1], house[0] + house[3][2], house[2] + house[3][3]]):
                 return True
         return False
 
@@ -207,29 +211,53 @@ class FloodFill:
         print("range of the village is : ", xmin, xmax, zmin, zmax)
         return xmin, xmax, zmin, zmax
 
-    def placeDecorations(self):
-        xmin, xmax, zmin,zmax = self.decideMinMax()
+    def placeDecorations(self, materials, worldmodif):
+        xmin, xmax, zmin, zmax = self.decideMinMax()
         decorationcoord = []
         for i in range(self.numberOfDecoration):
             decoput = False
-            debug = 15
+            debug = 5
+            rand = random.randint(1,10)
             while not decoput and debug > 0:
 
                 xrand = random.randint(xmin,xmax)
                 zrand = random.randint(zmin,zmax)
-                if not self.isInHouse([xrand,zrand]):
-                    if not road.isInRoad([xrand,zrand]):
-                        print("deco n :",i, "placed in ",xrand,zrand)
-                        iu.setBlock(xrand,self.getHeight(xrand,zrand),zrand,"minecraft:hay_block")
-                        decoput = True
+                height = self.getHeight(xrand,zrand)
+                if not iu.getBlock(xrand, height, zrand) == 'minecraft:water':
+                    if not self.isInHouse([xrand,zrand]):
+                        if not road.isInRoad([xrand,zrand]):
+                            if not road.isInLantern([xrand,zrand]):
+                                if not [xrand,zrand] in decorationcoord:
+                                    if rand == 1:
+                                        decorationcoord.append([xrand,zrand])
+                                        worldmodif.setBlock(xrand,height,zrand,"minecraft:"+materials["woodType"]+"_fence")
+                                        randombloc = random.randint(0, len(FloodFill.DOUBLE_BLOC) - 1)
+                                        blocktoplace = FloodFill.DOUBLE_BLOC[randombloc]
+                                        if blocktoplace == 'minecraft:skeleton_skull' or blocktoplace == 'minecraft:zombie_head' or blocktoplace == 'minecraft:creeper_head':
+                                            orientation = random.randint(0,15)
+                                            blocktoplace = blocktoplace + '[rotation=' + str(orientation) + ']'
+                                        worldmodif.setBlock(xrand, height + 1,zrand,blocktoplace)
+                                        
+                                    elif rand == 2 or rand == 3:
+                                        decorationcoord.append([xrand,zrand])
+                                        randombloc = random.randint(0, len(FloodFill.SINGLE_BLOC) - 1)
+                                        worldmodif.setBlock(xrand, height, zrand, FloodFill.SINGLE_BLOC[randombloc])
+                                    elif rand == 4 or rand == 5:
+                                        decorationcoord.append([xrand,zrand])
+                                        randombloc = random.randint(0, len(FloodFill.LIGHT_BLOC) - 1)
+                                        worldmodif.setBlock(xrand, height, zrand, FloodFill.LIGHT_BLOC[randombloc])
+                                    else:   
+                                        decorationcoord.append([xrand,zrand])
+                                        randombloc = random.randint(0, len(FloodFill.FLOWERS) - 1)
+                                        worldmodif.setBlock(xrand, height, zrand,'minecraft:potted_' + FloodFill.FLOWERS[randombloc])
+                            
                 debug -= 1
-
-
 
 
     def findPosHouse(self, CornerPos):
         sizeStruct = max(abs(CornerPos[0][0]) + abs(CornerPos[0][2]) + 1, abs(CornerPos[0][1]) + abs(CornerPos[0][3]) + 1)
-
+        if len(self.listHouse)%4 == 0:
+            self.floodfillHouseSpace += 1
         notFinded = True
         debug = 250 * 16
         debugNoHouse = 250 * 16
@@ -237,7 +265,7 @@ class FloodFill:
         verifOverlapseHouse = False
         print("there is already", len(self.listHouse), "placed")
 
-        while notFinded and (debug>0) and (debugNoHouse>0) and not verifCorners:
+        while notFinded and (debug > 0) and (debugNoHouse > 0) and not verifCorners:
             if len(self.listHouse) == 0:
                 xPos, zPos = self.takeRandomPosition(sizeStruct)
 
@@ -281,11 +309,11 @@ class FloodFill:
                         
                     fliptest = [0, 1, 2, 3]
                     while fliptest and notFinded:
-                        rand1 = fliptest[random.randint(0,len(fliptest)-1)]
+                        rand1 = fliptest[random.randint(0, len(fliptest)-1)]
                         fliptest.remove(rand1)
                         rotationtest = [0, 1, 2, 3]
                         while rotationtest and notFinded: 
-                            rand2 = rotationtest[random.randint(0,len(rotationtest)-1)]
+                            rand2 = rotationtest[random.randint(0, len(rotationtest)-1)]
                             choosenCorner = CornerPos[rand1 * 4 + rand2]
                             rotationtest.remove(rand2)
                             if self.verifHouse(xPos, yPos, zPos, choosenCorner):
@@ -296,7 +324,7 @@ class FloodFill:
                                     if not house[6]:
                                         continue
 
-                                    if not _math.isTwoRectOverlapse([xPos, zPos], choosenCorner, [house[0], house[2]], house[3], self.minDistanceHouse):
+                                    if not projectMath.isTwoRectOverlapse([xPos, zPos], choosenCorner, [house[0], house[2]], house[3], self.minDistanceHouse):
                                         verifOverlapseHouse = True
                                     else:
                                         """print("N " + str(xPos) + " " + str(zPos) + " " + str(choosenCorner) +  " : flip " + str(rand1) + 
@@ -311,7 +339,7 @@ class FloodFill:
                                     notFinded = False
 
                                     # If house is valid to create a floodfill
-                                    if _math.isPointInSquare([xPos, zPos], self.validHouseFloodFillPosition):
+                                    if projectMath.isPointInSquare([xPos, zPos], self.validHouseFloodFillPosition):
                                         FloodFillValue = self.floodfill(xPos, yPos, zPos,  sizeStruct + self.floodfillHouseSpace)
                                         
                                     else:

@@ -1,5 +1,4 @@
-import os.path
-from os import path
+import os
 import json 
 import lib.interfaceUtils as interfaceUtils
 
@@ -48,6 +47,7 @@ class WorldModification:
         else :
             self.interface.setBlock(x, y, z, block)
 
+
     def fillBlocks(self, from_x, from_y, from_z, to_x, to_y, to_z, block, compareBlockState=False):
         if WorldModification.DEBUG_MODE :
             if from_x > to_x : 
@@ -83,9 +83,10 @@ class WorldModification:
             str(to_z) + " " +  
             block + " replace")
 
+
     def undoLastModification(self):
         if not WorldModification.DEBUG_MODE:
-            print("CAN'T UNDO ON NO DEBUG MODE")
+            print("CAN'T UNDO IF DEBUG MODE NOT ACTIVATED")
             return 
 
         index = len(self.before_modification) - 1
@@ -99,22 +100,30 @@ class WorldModification:
         self.before_modification.pop()
         self.after_modificaton.pop()
 
+
     def undoAllModification(self):
         if not WorldModification.DEBUG_MODE:
-            print("CAN'T UNDO ON NO DEBUG MODE")
+            print("CAN'T UNDO IF DEBUG MODE NOT ACTIVATED")
             return 
 
         for i in range(len(self.before_modification)):
             self.undoLastModification()
 
+    """
+    Save into filename every changement done to the world
+    """
     def saveToFile(self, file_name) :
         if not WorldModification.DEBUG_MODE:
-            print("CAN'T SAVE ON NO DEBUG MODE")
+            print("CAN'T SAVE IF DEBUG MODE NOT ACTIVATED")
             return 
 
         assert(len(self.before_modification) == len(self.after_modificaton))
 
-        if path.exists(WorldModification.DEFAULT_PATH + file_name) :
+        # Check if log path exists
+        if not os.path.isdir(WorldModification.DEFAULT_PATH):
+            os.makedirs(WorldModification.DEFAULT_PATH)
+
+        if os.path.exists(WorldModification.DEFAULT_PATH + file_name) :
             parts = file_name.split(".")
             if len(file_name.split("_")) > 1 :
                 self.saveToFile(parts[0].split("_")[0] + "_" + str(
@@ -143,15 +152,21 @@ class WorldModification:
         f.close()
         
 
+    """
+    Load every changement done to a world from a file
+    """
     def loadFromFile(self, file_name):
         if not WorldModification.DEBUG_MODE:
-            print("CAN'T LOAD ON NO DEBUG MODE")
+            print("CAN'T LOAD IF DEBUG MODE NOT ACTIVATED")
             return 
+
+        # Check if log path exists
+        if not os.path.isdir(WorldModification.DEFAULT_PATH):
+            os.makedirs(WorldModification.DEFAULT_PATH)
 
         with open(WorldModification.DEFAULT_PATH + file_name) as f:
             for line in f:
                 parts = line.split(WorldModification.PARTS_SEPARATOR)
-
                 before_parts = parts[0].split(WorldModification.BLOCK_SEPARATOR)
                 after_parts = parts[1].split(WorldModification.BLOCK_SEPARATOR)
                 self.before_modification.append([
@@ -168,4 +183,5 @@ class WorldModification:
                     after_parts[3]
                 ])
                 
+        
         os.remove(WorldModification.DEFAULT_PATH + file_name) 

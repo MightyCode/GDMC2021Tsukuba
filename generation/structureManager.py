@@ -1,4 +1,5 @@
-import utils._utils as _utils
+import utils.util as util
+import utils.book as book
 import json
 import random
 
@@ -18,8 +19,8 @@ class StructureManager:
         for group in self.dependencies.keys():
             self.numberOfStructuresForEachGroup[group] = 0
 
-        self.villagerFirstNamesList = _utils.getFirstNamelist()
-        self.villagerLastNamesList = _utils.getLastNamelist()
+        self.villagerFirstNamesList = book.getFirstNamelist()
+        self.villagerLastNamesList = book.getLastNamelist()
 
         self.checkDependencies()
 
@@ -73,8 +74,8 @@ class StructureManager:
             size = len(self.settlementData["villagerNames"])
             for i in range(numberToAdd):
                 self.settlementData["villagerNames"].append(
-                            _utils.getRandomVillagerNames(self.villagerFirstNamesList, 1)[0] + 
-                            " " + _utils.getRandomVillagerNames(self.villagerLastNamesList, 1)[0]
+                            book.getRandomVillagerNames(self.villagerFirstNamesList, 1)[0] + 
+                            " " + book.getRandomVillagerNames(self.villagerLastNamesList, 1)[0]
                 )
                 
                 self.settlementData["villagerProfession"].append("Unemployed")
@@ -85,7 +86,6 @@ class StructureManager:
         
         # Functionnals or representatives structure
         elif structure["type"] == StructureManager.FUNCTIONALS or structure["type"] == StructureManager.REPRESENTATIVES:
-            print(struct.info)
             numberToAttribute = struct.info["villageInfo"]["villager"]
             self.settlementData["structures"][-1]["villagersId"] = []
             size = len(self.settlementData["villagerNames"])
