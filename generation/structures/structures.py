@@ -213,7 +213,6 @@ class Structures(BaseStructure):
                 if choosenLootTable  != "":
                     additionalObjects = []
                     if choosenLootTable in buildingCondition["special"].keys():
-                        print("Adding additionnalObject to house")
                         additionalObjects = buildingCondition["special"][choosenLootTable]
                         del buildingCondition["special"][choosenLootTable]
 

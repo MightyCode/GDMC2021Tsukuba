@@ -44,7 +44,7 @@ def createSettlementData(area, resources):
     # 1 -> content, 2 -> isGift
     settlementData["villagerDiary"] = []
     
-    settlementData["structuresNumberGoal"] = random.randint(15, 70)
+    settlementData["structuresNumberGoal"] = 9#random.randint(15, 70)
 
     #structures contains "position", "rotation", "flip" "name", "type", "group" ->, "villagersId", "gift"
     settlementData["structures"] = []
@@ -220,16 +220,16 @@ def modifyBuildingConditionDependingOnStructure(buildingCondition, settlementDat
         util.parseVillagerNameInLines([name], buildingCondition["special"]["sign"], 1)
 
     elif structureName == "adventurerhouse":
-        buildingCondition["special"]["adventurerhouse"] = book.createBookForAdventurerHouse(buildingCondition["flip"])
+        buildingCondition["special"]["adventurerhouse"] = [book.createBookForAdventurerHouse(buildingCondition["flip"])]
 
 
     if structureData["type"] == "houses":
         for villagerIndex in structureData["villagersId"]:
-            if len(settlementData["villagerDiary"]) > 0 :
+            if len(settlementData["villagerDiary"][villagerIndex]) > 0 :
                 if not "bedroomhouse" in buildingCondition["special"]:
                     buildingCondition["special"]["bedroomhouse"] = []
 
-                buildingCondition["special"]["bedroomhouse"].append(settlementData["villagerDiary"][villagerIndex])
+                buildingCondition["special"]["bedroomhouse"].append(settlementData["villagerDiary"][villagerIndex][0])
                 print("add diary of", settlementData["villagerNames"][villagerIndex])
 
 
