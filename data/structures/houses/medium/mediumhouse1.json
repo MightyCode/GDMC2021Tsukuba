@@ -16,7 +16,8 @@
   "air" : {
     "preferedAirMode" : 2,
     "replacements" : [
-      [1, 1, 1, 12, 9, 12]
+      [1, 1, 1, 12, 9, 12],
+      [3, 1, 0, 4, 2, 0]
     ]
   },
   "lootTables" : [

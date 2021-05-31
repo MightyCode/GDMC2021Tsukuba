@@ -203,6 +203,7 @@ def createBookForVillager(settlementData, villagerIndex):
     newDiaryTextWithoutTarget = DIARY_TEXTS_WITHOUT_TARGETS.copy()
     newDiaryTextWithTarget = DIARY_TEXTS_WITH_TARGETS.copy()
     targetTextDone = False
+    murdererSuspicious = False
 
     numberPhrase = rd.randint(3, 7)
     for i in range(numberPhrase):
@@ -239,6 +240,11 @@ def createBookForVillager(settlementData, villagerIndex):
                     textDiaryVillager += (', I put a deadly trap under the door.\\\\n')
             continue
         
+        # Murderer suspicion
+        if rd.randint(1, 5) == 1 and not murdererSuspicious and settlementData["murdererIndex"] != -1 :
+            textDiaryVillager += (f'I think that {settlementData["villagerNames"][settlementData["murdererIndex"]]} \\\\n')
+            murdererSuspicious = True
+            continue
 
         # Other phrase    
         random = rd.randint(1, 5)
