@@ -214,7 +214,6 @@ class Structures(BaseStructure):
                     additionalObjects = []
                     if choosenLootTable in buildingCondition["special"].keys():
                         additionalObjects = buildingCondition["special"][choosenLootTable]
-                        del buildingCondition["special"][choosenLootTable]
 
                     chestGeneration.generate(blockPosition[0], blockPosition[1], blockPosition[2], choosenLootTable, buildingCondition["replacements"], additionalObjects)
 
