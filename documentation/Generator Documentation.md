@@ -26,11 +26,40 @@ Note :
 This resources class stores each loaded files. 
 To make the systeme easier, instance of generated structure class is also store on the structures.
 
+
 ## generation/*resourcesLoader.py*
 
 This utility class preload the instance of resource class with every structure and lootTable used for the generation.
+
 
 ## *testStructures.py*
 
 This test file if the most useful file to test one structure
 You just have to change in this line **structure = resources.structures["xxx"]** where xxx is the name of your structure
+
+
+## *benchmarkTimeForBuilding.py*
+
+This test file will construct a certain amount of same structure and show time took for construction
+
+
+## *generateSettlement.py*
+
+This script run the main procedure and main steps to create the village
+
+
+## generation/*generator.py*
+
+This script gathers functionalities that could be in *generateSettlement.py* but placed here for more readability
+
+
+## generation/*chestGeneration.py*
+
+This class file objectif is to generate a chest's content located at certain position. 
+It uses look table, and additionnal object which are items that must be added to the chest independently of the loot table
+
+
+## generation/*structureManager.py*
+
+This class will fill settlementData with the next structure that should be added. 
+First with method 
