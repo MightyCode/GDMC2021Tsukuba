@@ -7,12 +7,12 @@ def alterSettlementDataWithNewStructures(settlementData, indexNewStructure):
     if structureName == "basictownhall":
         voteForColor(settlementData)
 
+
 def voteForColor(settlementData):
     colors = ["white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray", "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black"]
     color = colors[random.randint(0, len(colors) - 1)]
     fillSettlementDataWitholor(settlementData, color)
     
-
 
 def fillSettlementDataWitholor(settlementData, color):
     settlementData["materialsReplacement"]["color"] = color

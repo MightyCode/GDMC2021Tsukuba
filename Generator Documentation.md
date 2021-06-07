@@ -10,7 +10,8 @@ The generator work in 5 steps, *generator.py* is mainly use.
 . The creation of lore finished, generateSettlement uses *road.py* to create roads.
 . Finally each structure is finally builded and decorations are placed. 
 
-The idea is to -> find every informations for the village.
+The idea is to :
+-> Find every informations for the village.
 -> Then build.
 
 
@@ -59,6 +60,11 @@ This class file objectif is to generate a chest's content located at certain pos
 It uses look table, and additionnal object which are items that must be added to the chest independently of the loot table
 
 
+## generation/*loremaker.py*
+
+This class alter settlementData to add lore for each choosen structures.
+
+
 ## generation/*structureManager.py*
 
 This class will fill settlementData with the next structure that should be added. 
@@ -67,3 +73,21 @@ Image of the technological tree is on documentation folder.
 Each structure group has a prerequisite to be available.
  
 After that, each strucure available has a weight depending of its type, or if the previous choosen structure was the same; then the random choose the next.
+
+
+## generation/*floodFill.py*
+
+This class recognize where ground block is, with the goal of giving positions where structures could be placed.
+
+For each test to fit the structure at given position, the script rotates and flips the structure, checks corners and if the structure not overlapse another one.
+
+When there are no placed structure. The script will take a random position. Do a flood fill of x block(s) around the position. Then try y times if the given structure is placeable. 
+For each structure placed, the script will do a flood fill around its position.
+When there are at least on placed structure. The script will take a random structure, take a random position in its floodfill and try z times if the given structure is placeable.
+
+To place decorations, the script take the square surrounding all the structures placed and takes random positions. 
+
+
+## generation/*road.py*
+
+Generate roads between between the structures that are placed according to their parent. The script use an a* to find the path.
