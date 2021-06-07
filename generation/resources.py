@@ -14,18 +14,23 @@ class Resources :
         self.structures = {}
         self.lootTables = {}
 
+
         # Contains for each biome, its minecraft id
         # biomename -> id minecraft
         self.biomes = {}
         # Contains for each id biome, its name
         # id minecraft -> biomename
         self.biomeMinecraftId = {}
+
         # Contains for each id biome, its block id
         # biomename -> id block (decoration)
         self.biomesBlockId = {}
 
+
         # Indicates for each block id, what should be blocks for types (ex : wookType)
         self.biomesBlocks = {}
+
+        
         with open(Resources.BIOME_BLOCK) as json_file:
             self.biomesBlocks = json.load(json_file)
 

@@ -35,7 +35,7 @@ if buildArea == -1:
 buildArea = (buildArea[0], buildArea[1], buildArea[2], buildArea[3] - 1, buildArea[4] - 1, buildArea[5] - 1)
 sizeArea = [buildArea[3] - buildArea[0] + 1, buildArea[5] - buildArea[2] + 1]
     
-# Three main steps : choose structures and find its positions, make road between these structures, and finaly build structures.
+# Five main steps : init setllement Data, choose structures and find its positions, make road between these structures, and finaly build structures.
 if not args.remove:
     
     resources = Resources()
@@ -43,6 +43,7 @@ if not args.remove:
 
     chestGeneration = ChestGeneration(resources, interface)
     
+    # Each zone for takes 500 blocks, division begin after 1000
     numberZoneX = int(sizeArea[0] / 500)
     if numberZoneX == 0:
         numberZoneX = 1
@@ -56,11 +57,13 @@ if not args.remove:
     zAdvencement = 0
     while zAdvencement < numberZoneZ:
         timeNow = int(round(time.time() * 1000)) - milliseconds
+
         if timeNow / 1000 >= TIME_LIMIT - TIME_TO_BUILD_A_VILLAGE:
             print("Abord immediatly not time to generate") 
             zAdvencement = numberZoneZ
             continue
-
+        
+        # Area of the local village
         area = [
             buildArea[0] + xAdvencement * sizeZoneX, 
             buildArea[1], 
@@ -86,12 +89,14 @@ if not args.remove:
         iu.makeGlobalSlice()
         print("Global slice done")
 
+        """ First main step : init settlementData """
         settlementData = generator.createSettlementData(area, resources)
 
         floodFill = FloodFill(worldModif, settlementData)
 
         structureMananager = StructureManager(settlementData, resources)
 
+        """ Second main step : choose structures and their position """
         i = 0
         while i < settlementData["structuresNumberGoal"] : 
             print("Generate position " + str(i+1) + "/" + str(settlementData["structuresNumberGoal"]) + "  ", end="\r")
@@ -147,7 +152,8 @@ if not args.remove:
                 floodFill.setNumberHouse(settlementData["structuresNumberGoal"])
                 print("Abort finding position and adding structures due to time expired")
                 break
-                
+        
+        """ Third main step : creates lore of the village """
         print("\nGenerate lore")
 
         # Murderer
@@ -189,12 +195,11 @@ if not args.remove:
         settlementData["materialsReplacement"]["villagerRegistry"] = "minecraft:written_book" + books["villagerNamesBook"]
         settlementData["materialsReplacement"]["deadVillagerRegistry"] = "minecraft:written_book" + books["deadVillagersBook"]
         
-        # Creates roads
+        """ Fourth main step : creates the roads of the village """
         road.initRoad(floodFill, settlementData, worldModif, settlementData["materialsReplacement"])
 
-        #structureMananager.printStructureChoose()
 
-        # Build after every computations
+        """ Five main step : places every structrure and after that every decorations """
         i = 0
         timeNow = int(round(time.time() * 1000)) - milliseconds
         while i < len(settlementData["structures"]) and timeNow / 1000 < TIME_LIMIT :
