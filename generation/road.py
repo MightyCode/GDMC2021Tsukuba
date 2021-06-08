@@ -257,6 +257,7 @@ def generateRoad(worldModif, floodFill, start, goal, squarelist, materials, entr
 		while not(floodFill.is_air(block[0], y + 1, block[1])) or floodFill.is_air(block[0], y, block[1]):
 			if floodFill.is_air(block[0], y, block[1]):
 				y -=1
+				
 			if not(floodFill.is_air(block[0], y + 1, block[1])):
 				y += 1
 

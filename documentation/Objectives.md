@@ -1,7 +1,28 @@
 # Lore
 
+## Specialization
+
+Make a specialization for each village.
+
+## War and alliance - trade
+
+If two villages has the same specialization it lauch a war between the two village. Each village can be ally with another.
+
 
 # Aspect 
+
+## Wall
+
+Add a wall around the village.
+
+## House
+
+Add a special item or special decoration to the house of mayor.
+
+## Tree
+
+Remove tree when encouteer one on road or structions construction.
+
 
 
 # System

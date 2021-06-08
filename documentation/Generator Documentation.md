@@ -41,23 +41,24 @@ You just have to change in this line **structure = resources.structures["xxx"]**
 
 ## *benchmarkTimeForBuilding.py*
 
-This test file will construct a certain amount of same structure and show time took for construction
+This test file will construct a certain amount of same structure and show time took for construction.
 
 
 ## *generateSettlement.py*
 
-This script run the main procedure and main steps to create the village
+This script run the main procedure and main steps to create the village. 
+The script check at many location in the code or at each iteration of every boucle the time, to decide if stop or continue.
 
 
 ## generation/*generator.py*
 
-This script gathers functionalities that could be in *generateSettlement.py* but placed here for more readability
+This script gathers functionalities that could be in *generateSettlement.py* but placed here for more readability.
 
 
 ## generation/*chestGeneration.py*
 
 This class file objectif is to generate a chest's content located at certain position. 
-It uses look table, and additionnal object which are items that must be added to the chest independently of the loot table
+It uses look table, and additionnal object which are items that must be added to the chest independently of the loot table.
 
 
 ## generation/*loremaker.py*
