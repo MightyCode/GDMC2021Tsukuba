@@ -133,7 +133,8 @@ class FloodFill:
 
         return validPositions
 
-    def verifHouse(self, xPos, yPos, zPos, CornerPos):
+
+    def verifCornersHouse(self, xPos, yPos, zPos, CornerPos):
         if not projectMath.isPointInCube([xPos, yPos, zPos], self.buildArea):
             return False
 
@@ -183,13 +184,24 @@ class FloodFill:
         return 0, 0, 0
 
 
-    def isInHouse(self,coord):
+
+    def isOverlapseAnyHouse(self, debug, position, choosenCorner):
+        verifCorners = True
         listverifhouse = self.listHouse.copy()
-        while listverifhouse:
+        
+        while listverifhouse and verifCorners:
             house = listverifhouse.pop()
-            if projectMath.isPointInSquare(coord,[house[0] + house[3][0], house[2] + house[3][1], house[0] + house[3][2], house[2] + house[3][3]]):
-                return True
-        return False
+
+            if not projectMath.isTwoRectOverlapse(position, choosenCorner, [house[0], house[2]], house[3], self.minDistanceHouse):
+                verifOverlapseHouse = True
+            else:
+                """print("N " + str(xPos) + " " + str(zPos) + " " + str(choosenCorner) +  " : flip " + str(rand1) + 
+                ", rot " + str(rand2) + " ::" + str(house[0]) + " " + str(house[2]))"""
+                verifOverlapseHouse = False
+                verifCorners = False
+                debug -= 1
+
+        return verifOverlapseHouse, verifCorners, debug
 
 
     def findPosHouse(self, CornerPos):
@@ -226,7 +238,7 @@ class FloodFill:
 
                         choosenCorner = CornerPos[rand1 * 4 + rand2]
 
-                        if self.verifHouse(xPos, yPos, zPos, choosenCorner):
+                        if self.verifCornersHouse(xPos, yPos, zPos, choosenCorner):
                             notFinded = False
                             # To be sure the place is large enough to build the village
                             FloodFillValue = self.floodfill(xPos, yPos, zPos, self.distanceFirstHouse)   
@@ -240,7 +252,7 @@ class FloodFill:
                 verifOverlapseHouse = False
                 verifCorners = False
 
-                while not verifCorners and (debug>0):
+                while not verifCorners and debug > 0:
                     xPos, yPos, zPos = self.takeNewPositionForHouse(sizeStruct)
                     #to get a random flip and rotation and to test if one is possible
                     if (iu.getBlock(xPos, yPos, zPos)=='minecraft:water'):  
@@ -255,22 +267,9 @@ class FloodFill:
                             rand2 = rotationtest[random.randint(0, len(rotationtest)-1)]
                             choosenCorner = CornerPos[rand1 * 4 + rand2]
                             rotationtest.remove(rand2)
-                            if self.verifHouse(xPos, yPos, zPos, choosenCorner):
-                                verifCorners = True
-                                listverifhouse = self.listHouse.copy()
-                                while listverifhouse and verifCorners:
-                                    house = listverifhouse.pop()
-                                    if not house[6]:
-                                        continue
 
-                                    if not projectMath.isTwoRectOverlapse([xPos, zPos], choosenCorner, [house[0], house[2]], house[3], self.minDistanceHouse):
-                                        verifOverlapseHouse = True
-                                    else:
-                                        """print("N " + str(xPos) + " " + str(zPos) + " " + str(choosenCorner) +  " : flip " + str(rand1) + 
-                                             ", rot " + str(rand2) + " ::" + str(house[0]) + " " + str(house[2]))"""
-                                        verifOverlapseHouse = False
-                                        verifCorners = False
-                                        debug -= 1
+                            if self.verifCornersHouse(xPos, yPos, zPos, choosenCorner):
+                                verifOverlapseHouse, verifCorners, debug = self.isOverlapseAnyHouse(debug, [xPos, zPos], choosenCorner)
 
                                 if verifCorners and verifOverlapseHouse:
                                     """print("Y " + str(xPos) + " " + str(zPos) + " " + str(choosenCorner) + " : flip " + str(rand1) + 
@@ -297,8 +296,9 @@ class FloodFill:
             
             #print("debug failed")
         else:
-            self.listHouse.append((xPos, yPos, zPos, choosenCorner, FloodFillValue, self.previousStructure, True))
-            dictionnary = {"position" : [xPos, yPos - 1, zPos], "validPosition" : True , "flip" : rand1 , "rotation" : rand2, "corner" : choosenCorner }
+            self.listHouse.append((xPos, yPos, zPos, choosenCorner, FloodFillValue, self.previousStructure))
+
+            dictionnary = {"position" : [xPos, yPos - 1, zPos], "validPosition" : True, "flip" : rand1 , "rotation" : rand2, "corner" : choosenCorner }
         return dictionnary
 
 
@@ -322,6 +322,15 @@ class FloodFill:
                 zmax = house[2]
         #print("range of the village is : ", xmin, xmax, zmin, zmax)
         return xmin, xmax, zmin, zmax
+
+
+    def isInHouse(self, coord):
+        listverifhouse = self.listHouse.copy()
+        while listverifhouse:
+            house = listverifhouse.pop()
+            if projectMath.isPointInSquare(coord,[house[0] + house[3][0], house[2] + house[3][1], house[0] + house[3][2], house[2] + house[3][3]]):
+                return True
+        return False
 
 
     def placeDecorations(self, materials):
