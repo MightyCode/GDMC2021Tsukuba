@@ -227,63 +227,56 @@ def generateRoad(worldModif, floodFill, start, goal, squarelist, materials, entr
 	path = astar(start, goal, squarelist)
 	temp = 1
 
-	z0 = entryStructFrom[1]
+	yTemp =  entryStructFrom[1]
 	for block in path:
-		z = z0
+		y = yTemp
 		material = 'minecraft:grass_path'
-		while not(floodFill.is_air(block[0], z+1, block[1])) or floodFill.is_air(block[0], z, block[1]):
-			if floodFill.is_air(block[0], z, block[1]):
-				z -=1
-			if not(floodFill.is_air(block[0], z+1, block[1])):
-				z += 1
-		while iu.getBlock(block[0], z, block[1]) == 'minecraft:water':
-			z = z + 1
+		while not(floodFill.is_air(block[0], y + 1, block[1])) or floodFill.is_air(block[0], y, block[1]):
+			if floodFill.is_air(block[0], y, block[1]):
+				y -=1
+			if not(floodFill.is_air(block[0], y + 1, block[1])):
+				y += 1
+
+		while iu.getBlock(block[0], y, block[1]) == 'minecraft:water':
+			y = y + 1
 			material = "minecraft:" + materials["woodType"] + "_planks"
-		while iu.getBlock(block[0], z, block[1]) == 'minecraft:lava':
-			z = z + 1
+		while iu.getBlock(block[0], y, block[1]) == 'minecraft:lava':
+			y = y + 1
 			material = "minecraft:nether_bricks"
 
 		# Here, we need to check if there is a tree above the path, and if yes, we want to remove it 
-		worldModif.setBlock(block[0], z, block[1], "minecraft:air")
-		worldModif.setBlock(block[0], z + 1, block[1], "minecraft:air")
-		worldModif.setBlock(block[0], z + 2, block[1], "minecraft:air")
-		worldModif.setBlock(block[0], z - 1, block[1], material)
-		z0 = z
+		worldModif.setBlock(block[0], y, block[1], "minecraft:air")
+		worldModif.setBlock(block[0], y + 1, block[1], "minecraft:air")
+		worldModif.setBlock(block[0], y + 2, block[1], "minecraft:air")
+		worldModif.setBlock(block[0], y - 1, block[1], material)
+		yTemp = y
 
-	z0 = entryStructFrom[1]
+	yTemp = entryStructFrom[1]
 	for block in path:
-		
-		z = z0
-		while not(floodFill.is_air(block[0], z+1, block[1])) or floodFill.is_air(block[0], z, block[1]):
-			if floodFill.is_air(block[0], z, block[1]):
-				z -=1
-			if not(floodFill.is_air(block[0], z+1, block[1])):
-				z += 1
-		while iu.getBlock(block[0], z, block[1]) == 'minecraft:water' or iu.getBlock(block[0], z, block[1]) == 'minecraft:lava':
-			z = z + 1
-		if temp % 12 == 0 and (temp ) < (len(path)-3):
-			if not([block[0]-1, block[1]] in path) and not(floodFill.isInHouse([block[0] - 1,block[1]])) and not(isInRoad([block[0] - 1,block[1]])):
-				POSITION_OF_LANTERN.append([block[0],block[1]])
-				worldModif.setBlock(block[0]-1, z-1, block[1], 'minecraft:cobblestone')
-				worldModif.setBlock(block[0]-1, z, block[1], 'minecraft:cobblestone_wall')
-				worldModif.setBlock(block[0]-1, z+1, block[1], 'minecraft:torch')
-			elif not([block[0], block[1] - 1] in path) and not(floodFill.isInHouse([block[0],block[1] - 1])) and not(isInRoad([block[0],block[1] - 1])):
-				POSITION_OF_LANTERN.append([block[0],block[1]])
-				worldModif.setBlock(block[0], z-1, block[1] - 1, 'minecraft:cobblestone')
-				worldModif.setBlock(block[0], z, block[1] - 1, 'minecraft:cobblestone_wall')
-				worldModif.setBlock(block[0], z+1, block[1] - 1, 'minecraft:torch')
-			elif not([block[0] + 1, block[1]] in path) and not(floodFill.isInHouse([block[0] + 1,block[1]])) and not(isInRoad([block[0] + 1,block[1]])):
-				POSITION_OF_LANTERN.append([block[0],block[1]])
-				worldModif.setBlock(block[0] + 1, z-1, block[1], 'minecraft:cobblestone')
-				worldModif.setBlock(block[0] + 1, z, block[1], 'minecraft:cobblestone_wall')
-				worldModif.setBlock(block[0] + 1, z+1, block[1], 'minecraft:torch')
-			elif not([block[0], block[1] + 1] in path) and not(floodFill.isInHouse([block[0],block[1] + 1])) and not(isInRoad([block[0],block[1] + 1])):
-				POSITION_OF_LANTERN.append([block[0],block[1]])
-				worldModif.setBlock(block[0], z-1, block[1] + 1, 'minecraft:cobblestone')
-				worldModif.setBlock(block[0], z, block[1] + 1, 'minecraft:cobblestone_wall')
-				worldModif.setBlock(block[0], z+1, block[1] + 1, 'minecraft:torch')
+		y = yTemp
+		while not(floodFill.is_air(block[0], y + 1, block[1])) or floodFill.is_air(block[0], y, block[1]):
+			if floodFill.is_air(block[0], y, block[1]):
+				y -=1
+			if not(floodFill.is_air(block[0], y + 1, block[1])):
+				y += 1
+
+		while iu.getBlock(block[0], y, block[1]) == 'minecraft:water' or iu.getBlock(block[0], y, block[1]) == 'minecraft:lava':
+			y = y + 1
+
+		if temp % 12 == 0 and temp < len(path) - 3:
+			diffX = [-1, 0, 1, 0]
+			diffZ = [0, -1, 0, 1]
+
+			for i in [0, 1, 2, 3]:
+				position = [block[0] + diffX[i], block[1] + diffZ[i]]
+				if not position in path and not floodFill.isInHouse(position) and not isInRoad(position):
+					POSITION_OF_LANTERN.append([block[0], block[1]])
+					worldModif.setBlock(position[0], y - 1, position[1], 'minecraft:cobblestone')
+					worldModif.setBlock(position[0], y, 	position[1], 'minecraft:cobblestone_wall')
+					worldModif.setBlock(position[0], y + 1, position[1], 'minecraft:torch')
+					break
 			
 		temp += 1
-		z0 = z
+		yTemp = y
 
 
