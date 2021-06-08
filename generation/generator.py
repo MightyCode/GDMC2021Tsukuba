@@ -30,7 +30,8 @@ def createSettlementData(area, resources):
         if aProperty in resources.biomesBlocks["rules"]["village"]:
             settlementData["materialsReplacement"][aProperty] = resources.biomesBlocks[settlementData["biomeBlockId"]][aProperty]
 
-    loremaker.fillSettlementDataWitholor(settlementData, "white")
+    # Per default, choosen color is white
+    loremaker.fillSettlementDataWithColor(settlementData, "white")
 
     settlementData["villageName"] = book.generateVillageName()
     settlementData["materialsReplacement"]["villageName"] = settlementData["villageName"]
@@ -42,12 +43,12 @@ def createSettlementData(area, resources):
                 "farmer", "fisherman", "shepherd", "fletcher", "librarian", "cartographer", 
                 "cleric", "armorer", "weaponsmith", "toolsmith", "butcher", "leatherworker", "mason", "nitwit"]
 
-    # 1 -> content, 2 -> isGift
+    # [0 -> content, 1 -> isGift]
     settlementData["villagerDiary"] = []
     
     settlementData["structuresNumberGoal"] = random.randint(20, 70)
 
-    #structures contains "position", "rotation", "flip" "name", "type", "group" ->, "villagersId", "gift"
+    # structures contains "position", "rotation", "flip" "name", "type", "group", "villagersId", "gift"
     settlementData["structures"] = []
     settlementData["freeVillager"] = 0
 

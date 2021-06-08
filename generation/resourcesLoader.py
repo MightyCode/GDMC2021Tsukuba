@@ -2,8 +2,9 @@ from generation.structures.generated.generatedWell import GeneratedWell
 from generation.structures.generated.generatedQuarry import * 
 
 def loadAllResources(resources) : 
-    # Loads structures
     print("Begin load ressources")
+    # Loads structures
+    ## Load houses
     resources.loadStructures("houses/haybale/haybalehouse1.nbt", "houses/haybale/haybalehouse1.json", "haybalehouse1")
     resources.loadStructures("houses/haybale/haybalehouse2.nbt", "houses/haybale/haybalehouse2.json", "haybalehouse2")
     resources.loadStructures("houses/haybale/haybalehouse3.nbt", "houses/haybale/haybalehouse3.json", "haybalehouse3")
@@ -19,6 +20,10 @@ def loadAllResources(resources) :
     resources.loadStructures("houses/medium/mediumhouse3.nbt", "houses/medium/mediumhouse3.json", "mediumhouse3")
 
     resources.loadStructures("houses/advanced/advancedhouse1.nbt", "houses/advanced/advancedhouse1.json", "advancedhouse1")
+
+    ## Load work structures : functionnals
+
+    resources.addGeneratedStructures(GeneratedQuarry(), "functionals/quarry/basicgeneratedquarry.json", "basicgeneratedquarry")
 
     resources.loadStructures("functionals/lumberjachut/basiclumberjachut.nbt", "functionals/lumberjachut/basiclumberjachut.json", "basiclumberjachut")
 
@@ -39,6 +44,7 @@ def loadAllResources(resources) :
 
     resources.loadStructures("functionals/weaverhouse/basicweaverhouse.nbt", "functionals/weaverhouse/basicweaverhouse.json", "basicweaverhouse")
 
+    ## Load representatives structures for a village
 
     resources.loadStructures("representatives/townhall/basictownhall.nbt", "representatives/townhall/basictownhall.json", "basictownhall")
 
@@ -50,9 +56,9 @@ def loadAllResources(resources) :
 
     resources.loadStructures("representatives/adventurerhouse/adventurerhouse.nbt", "representatives/adventurerhouse/adventurerhouse.json", "adventurerhouse")
 
-    resources.addGeneratedStructures(GeneratedQuarry(), "functionals/quarry/basicgeneratedquarry.json", "basicgeneratedquarry")
     resources.addGeneratedStructures(GeneratedWell(), "representatives/well/basicgeneratedwell.json", "basicgeneratedwell")
 
+    ## Load additionnal structures that won't be generated : decorations
 
     resources.loadStructures("decorations/murderercache.nbt", "decorations/murderercache.json", "murderercache")
 
@@ -71,7 +77,6 @@ def loadAllResources(resources) :
     resources.loadLootTable("representatives/jail.json", "jail")
     resources.loadLootTable("representatives/tavern.json", "tavern")
     resources.loadLootTable("representatives/barrack.json", "barrack")
-
     resources.loadLootTable("representatives/adventurerhouse.json", "adventurerhouse")
 
     resources.loadLootTable("decorations/murderercache.json", "murderercache")

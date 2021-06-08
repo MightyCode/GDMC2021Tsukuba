@@ -15,6 +15,7 @@ class ChestGeneration:
     z : z position of chest
     lootTableName : name of the lootTable used
     changeItemName : indicates what ** balise should change, ex : *woodType*
+    additionnalObjects : refers to items that must appear in the chest
     """
     def generate(self, x, y, z, lootTableName, changeItemName={}, additionalObject=[]):
         lootTable = self.resources.lootTables[lootTableName]["pools"][0]
@@ -90,7 +91,9 @@ class ChestGeneration:
                 del places[index]
             return places_b
 
-    
+    """
+    Generate places of additional items
+    """
     def generateAdditionalPlacesIndices(self, places, size):
         indices = list(range(size))
 

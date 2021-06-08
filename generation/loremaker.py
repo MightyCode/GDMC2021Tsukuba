@@ -11,10 +11,10 @@ def alterSettlementDataWithNewStructures(settlementData, indexNewStructure):
 def voteForColor(settlementData):
     colors = ["white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray", "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black"]
     color = colors[random.randint(0, len(colors) - 1)]
-    fillSettlementDataWitholor(settlementData, color)
+    fillSettlementDataWithColor(settlementData, color)
     
 
-def fillSettlementDataWitholor(settlementData, color):
+def fillSettlementDataWithColor(settlementData, color):
     settlementData["materialsReplacement"]["color"] = color
     settlementData["materialsReplacement"]["wool"] = "minecraft:" + color + "_wool"
     settlementData["materialsReplacement"]["terracota"] = "minecraft:" + color + "_terracota"
