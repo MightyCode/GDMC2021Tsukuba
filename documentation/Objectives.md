@@ -23,6 +23,14 @@ Add a special item or special decoration to the house of mayor.
 
 Remove tree when encouteer one on road or structions construction.
 
+## Decoration
+
+Change the decoration depending of biome or tier of advancement of the village.
+
+## Path
+
+Upgrade looking of path, alter path or lantern depending of biome, tier of advancement of the village, or tier of advancement of the targeted structure.
+
 
 
 # System
