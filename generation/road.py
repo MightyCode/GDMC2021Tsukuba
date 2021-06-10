@@ -2,7 +2,7 @@ import utils.projectMath as projectMath
 import lib.interfaceUtils as iu
 
 NODE_IN_ROAD = []
-POS_OF_LANTERN = []
+POSITION_OF_LANTERN = []
 
 
 class Node:
@@ -11,35 +11,31 @@ class Node:
 		self.parent = None
 		self.cost = 0
 		self.H = 0
-	def move_cost(self,other):
+
+	def move_cost(self, other):
 		return 1
 
 class logNode:
-	def __init__(self,point):
+	def __init__(self, point):
 		self.point = point
 		self.child = None
 
-def manhattan(point,point2):
+def manhattan(point, point2):
+	return abs(point2.point[0] - point.point[0]) + abs(point2.point[1] - point.point[1])
 
-	return abs(point2.point[0] - point.point[0]) + abs(point2.point[1]-point.point[1])
-
-def manhattanForCoord(point,point2):
-	return abs(point2[0] - point[0]) + abs(point2[1]-point[1])
+def manhattanForCoord(point, point2):
+	return abs(point2[0] - point[0]) + abs(point2[1] - point[1])
 
 def children(point):
-	x,z=point.point
+	x, z = point.point
 	links = []
-	for d in [(x-1,z),(x, z-1),(x, z + 1),(x+1,z)]:
-		links.append(Node([d[0],d[1]]))
+	for d in [(x - 1, z), (x, z - 1), (x, z + 1), (x + 1,z)]:
+		links.append(Node([d[0], d[1]]))
 
 	return links
 
-#house is : [x,y,z,CornerPos]
-def squareOfHouse(house):
-	return False
 
-
-def comparenode(node1,node2):
+def compareNode(node1,node2):
 	if node1.H < node2.H:
 		return 1
 	elif node1.H == node2.H:
@@ -67,14 +63,14 @@ def isInRoad(coord):
 	return False
 
 def isInLantern(coord):
-	for index in POS_OF_LANTERN:
+	for index in POSITION_OF_LANTERN:
 		if coord in index:
 			return True
 	return False
 
 
-def findClosestNodeInRoad(coordstart,coordgoal):
-	closestdistance = manhattanForCoord(coordstart,coordgoal)
+def findClosestNodeInRoad(coordstart, coordgoal):
+	closestdistance = manhattanForCoord(coordstart, coordgoal)
 	coordclosestdistance = coordgoal
 	for index in NODE_IN_ROAD:
 		for node in index:
@@ -86,7 +82,7 @@ def findClosestNodeInRoad(coordstart,coordgoal):
 	return coordclosestdistance
 
 
-def Astar(startcoord,goalcoord,squarelist, floodFill):
+def astar(startcoord, goalcoord, squarelist):
 	#the open and close set
 	start = Node(startcoord)
 	goal = Node(goalcoord)
@@ -106,15 +102,16 @@ def Astar(startcoord,goalcoord,squarelist, floodFill):
 				temp = i.H
 				current = i
 		openlist.remove(current)
-		#if we are at the goal
+		# If we are at the goal
 		if current.point == goal.point:
 			path = [current.point]
 			while current.parent:
 				path.append(current.parent.point)
 				current = current.parent
 			NODE_IN_ROAD.append(path)
-			return path[::-1] #to reverse the path
-		#for every neighbourg of current node
+
+			return path[::-1] # To reverse the path
+		# For every neighbourg of current node
 		
 		for node in children(current):
 			#test here if the children is in a house
@@ -138,12 +135,30 @@ def Astar(startcoord,goalcoord,squarelist, floodFill):
 		closedlist.append(current)
 	raise ValueError('No Path Found')
 
-def initRoad(floodFill, settlementData, worldmodif,  materials):
+
+def computeXEntry(xLocalPosition, cornerProjection, facingStruct, cornerStruct):
+	x = xLocalPosition
+	x = x + cornerProjection[facingStruct][0] * cornerStruct[0]
+	x = x + cornerProjection[facingStruct][2] * cornerStruct[2]
+	x = x - cornerProjection[facingStruct][0] + cornerProjection[facingStruct][2]
+
+	return x
+
+def computeZEntry(zLocalPosition, cornerProjection, facingStruct, cornerStruct):
+	z = zLocalPosition
+	z = z + cornerProjection[facingStruct][1] * cornerStruct[1]
+	z = z + cornerProjection[facingStruct][3] * cornerStruct[3]
+	z = z - cornerProjection[facingStruct][1] + cornerProjection[facingStruct][3]
+
+	return z
+
+
+def initRoad(floodFill, settlementData, worldModif,  materials):
 	NODE_IN_ROAD.clear()
-	POS_OF_LANTERN.clear()
+	POSITION_OF_LANTERN.clear()
 	CORNER_PROJECTION = { "north" : [ 0, 1, 0, 0], "south" : [ 0, 0, 0, 1 ], "west" : [ 1, 0, 0, 0 ], "east" : [ 0, 0, 1, 0 ] }
-	#to 
-	squarelist= []
+	
+	squarelist = []
 	for index in range(0, len(settlementData["structures"])):
 		entrytemp = []
 		entrytemp.append(floodFill.listHouse[index][0])
@@ -151,127 +166,118 @@ def initRoad(floodFill, settlementData, worldmodif,  materials):
 		entrytemp.append(floodFill.listHouse[index][2])
 		squarelist.append([entrytemp[0] + floodFill.listHouse[index][3][0] , entrytemp[2] + floodFill.listHouse[index][3][1], 
 			entrytemp[0] + floodFill.listHouse[index][3][2], entrytemp[2] + floodFill.listHouse[index][3][3]])
+
 	#print(squarelist)
-	for index in range(0,len(settlementData["structures"])):
-		#to knwo if the house doesn't have parent...
-		#print("building path for house n :",index + 1)
-		start=[0, 0]
-		goal=[0, 0]
-		index2 = floodFill.listHouse[index][5]
-		if not index2 == -1:
-			facingenfant = settlementData["structures"][index]["prebuildingInfo"]["entry"]["facing"]
-			cornerenfant = settlementData["structures"][index]["prebuildingInfo"]["corner"]
-			entry1 = []
-			#print(settlementData["structures"][index]["prebuildingInfo"]["size"])
-			entry1.append(floodFill.listHouse[index][0])
-			entry1.append(floodFill.listHouse[index][1])
-			entry1.append(floodFill.listHouse[index][2])
-			x = entry1[0] + CORNER_PROJECTION[facingenfant][0] * cornerenfant[0] + CORNER_PROJECTION[facingenfant][2] * cornerenfant[2]- CORNER_PROJECTION[facingenfant][0] + CORNER_PROJECTION[facingenfant][2]
-			y = entry1[1]
-			z = entry1[2] + CORNER_PROJECTION[facingenfant][1] * cornerenfant[1] + CORNER_PROJECTION[facingenfant][3] * cornerenfant[3] - CORNER_PROJECTION[facingenfant][1] + CORNER_PROJECTION[facingenfant][3]
-			while not(floodFill.is_air(x, y+2, z)) or floodFill.is_air(x, y+1, z):
-						if floodFill.is_air(x, y + 1, z):
-							y -=1
-						if not(floodFill.is_air(x, y + 2, z)):
-							y += 1
-			start = [x, z]
+	for indexFrom in range(0,len(settlementData["structures"])):
+		# To know if the house doesn't have parent...
+		start = [0, 0]
+		goal = [0, 0]
+		
+		indexTo = floodFill.listHouse[indexFrom][5]
+		if indexTo == -1:
+			continue
+		
+		# House From
+		facingStructFrom = settlementData["structures"][indexFrom]["prebuildingInfo"]["entry"]["facing"]
+		cornerStructFrom = settlementData["structures"][indexFrom]["prebuildingInfo"]["corner"]
+		entryStructFrom = [floodFill.listHouse[indexFrom][0], floodFill.listHouse[indexFrom][1], floodFill.listHouse[indexFrom][2]]
 
+		x = computeXEntry(entryStructFrom[0], CORNER_PROJECTION, facingStructFrom, cornerStructFrom)
+		y = entryStructFrom[1]
+		z = computeZEntry(entryStructFrom[2], CORNER_PROJECTION, facingStructFrom, cornerStructFrom)
+		
+		while not(floodFill.is_air(x, y + 2, z)) or floodFill.is_air(x, y + 1, z):
+			if floodFill.is_air(x, y + 1, z):
+				y -=1
 
+			if not(floodFill.is_air(x, y + 2, z)):
+				y += 1
+		start = [x, z]
 
-			#house parent
-			facingparent = settlementData["structures"][index2]["prebuildingInfo"]["entry"]["facing"]
-			#print(facingparent)
-			cornerparent = settlementData["structures"][index2]["prebuildingInfo"]["corner"]
-			entry2 = []
-			entry2.append(floodFill.listHouse[index2][0])
-			entry2.append(floodFill.listHouse[index2][1]-1)
-			entry2.append(floodFill.listHouse[index2][2])
-			x = entry2[0] + CORNER_PROJECTION[facingparent][0] * cornerparent[0] + CORNER_PROJECTION[facingparent][2] * cornerparent[2] - CORNER_PROJECTION[facingparent][0] + CORNER_PROJECTION[facingparent][2]
-			y = entry2[1]
-			z = entry2[2] + CORNER_PROJECTION[facingparent][1] * cornerparent[1] + CORNER_PROJECTION[facingparent][3] * cornerparent[3] - CORNER_PROJECTION[facingparent][1] + CORNER_PROJECTION[facingparent][3]
-			goal = [x, z]
-			goal = findClosestNodeInRoad(start,goal)
-			while not(floodFill.is_air(x, y+2, z)) or floodFill.is_air(x, y+1, z):
-						if floodFill.is_air(x, y+1, z):
-							y -=1
-						if not(floodFill.is_air(x, y+2, z)):
-							y += 1
-						#print("stuck1")
-			#print("start : ",start)
-			#print("goal : ",goal)
+		# House to
+		facingStructTo = settlementData["structures"][indexTo]["prebuildingInfo"]["entry"]["facing"]
+		cornerStructTo = settlementData["structures"][indexTo]["prebuildingInfo"]["corner"]
 
+		entryStructTo = [floodFill.listHouse[indexTo][0], floodFill.listHouse[indexTo][1] - 1, floodFill.listHouse[indexTo][2]]
 
-			#generating the path among 2 houses
-			try:
-				#print(squarelist,start,goal)
-				path = Astar(start, goal, squarelist,floodFill)
-				#print("Astar done : ", path)
-				temp = 1
-				z0 = entry1[1]
-				#print("start is :", start)
-				#print("end is : ", goal)
-				#print("house1 is : ", squarelist[index])
-				#print("house2 is : ", squarelist[index2])
-				for block in path:
-					z = z0
-					material = 'minecraft:grass_path'
-					while not(floodFill.is_air(block[0], z+1, block[1])) or floodFill.is_air(block[0], z, block[1]):
-						if floodFill.is_air(block[0], z, block[1]):
-							z -=1
-						if not(floodFill.is_air(block[0], z+1, block[1])):
-							z += 1
-					while iu.getBlock(block[0], z, block[1]) == 'minecraft:water':
-						z = z + 1
-						material = "minecraft:"+materials["woodType"]+"_planks"
+		x = computeXEntry(entryStructTo[0], CORNER_PROJECTION, facingStructTo, cornerStructTo)
+		y = entryStructTo[1]
+		z = computeZEntry(entryStructTo[2], CORNER_PROJECTION, facingStructTo, cornerStructTo)
+	
+		goal = [x, z]
+		goal = findClosestNodeInRoad(start, goal)
 
-					while iu.getBlock(block[0], z, block[1]) == 'minecraft:lava':
-						z = z + 1
-						material = "minecraft:nether_bricks"
-					#here, we need to check if there is a tree above the path, and if yes, we want to remove it
-					#if 
-					worldmodif.setBlock(block[0],z, block[1],"minecraft:air")
-					worldmodif.setBlock(block[0],z + 1, block[1],"minecraft:air")
-					worldmodif.setBlock(block[0],z + 2, block[1],"minecraft:air")
-					worldmodif.setBlock(block[0],z - 1, block[1], material)
-					z0 = z
-				z0 = entry1[1]
-				for block in path:
-					#print(block)
-					z = z0
-					while not(floodFill.is_air(block[0], z+1, block[1])) or floodFill.is_air(block[0], z, block[1]):
-						if floodFill.is_air(block[0], z, block[1]):
-							z -=1
-						if not(floodFill.is_air(block[0], z+1, block[1])):
-							z += 1
-					while iu.getBlock(block[0], z, block[1]) == 'minecraft:water' or iu.getBlock(block[0], z, block[1]) == 'minecraft:lava':
-						z = z + 1
+		while not(floodFill.is_air(x, y + 2, z)) or floodFill.is_air(x, y + 1, z):
+			if floodFill.is_air(x, y + 1, z):
+				y -=1
+			if not(floodFill.is_air(x, y + 2, z)):
+				y += 1
+				#print("stuck1")
 
-					if temp % 12 == 0 and (temp ) < (len(path)-3):
-						if not([block[0]-1, block[1]] in path) and not(floodFill.isInHouse([block[0] - 1,block[1]])) and not(isInRoad([block[0] - 1,block[1]])):
-							POS_OF_LANTERN.append([block[0],block[1]])
-							worldmodif.setBlock(block[0]-1, z-1, block[1], 'minecraft:cobblestone')
-							worldmodif.setBlock(block[0]-1, z, block[1], 'minecraft:cobblestone_wall')
-							worldmodif.setBlock(block[0]-1, z+1, block[1], 'minecraft:torch')
-						elif not([block[0], block[1] - 1] in path) and not(floodFill.isInHouse([block[0],block[1] - 1])) and not(isInRoad([block[0],block[1] - 1])):
-							POS_OF_LANTERN.append([block[0],block[1]])
-							worldmodif.setBlock(block[0], z-1, block[1] - 1, 'minecraft:cobblestone')
-							worldmodif.setBlock(block[0], z, block[1] - 1, 'minecraft:cobblestone_wall')
-							worldmodif.setBlock(block[0], z+1, block[1] - 1, 'minecraft:torch')
-						elif not([block[0] + 1, block[1]] in path) and not(floodFill.isInHouse([block[0] + 1,block[1]])) and not(isInRoad([block[0] + 1,block[1]])):
-							POS_OF_LANTERN.append([block[0],block[1]])
-							worldmodif.setBlock(block[0] + 1, z-1, block[1], 'minecraft:cobblestone')
-							worldmodif.setBlock(block[0] + 1, z, block[1], 'minecraft:cobblestone_wall')
-							worldmodif.setBlock(block[0] + 1, z+1, block[1], 'minecraft:torch')
-						elif not([block[0], block[1] + 1] in path) and not(floodFill.isInHouse([block[0],block[1] + 1])) and not(isInRoad([block[0],block[1] + 1])):
-							POS_OF_LANTERN.append([block[0],block[1]])
-							worldmodif.setBlock(block[0], z-1, block[1] + 1, 'minecraft:cobblestone')
-							worldmodif.setBlock(block[0], z, block[1] + 1, 'minecraft:cobblestone_wall')
-							worldmodif.setBlock(block[0], z+1, block[1] + 1, 'minecraft:torch')
-						
-					temp += 1
-					z0 = z
-					
-			except ValueError:
-				print("ValueError, path can't be implemented there")
-				continue
+		try:
+			generateRoad(worldModif, floodFill, start, goal, squarelist, materials, entryStructFrom)		
+		except ValueError:
+			print("ValueError, path can't be implemented there")
+
+"""
+Generating the path among 2 houses
+"""
+def generateRoad(worldModif, floodFill, start, goal, squarelist, materials, entryStructFrom):
+
+	path = astar(start, goal, squarelist)
+	temp = 1
+
+	yTemp =  entryStructFrom[1]
+	for block in path:
+		y = yTemp
+		material = 'minecraft:grass_path'
+		while not(floodFill.is_air(block[0], y + 1, block[1])) or floodFill.is_air(block[0], y, block[1]):
+			if floodFill.is_air(block[0], y, block[1]):
+				y -=1
+			if not(floodFill.is_air(block[0], y + 1, block[1])):
+				y += 1
+
+		while iu.getBlock(block[0], y, block[1]) == 'minecraft:water':
+			y = y + 1
+			material = "minecraft:" + materials["woodType"] + "_planks"
+		while iu.getBlock(block[0], y, block[1]) == 'minecraft:lava':
+			y = y + 1
+			material = "minecraft:nether_bricks"
+
+		# Here, we need to check if there is a tree above the path, and if yes, we want to remove it 
+		worldModif.setBlock(block[0], y, block[1], "minecraft:air")
+		worldModif.setBlock(block[0], y + 1, block[1], "minecraft:air")
+		worldModif.setBlock(block[0], y + 2, block[1], "minecraft:air")
+		worldModif.setBlock(block[0], y - 1, block[1], material)
+		yTemp = y
+
+	yTemp = entryStructFrom[1]
+	for block in path:
+		y = yTemp
+		while not(floodFill.is_air(block[0], y + 1, block[1])) or floodFill.is_air(block[0], y, block[1]):
+			if floodFill.is_air(block[0], y, block[1]):
+				y -=1
+				
+			if not(floodFill.is_air(block[0], y + 1, block[1])):
+				y += 1
+
+		while iu.getBlock(block[0], y, block[1]) == 'minecraft:water' or iu.getBlock(block[0], y, block[1]) == 'minecraft:lava':
+			y = y + 1
+
+		if temp % 12 == 0 and temp < len(path) - 3:
+			diffX = [-1, 0, 1, 0]
+			diffZ = [0, -1, 0, 1]
+
+			for i in [0, 1, 2, 3]:
+				position = [block[0] + diffX[i], block[1] + diffZ[i]]
+				if not position in path and not floodFill.isInHouse(position) and not isInRoad(position):
+					POSITION_OF_LANTERN.append([block[0], block[1]])
+					worldModif.setBlock(position[0], y - 1, position[1], 'minecraft:cobblestone')
+					worldModif.setBlock(position[0], y, 	position[1], 'minecraft:cobblestone_wall')
+					worldModif.setBlock(position[0], y + 1, position[1], 'minecraft:torch')
+					break
+			
+		temp += 1
+		yTemp = y
+
 
