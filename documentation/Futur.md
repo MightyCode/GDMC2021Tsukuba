@@ -1,3 +1,6 @@
+Objectives for the futur
+
+
 # Lore
 
 ## Specialization
@@ -10,6 +13,8 @@ If two villages has the same specialization it lauch a war between the two villa
 
 
 # Aspect 
+
+-> Adding many structures to existing ones.
 
 ## Wall
 
@@ -37,9 +42,11 @@ Upgrade looking of path, alter path or lantern depending of biome, tier of advan
 
 ## Dependencies into token
 
+Currently the dependencies only accept static value, should be better to include variables.
+
 If math needed on structure group dependencies conditions.
 
-Make the system of conditions tokenable, the system parse conditions into type of token then do math on it.
-Like **villagerNeeded > (10 + 1) * 2**
-List of token should be **[variable, comparator, open parenthesis, number, operator, number, close parenthesis, operator, number]**
-Then the system do math on it. 
+Make the system of conditions tokenable, the system parses conditions into type of token then does math on it.
+Like **villagerNeeded** : **currentVillagerNumber > (10 + 1) * 2**
+List of tokens should be **[variable, comparator, open parenthesis, number, operator, number, close parenthesis, operator, number]**
+Then the system does math on it. 

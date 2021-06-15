@@ -1,11 +1,11 @@
 # General explanation
 
 The main file which makes the generation working is *generateSettlement.py*.
-The generator work in 5 steps, *generator.py* is mainly use.
+The generator works in 5 steps, *generator.py* is mainly used.
 
 
 . The script generateSettlement inits data of the main dictionnary **settlementData**.
-. Then the script searchs what should be the next structure using *structureManager.py* and find its position with *floodFill.py*.
+. Then the script searches what should be the next structure using *structureManager.py* and finds its position with *floodFill.py*.
 . After that, the scripts creates the lore of the village, likes main books describing the village or a register of villagers.
 . The creation of lore finished, generateSettlement uses *road.py* to create roads.
 . Finally each structure is finally builded and decorations are placed. 

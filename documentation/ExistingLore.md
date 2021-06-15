@@ -1,23 +1,23 @@
 # General information
 
-Each village has a name, it has a special color, per default the white.
-When the town hall is constructed, a random color is choosen.
+Each village has a name, it has a special color, by default the white.
+When the town hall is constructed, a random color is chosen.
 
 Each village has its own money.
-If emerald is generated on the village it's name would be *VillageName*'s currency.
+If emerald is generated on the village its name would be *VillageName*'s currency.
 
 
 # Villager
 
-When a house is choosen for next structure, a certain number of villager are created.
-Each villager got a random uniq name and they are **Unemployed**.
+When a house is chosen for next structure, a certain number of villager are created.
+Each villager got a random unique name and they are **Unemployed**.
 
-When a work structure is choosen, a certain number of **Unemployed** became employed.
-Their work statue change.
+When a work structure is chosen, a certain number of **Unemployed** become employed.
+Their work status changes.
 
-If a villager live in a basic of more house, it has 1/3 chance of writting down a diary.
+If a villager lives in a basic or more advanced house, it has 1/3 chance of writing down a diary.
 
-If in the diary, the villager love or hate another villager. A gift will be placed neer the door.
+If in the diary, the villager loves or hates another villager. A gift will be placed near the villager targeted house door.
 
 
 # Murderer
