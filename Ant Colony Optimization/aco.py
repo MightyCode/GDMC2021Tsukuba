@@ -11,7 +11,7 @@ class AntColonyOptimizer:
 		self.start = [8,3]
 		self.end = [1,3]
 		self.score = None
-		self.pheromone_value = 40
+		self.pheromone_value = 15
 		self.pheromone_decrease = 0.8
 		self.path_matrix_for_pheromone = np.zeros((10,7))
 
