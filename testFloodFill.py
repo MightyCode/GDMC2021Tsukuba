@@ -7,10 +7,12 @@ from utils.worldModification import *
 from lib.worldLoader import WorldSlice
 #seed testing : -2997648135289524795
 
+
+block1 = (10 3 10)
+block2 = (-10 3 4)
 interface = interfaceUtils.Interface()
-area = (0, 0, 128, 128)
-interfaceUtils.runCommand("execute at @p run setbuildarea ~-150 0 ~-150 ~150 255 ~150")
-buildArea = interfaceUtils.requestBuildArea()
+area = (min(block1[0],block2[0]), 0, min(block1[2],block2[2]) , max(block1[0],block2[0]), 50,  max(block1[2],block2[2]))
+iu.setBuildArea(area[0] -5, area[1], area[2]-5, area[3] + 6, area[4] + 6, area[5] + 6)
 floodFill = FloodFill()
 if buildArea != -1:
     x1 = buildArea[0]

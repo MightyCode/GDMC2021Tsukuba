@@ -1,19 +1,25 @@
 import threading
 import time
 import numpy as np
+import lib.interfaceUtils as iu
 
 class AntColonyOptimizer:
-	def __init__(self):
-		self.map_matrix = [[0,0,0,0,0,0,0],[0,0,0,2,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,1,0,0,0],[0,0,0,0,0,0,0]]
-		self.pheromone_matrix = np.zeros((10, 7))
-		self.probability_matrix = np.ones((10,7),dtype=int)
-		self.available_nodes = np.zeros((10, 7))
-		self.start = [8,3]
-		self.end = [1,3]
+	def __init__(self, xmatrix, zmatrix, startingmatrix, startnode, endnode):
+		self.map_matrix = np.zeros((xmatrix,zmatrix))
+		self.lenx = xmatrix
+		self.lenz = zmatrix
+		self.startmatrix = startingmatrix
+		self.pheromone_matrix = np.zeros((xmatrix, zmatrix))
+		self.probability_matrix = np.ones((xmatrix, zmatrix),dtype=int)
+		self.available_nodes = np.zeros((xmatrix, zmatrix))
+		self.start = startnode
+		self.end = endnode
 		self.score = None
-		self.pheromone_value = 15
+		self.pheromone_value = 60
 		self.pheromone_decrease = 0.8
-		self.path_matrix_for_pheromone = np.zeros((10,7))
+		self.path_matrix_for_pheromone = np.zeros((xmatrix,zmatrix))
+		self.numberofant = 20
+		self.numberofiteration = 20
 
 	def print_matrix(matrix):
 		print(matrix[0])
@@ -28,7 +34,7 @@ class AntColonyOptimizer:
 		print(matrix[9])
 
 	def reinstate(self):
-		self.available_nodes = np.zeros((10, 7))
+		self.available_nodes = np.zeros((self.lenx, self.lenz))
 
 	def updatepheromone(self):
 		self.pheromone_matrix = (self.pheromone_decrease * self.pheromone_matrix) + ((self.pheromone_value / self.score[1]) * self.path_matrix_for_pheromone)
@@ -36,7 +42,7 @@ class AntColonyOptimizer:
 		print(self.pheromone_matrix)
 
 	def updateproba(self):
-		self.probability_matrix = np.ones((10,7)) + np.ones((10,7))*self.pheromone_matrix
+		self.probability_matrix = np.ones((self.lenx, self.lenz)) + np.ones((self.lenx, self.lenz))*self.pheromone_matrix
 		print("proba matrix is :")
 		print(self.probability_matrix)
 
@@ -48,6 +54,19 @@ class AntColonyOptimizer:
 		print(index[2],"and",distancebetweennode)
 		return ( index[2] / distancebetweennode )  + distancebetweenend
 		
+
+	def launch(self):
+		for j in range(self.numberofiteration):
+			for i in range(self.numberofant):
+				self.ant(self.start)
+				self.reinstate()
+				print(self.score)
+				print("path_matrix_for_pheromone is :")
+				print(self.path_matrix_for_pheromone)
+			self.updatepheromone()
+			self.updateproba()
+		print(self.path_matrix_for_pheromone)
+		self.finish()
 
 
 	def choose_next_node(self,index):
@@ -74,7 +93,7 @@ class AntColonyOptimizer:
 			while temp < len(direction):
 				indexrow[0] = index[0] + listchoice[direction[temp]][0]
 				indexrow[1] = index[1] + listchoice[direction[temp]][1]
-				if indexrow[0] < 10 and indexrow[1] < 7 and self.available_nodes[indexrow[0]][indexrow[1]] == 0 and good == False:
+				if indexrow[0] < self.lenx and indexrow[1] < self.lenz and self.available_nodes[indexrow[0]][indexrow[1]] == 0 and good == False:
 					self.available_nodes[indexrow[0]][indexrow[1]] = 1
 					#self.printingpath()
 					answer = indexrow.copy()
@@ -89,9 +108,9 @@ class AntColonyOptimizer:
 			return [-1, -1]
 
 	def ant(self, index):
-		self.available_nodes[index[0]][index[1]]
+		self.available_nodes[index[0]][index[1]] = 1
 		temp = 1
-		test = self.choose_next_node([8,3])
+		test = self.choose_next_node(self.start)
 		while [test[0],test[1]] != [-1,-1] and [test[0],test[1]] != self.end:
 			temp += 1
 			test = self.choose_next_node(test)
@@ -107,7 +126,12 @@ class AntColonyOptimizer:
 			print(self.score,"is the score")
 			self.path_matrix_for_pheromone = self.available_nodes.copy()
 
-
+	def finish(self):
+		self.map_matrix[self.start[0]][self.start[1]] = 2
+		self.map_matrix[self.end[0]][self.end[1]] = 1
+		self.map_matrix = self.map_matrix + self.path_matrix_for_pheromone
+		print(self.map_matrix)
+		self.printinminecraft()
 
 	def getprobabilitiesaround(self,index):
 		listchoice = [[0,1],[1,0],[-1,0],[0,-1]]
@@ -137,6 +161,24 @@ class AntColonyOptimizer:
 		return listproba
 
 
+	def printinminecraft(self):
+		tempx = 0
+		tempz = 0
+		for arrayx in self.map_matrix:
+			tempz = 0
+			for block in arrayx:
+				if block == 1:
+					iu.setBlock(tempx + self.startmatrix[0], 4 , tempz + self.startmatrix[1],"minecraft:bricks")
+				elif block == 2:
+					iu.setBlock(tempx + self.startmatrix[0], 4 , tempz + self.startmatrix[1],"minecraft:cobblestone")
+				elif block == 3:
+					iu.setBlock(tempx + self.startmatrix[0], 4 , tempz + self.startmatrix[1],"minecraft:nether_bricks")
+				tempz += 1
+			tempx += 1
+			
+
+
+
 	def printingpath(self):
 		string = "path is"
 		string += "\n"+str(self.available_nodes[0])
@@ -152,15 +194,3 @@ class AntColonyOptimizer:
 		print(string)
 
 
-aco = AntColonyOptimizer()
-
-for j in range(10):
-	for i in range(10):
-		aco.ant([8,3])
-		aco.reinstate()
-		print(aco.score)
-		print("path_matrix_for_pheromone is :")
-		print(aco.path_matrix_for_pheromone)
-	aco.updatepheromone()
-	aco.updateproba()
-print(aco.path_matrix_for_pheromone)
